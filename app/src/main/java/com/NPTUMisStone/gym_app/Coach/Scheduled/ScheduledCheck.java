@@ -19,7 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
+import com.NPTUMisStone.gym_app.Main.Initial.SnackBarUtils;
 import com.NPTUMisStone.gym_app.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.hdev.calendar.bean.DateInfo;
 import com.hdev.calendar.view.SingleCalendarView;
 
@@ -89,6 +91,10 @@ public class ScheduledCheck extends AppCompatActivity {
         if (!dateList.isEmpty()) {
             singleCalendarView.setClickableDateList(dateList);
             singleCalendarView.setDateRange(dateList.get(0).timeInMillis(), dateList.get(dateList.size() - 1).timeInMillis());
+        }else{
+            singleCalendarView.setClickableDateList(new ArrayList<>());
+            singleCalendarView.setDateRange(Calendar.getInstance().getTimeInMillis(), Calendar.getInstance().getTimeInMillis());
+            SnackBarUtils.makeShort(findViewById(R.id.main), "無課程").danger();
         }
         singleCalendarView.setOnSingleDateSelectedListener((calendar, date) -> {
             loadSchedule(date);
