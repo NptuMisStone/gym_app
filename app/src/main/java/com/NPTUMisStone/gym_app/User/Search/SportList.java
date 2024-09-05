@@ -50,15 +50,6 @@ public class SportList extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.SearchSport_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<String> arrayList = new ArrayList<>();
-        String[] strings = {"CRUISER MK. I","CRUISER MK. II","VALENTINE","CRUISER MK. III"
-                ,"CRUISER MK. IV","COVENANTED","CRUSADER","GSR 3301 SETTER","MTV","GSON3301 AVR FS"
-                ,"MANTICORE","MATILDA","CHURCHILL I","CHURCHILL VII","BLACK PRINCE","CARNATION"
-                ,"CONQUEROR","SUPER CONQUEROR","CAVALIER","CROMWELL","COMET","CENTURION MK. I"
-                ,"CENTURION MK. 7/1","CENTURION ACTION X","VALENTINE AT","BISHOP","FV304"
-                ,"CRUSADER 5.5-IN. SP","FV207","FV3805","CONQUEROR GUN CARRIAGE"
-                ,"AT 2","ACHILLES","CHALLENGER","CHARIOTEER","FV4004 CONWAY","FV4005 STAGE II"
-                ,"AT 8","AT 7","AT 15","TORTOISE","FV217 BADGER"};
-
         Collections.addAll(arrayList, getScheduledCourses());
         mAdapter = new RecyclerViewAdapter(arrayList);
         recyclerView.setAdapter(mAdapter);
@@ -87,7 +78,7 @@ public class SportList extends AppCompatActivity {
         finish();
     }
     public void goChange(View view) {
-        Button changeButton1 = findViewById(R.id.SearchSport_changeButton1), changeButton2 = findViewById(R.id.SearchSport_changeButton2), changeButton3 = findViewById(R.id.SearchSport_changeButton3);
+        Button changeButton1 = findViewById(R.id.SearchSport_changeButton1), changeButton2 = findViewById(R.id.SearchSport_changeButton2);
         ConstraintLayout constraintLayout1 = findViewById(R.id.SearchSport_constraintLayout1), constraintLayout2 = findViewById(R.id.SearchSport_constraintLayout2), constraintLayout3 = findViewById(R.id.SearchSport_constraintLayout3);
         if (view == changeButton1) {
             setConstraint(constraintLayout1, constraintLayout2, constraintLayout3);
@@ -105,7 +96,7 @@ public class SportList extends AppCompatActivity {
     RecyclerViewAdapter mAdapter;
     /**初始化Toolbar內SearchView的設置*/
     private void setSearchView() {
-        /**SearchView設置，以及輸入內容後的行動*/
+        //SearchView設置，以及輸入內容後的行動*/
         ((SearchView)findViewById(R.id.SearchSport_searchView)).setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
