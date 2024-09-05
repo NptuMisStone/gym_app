@@ -113,7 +113,7 @@ public class SportList extends AppCompatActivity {
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                /**調用RecyclerView內的Filter方法*/
+                //調用RecyclerView內的Filter方法
                 mAdapter.getFilter().filter(newText);
                 return false;
             }
@@ -129,7 +129,7 @@ public class SportList extends AppCompatActivity {
         public RecyclerViewAdapter(ArrayList<String> arrayList) {
             this.arrayList = arrayList;
             arrayListFilter = new ArrayList<>();
-            /**這裡把初始陣列複製進去了*/
+            //這裡把初始陣列複製進去了
             arrayListFilter.addAll(arrayList);
 
         }
@@ -139,7 +139,7 @@ public class SportList extends AppCompatActivity {
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 tvItem = itemView.findViewById(android.R.id.text1);
-                /**點擊事件*/
+                //點擊事件
                 itemView.setOnClickListener(this);
             }
 
@@ -176,21 +176,20 @@ public class SportList extends AppCompatActivity {
             /**此處為正在濾除字串時所做的事*/
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                /**先將完整陣列複製過去*/
+                //先將完整陣列複製過去
                 ArrayList<String> filteredList = new ArrayList<>();
-                /**如果沒有輸入，則將原本的陣列帶入*/
+                //如果沒有輸入，則將原本的陣列帶入
                 if (constraint == null || constraint.length() == 0) {
                     filteredList.addAll(arrayListFilter);
                 } else {
-                    /**如果有輸入，則照順序濾除相關字串
-                     * 如果你有更好的搜尋演算法，就是寫在這邊*/
+                    //如果有輸入，則照順序濾除相關字串 如果你有更好的搜尋演算法，就是寫在這邊
                     for (String movie: arrayListFilter) {
                         if (movie.toLowerCase().contains(constraint.toString().toLowerCase())) {
                             filteredList.add(movie);
                         }
                     }
                 }
-                /**回傳濾除結果*/
+                //回傳濾除結果
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = filteredList;
                 return filterResults;
