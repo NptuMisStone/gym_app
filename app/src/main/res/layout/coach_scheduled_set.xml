@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Coach.Scheduled.ScheduledSet">
+
+    <Button
+        android:id="@+id/ScheduledSet_editButton"
+        android:layout_width="80dp"
+        android:layout_height="48dp"
+        android:background="@drawable/all_shape_round_button"
+        android:backgroundTint="@color/teal"
+        android:gravity="center"
+        android:text="編輯"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline13" />
+
+    <ImageButton
+        android:id="@+id/ScheduledSet_backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/all_effect_ripple"
+        android:contentDescription="goBack"
+        android:scaleType="centerCrop"
+        android:src="@drawable/all_ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/ScheduledSet_titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="教練新增課表"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/ScheduledSet_addButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/all_effect_ripple"
+        android:contentDescription="addClass"
+        android:scaleType="centerCrop"
+        android:src="@drawable/coach_scheduled_set_ic_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ScheduledSet_guideLine1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ScheduledSet_classRecycler"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ScheduledSet_guideLine1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ScheduledSet_guideLine2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.47" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ScheduledSet_constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/main_login_shape_edittext"
+        android:backgroundTint="@color/light_green"
+        android:paddingTop="36dp"
+        android:paddingBottom="36dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/guideline15"
+        app:layout_constraintStart_toStartOf="@+id/guideline14"
+        app:layout_constraintTop_toTopOf="@+id/ScheduledSet_guideLine2"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/ScheduledSet_dateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="課程日期："
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/ScheduledSet_dateEdit"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/ScheduledSet_dateEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:ems="8"
+            android:focusable="false"
+            android:hint="未設定"
+            android:inputType="date"
+            android:minHeight="50dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ScheduledSet_dateText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ScheduledSet_dateText"
+            app:layout_constraintTop_toTopOf="@+id/ScheduledSet_dateText" />
+
+        <TextView
+            android:id="@+id/ScheduledSet_startText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="開始時間："
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/ScheduledSet_startEdit"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ScheduledSet_dateText" />
+
+        <EditText
+            android:id="@+id/ScheduledSet_startEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="8"
+            android:focusable="false"
+            android:hint="未設定"
+            android:inputType="none"
+            android:minHeight="50dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ScheduledSet_startText"
+            app:layout_constraintEnd_toEndOf="@+id/ScheduledSet_dateEdit"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/ScheduledSet_dateEdit"
+            app:layout_constraintTop_toTopOf="@+id/ScheduledSet_startText" />
+
+        <TextView
+            android:id="@+id/ScheduledSet_endText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="結束時間："
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/ScheduledSet_endEdit"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ScheduledSet_startText" />
+
+        <EditText
+            android:id="@+id/ScheduledSet_endEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="8"
+            android:focusable="false"
+            android:hint="未設定"
+            android:inputType="none"
+            android:minHeight="50dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ScheduledSet_endText"
+            app:layout_constraintEnd_toEndOf="@+id/ScheduledSet_dateEdit"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/ScheduledSet_dateEdit"
+            app:layout_constraintTop_toTopOf="@+id/ScheduledSet_endText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/ScheduledSet_setButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/main_login_shape_edittext"
+        android:backgroundTint="@color/dark_teal"
+        android:text="新增課表"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

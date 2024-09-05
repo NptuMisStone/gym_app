@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <!--阻止暗黑模式：https://stackoverflow.com/questions/57175226/how-to-disable-night-mode-in-my-application-even-if-night-mode-is-enable-in-andr
+    <style name="Base.Theme.Gym_app" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">-->
+    <style name="Base.Theme.Gym_app" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <!--按鈕背景顏色都是紫色無法修改：https://blog.csdn.net/changyana/article/details/120387178-->
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.Gym_app" parent="Base.Theme.Gym_app" />
+</resources>

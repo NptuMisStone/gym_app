@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle" >
+    <solid android:color="#673AB7" />
+    <corners android:radius="900dp"/>
+</shape>
+<!--修改完values/themes後如何製作膠囊狀按鈕：https://thunders-channel.medium.com/android-%E5%A6%82%E4%BD%95%E8%A3%BD%E4%BD%9C%E8%86%A0%E5%9B%8A%E7%8B%80%E6%8C%89%E9%88%95-66ab9bce04cc-->

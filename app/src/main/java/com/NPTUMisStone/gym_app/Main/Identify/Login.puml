@@ -1,0 +1,305 @@
+plantuml
+'把Login.class複製給Gemini，「請把他們轉成plaintUml，我要知道整個類別中所有函式的判斷與運行流程」
+@startuml
+skinparam defaultTextAlignment left
+
+start
+:initFirst();
+fork
+:MyConnection = new SQLConnection().IWantToConnection();
+:user =getSharedPreferences("remember", MODE_PRIVATE);
+:isUser = user.getBoolean("isUser", false);
+:lastLogin = user.getInt("last_login", -1);
+end fork
+if (lastLogin != -1) then (yes)
+:get_last_login(lastLogin);
+    if (isUser) then (yes)
+        :ResultSet = executeQuery("SELECT * FROM [使用者資料] WHERE [使用者編號] = " + last_login);
+        if (resultSet.next()) then (yes)
+            :User.setInstance(...);
+            :startActivity(UserHome.class);
+            :finish();
+        endif
+    else (no)
+        :ResultSet = executeQuery("SELECT * FROM [健身教練資料] WHERE [健身教練編號] = " + last_login);
+        if (resultSet.next()) then (yes)
+            :Coach.setInstance(...);
+            :startActivity(CoachHome.class);
+            :finish();
+        endif
+    endif
+endif
+:initSecond();
+:set_status();
+stop
+
+partition register {
+start
+:register();
+:startActivityForResult(Register.class);
+:onActivityResult();
+if (result.getResultCode() == Activity.RESULT_OK) then (yes)
+:Toast.makeText("快用新帳號登入吧");
+else (no)
+if (result.getResultCode() == Activity.RESULT_CANCELED) then (yes)
+:Toast.makeText("取消註冊");
+endif
+endif
+stop
+}
+
+partition checkLogin {
+start
+:checkLogin(account, password);
+if (isLoginIn) then (yes)
+stop
+endif
+:isLoginIn = true;
+if (account.isEmpty() || password.isEmpty()) then (yes)
+if (password.isEmpty()) then (yes)
+:editHint(et_password, "請輸入密碼");
+endif
+if (account.isEmpty()) then (yes)
+:editHint(et_account, "請輸入帳號");
+endif
+:isLoginIn = false;
+stop
+endif
+:validateCredentials(account, password);
+if (isValid) then (yes)
+:goHome();
+else (no)
+:Toast.makeText("帳號或密碼錯誤");
+endif
+:isLoginIn = false;
+stop
+}
+
+partition goHome {
+start
+:goHome();
+:remember_input();
+:set_last_login();
+if (isUser) then (yes)
+:startActivity(UserHome.class);
+else (no)
+:startActivity(CoachHome.class);
+endif
+:finish();
+stop
+}
+
+partition validateCredentials {
+start
+:validateCredentials(account, password);
+:searchQuery = isUser ? "SELECT ... FROM [使用者資料] ..." : "SELECT ... FROM [健身教練資料] ...";
+:searchStatement = MyConnection.prepareStatement(searchQuery);
+:searchStatement.setString(account, email, password);
+:ResultSet = searchStatement.executeQuery();
+if (rs.next()) then (yes)
+:setUserOrCoachInstance(rs);
+:return true;
+else (no)
+:return false;
+endif
+stop
+}
+
+partition setUserOrCoachInstance {
+start
+:setUserOrCoachInstance(rs);
+if (isUser) then (yes)
+:User.setInstance(...);
+else (no)
+:Coach.setInstance(...);
+endif
+stop
+}
+
+partition remember_input {
+start
+:remember_input();
+if (cb_remember.isChecked()) then (yes)
+:user.edit().putString("Remember_account", et_account.getText().toString()).putBoolean("isCheck", true).apply();
+else (no)
+:user.edit().remove("Remember_account").putBoolean("isCheck", false).apply();
+endif
+stop
+}
+
+partition remember_output {
+start
+:remember_output();
+:et_account.setText(user.getString("Remember_account", ""));
+:cb_remember.setChecked(user.getBoolean("isCheck", false));
+stop
+}
+partition change_toUser {
+start
+:change_toUser(login_user, login_coach);
+:isUser = true;
+:set_status(login_user, login_coach);
+stop
+}
+
+partition change_toCoach {
+start
+:change_toCoach(login_user, login_coach);
+:isUser = false;
+:set_status(login_user, login_coach);
+stop
+}
+
+partition set_status {
+start
+:set_status(login_user, login_coach);
+:login_user.setSelected(isUser);
+:login_coach.setSelected(!isUser);
+stop
+}
+
+partition forgotPassword {
+start
+:forgotPassword();
+if (isDialogShow) then (yes)
+stop
+endif
+:isDialogShow = true;
+:dialogView = inflate(R.layout.main_login_forget);
+:dialog = new AlertDialog.Builder(this).setView(dialogView).create();
+:handleGetCodeClick(dialogView, dialog);
+:dialog.setOnDismissListener(dialogInterface -> isDialogShow = false);
+:dialog.show();
+stop
+}
+
+partition handleGetCodeClick {
+start
+:handleGetCodeClick(dialogView, dialog);
+:editAccount = dialogView.findViewById(R.id.forget_accountEdit);
+:editEmail = dialogView.findViewById(R.id.forget_emailEdit);
+:inputAccount = editAccount.getText().toString();
+:userEmail = editEmail.getText().toString();
+:statusHint1 = dialogView.findViewById(R.id.forget_statusHint1);
+:validateEmailAndAccount(inputAccount, userEmail, statusHint1);
+if (isValid) then (yes)
+:sendVerificationEmail(userEmail, statusHint1);
+endif
+stop
+}
+
+partition validateEmailAndAccount {
+start
+:validateEmailAndAccount(account, email, statusHint1);
+if (account.isEmpty()) then (yes)
+:textHint(statusHint1, "❌ 請輸入帳號");
+:return false;
+endif
+if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) then (yes)
+:textHint(statusHint1, "❌ 信箱格式不正確");
+:return false;
+endif
+:checkAccountExists(account, email, statusHint1);
+if (accountExists) then (yes)
+:return true;
+else (no)
+:return false;
+endif
+stop
+}
+
+partition checkAccountExists {
+start
+:checkAccountExists(account, email, statusHint1);
+:searchQuery = isUser ? "SELECT ... FROM [使用者資料] ..." : "SELECT ... FROM [健身教練資料] ...";
+:ResultSet = executeQuery(searchQuery);
+if (rs.next()) then (yes)
+:return true;
+else (no)
+:textHint(statusHint1, "❌ 找不到此帳號。請確認您輸入的帳號是否正確。");
+:return false;
+endif
+stop
+}
+
+partition sendVerificationEmail {
+start
+:sendVerificationEmail(userEmail, statusHint1);
+:randomCode = generateRandomNumber();
+:JavaMailAPI.sendMail();
+if (success) then (yes)
+:textHint(statusHint1, "✔ 驗證碼已成功寄送，請前往您的信箱查看");
+:sendTime = LocalTime.now();
+if (countDownTimer != null) then (yes)
+:countDownTimer.cancel();
+endif
+:countDownTimer = startCountdown();
+:setupCodeValidation(randomCode, sendTime);
+else (no)
+:textHint(statusHint1, "❌ 郵件發送失敗，請再試一次。");
+endif
+stop
+}
+
+partition setupCodeValidation {
+start
+:setupCodeValidation(randomCode, sendTime);
+:checkButton.setVisibility(View.VISIBLE);
+:validateCode(randomCode, inputCode, sendTime);
+if (isValid) then (yes)
+:handleResetPasswordClick(account);
+endif
+stop
+}
+
+partition handleResetPasswordClick {
+start
+:handleResetPasswordClick(account);
+:validatePasswords(newPass, checkPass);
+if (isValid) then (yes)
+:updatePassword(account, newPassword);
+if (success) then (yes)
+:dialog.dismiss();
+endif
+endif
+stop
+}
+
+partition validatePasswords {
+start
+:validatePasswords(newPass, checkPass);
+if (newPassword.isEmpty()) then (yes)
+:textHint("❌ 請輸入新密碼");
+:return false;endif
+if (checkPassword.isEmpty()) then (yes)
+:textHint("❌ 請再次輸入新密碼");
+:return false;
+endif
+if (newPassword.length() < 6) then (yes)
+:textHint("❌ 密碼長度需大於六個字元");
+:return false;
+endif
+if (!checkPassword.equals(newPassword)) then (yes)
+:textHint("❌ 兩次輸入的密碼不同");
+:return false;
+endif
+:return true;
+stop
+}
+
+partition updatePassword {
+start
+:updatePassword(account, newPassword);
+:updateQuery = isUser ? "UPDATE ... [使用者資料] ..." : "UPDATE ... [健身教練資料] ...";
+:updateStatement = MyConnection.prepareStatement(updateQuery);
+:updateStatement.setString(newPassword, account);
+if (updateStatement.executeUpdate() > 0) then (yes)
+:textHint("✔ 密碼已成功重置");
+:return true;
+else (no)
+:textHint("❌ 密碼重置失敗");
+:return false;
+endif
+stop
+}
+@enduml

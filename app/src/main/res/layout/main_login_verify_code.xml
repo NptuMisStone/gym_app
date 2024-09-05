@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Android 驗證碼輸入框的實現：https://www.jianshu.com/p/3238a5afc21c-->
+<!--RelativeLayout排版：https://fiend1120.pixnet.net/blog/post/191809863-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/linear1"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:id="@+id/tv_0"
+            style="@style/ValidateCode"
+            android:layout_width="41dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tv_1"
+            style="@style/ValidateCode" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tv_2"
+            style="@style/ValidateCode" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tv_3"
+            style="@style/ValidateCode" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tv_4"
+            style="@style/ValidateCode" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tv_5"
+            style="@style/ValidateCode" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear2"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+        <View
+            android:layout_width="41dp"
+            android:layout_height="2dp"
+            android:layout_gravity="bottom"
+            android:background="@color/dark_gray" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="41dp"
+            android:layout_height="2dp"
+            android:layout_gravity="bottom"
+            android:background="@color/dark_gray" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="41dp"
+            android:layout_height="2dp"
+            android:layout_gravity="bottom"
+            android:background="@color/dark_gray" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="41dp"
+            android:layout_height="2dp"
+            android:layout_gravity="bottom"
+            android:background="@color/dark_gray" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="41dp"
+            android:layout_height="2dp"
+            android:layout_gravity="bottom"
+            android:background="@color/dark_gray" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="41dp"
+            android:layout_height="2dp"
+            android:layout_gravity="bottom"
+            android:background="@color/dark_gray" />
+
+
+    </LinearLayout>
+
+    <com.NPTUMisStone.gym_app.Main.Identify.VerifyCodeEditText
+        android:id="@+id/edit_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@android:color/transparent"
+        android:inputType="number"
+        android:longClickable="false"
+        android:hint="請輸入驗證碼"
+        android:maxLength="6"
+        android:textColor="@color/transparent" />
+</RelativeLayout>

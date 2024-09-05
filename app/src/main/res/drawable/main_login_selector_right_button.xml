@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/main_login_shape_right_button1" android:state_selected="true" />
+    <item android:drawable="@drawable/main_login_shape_right_button2" android:state_selected="false"/>
+</selector>
+<!--按鈕的選中效果：https://blog.51cto.com/u_16213392/10905976-->

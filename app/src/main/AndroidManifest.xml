@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- 網路權限用來連接資料庫 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Gym_app"
+        tools:targetApi="31">
+        <activity
+            android:name=".User.Search.CoachDetail"
+            android:exported="false" />
+        <activity
+            android:name=".User.Main.UserInfo"
+            android:exported="false" />
+        <activity
+            android:name=".Coach.Scheduled.ScheduledSet"
+            android:exported="false" />
+        <activity
+            android:name=".Coach.Main.Achievement"
+            android:exported="false" />
+        <activity
+            android:name=".Coach.Records.BookingList"
+            android:exported="false" />
+        <activity
+            android:name=".Coach.Records.BookingDetail"
+            android:exported="false" />
+        <activity
+            android:name=".Coach.Scheduled.ScheduledCheck"
+            android:exported="false" />
+        <activity
+            android:name=".User_And_Coach.ContactInfo"
+            android:exported="false" />
+        <activity
+            android:name=".User.Search.SportList"
+            android:exported="false" />
+        <activity
+            android:name=".User.Search.GymList"
+            android:exported="false" />
+        <activity
+            android:name=".User.Records.AppointmentAll"
+            android:exported="false" />
+        <activity
+            android:name=".User.Search.CoachLove"
+            android:exported="false" />
+        <activity
+            android:name=".User.Search.CoachList"
+            android:exported="false" />
+        <activity
+            android:name=".Main.Identify.Register"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" /> <!-- 畫面自動上移：https://cloud.tencent.com/developer/article/1741756 -->
+        <activity
+            android:name=".Coach.Main.CoachHome"
+            android:exported="false" />
+        <activity android:name=".Coach.Main.CoachInfo"
+            android:exported="false" />
+        <activity
+            android:name=".User.Main.UserHome"
+            android:exported="true" />
+        <activity
+            android:name=".Main.Identify.Login"
+            android:exported="false"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
+        <activity
+            android:name=".Main.Initial.Welcome"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
+
+</manifest>

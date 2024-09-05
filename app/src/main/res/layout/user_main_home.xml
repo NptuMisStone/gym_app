@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".User.Main.UserHome">
+
+
+    <TextView
+        android:id="@+id/UserHome_nameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/Coach_welcome"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/UserHome_photoImage"
+        app:layout_constraintEnd_toStartOf="@+id/UserHome_photoImage"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/UserHome_photoImage" />
+
+    <ImageView
+        android:id="@+id/UserHome_photoImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/main_login_shape_edittext"
+        android:backgroundTint="@android:color/darker_gray"
+        android:contentDescription="ShowUserImage"
+        app:layout_constraintBottom_toTopOf="@+id/UserHome_viewPager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/UserHome_nameText"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/UserHome_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        app:layout_constraintBottom_toTopOf="@+id/UserHome_constraintLayout"
+        app:layout_constraintTop_toBottomOf="@+id/UserHome_photoImage" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/UserHome_constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/UserHome_viewPager">
+
+
+        <Button
+            android:id="@+id/UserHome_coachButton"
+            android:layout_width="125dp"
+            android:layout_height="80dp"
+            android:onClick="onClick"
+            android:text="健身教練"
+            app:layout_constraintEnd_toStartOf="@+id/UserHome_sportsButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/UserHome_sportsButton"
+            android:layout_width="125dp"
+            android:layout_height="80dp"
+            android:onClick="onClick"
+            android:text="課程查詢"
+            app:layout_constraintBottom_toBottomOf="@+id/UserHome_coachButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/UserHome_coachButton"
+            app:layout_constraintTop_toTopOf="@+id/UserHome_coachButton" />
+
+        <Button
+            android:id="@+id/UserHome_loveButton"
+            android:layout_width="125dp"
+            android:layout_height="80dp"
+            android:onClick="onClick"
+            android:text="最愛教練"
+            app:layout_constraintBottom_toBottomOf="@+id/UserHome_appointmentButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/UserHome_appointmentButton"
+            app:layout_constraintTop_toTopOf="@+id/UserHome_appointmentButton"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <Button
+            android:id="@+id/UserHome_appointmentButton"
+            android:layout_width="125dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="32dp"
+            android:onClick="onClick"
+            android:text="預約紀錄"
+            app:layout_constraintEnd_toStartOf="@+id/UserHome_loveButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/UserHome_coachButton" />
+
+        <Button
+            android:id="@+id/UserHome_gymButton"
+            android:layout_width="125dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="32dp"
+            android:onClick="onClick"
+            android:text="附近健身房"
+            app:layout_constraintEnd_toStartOf="@+id/UserHome_contactButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/UserHome_appointmentButton" />
+
+        <Button
+            android:id="@+id/UserHome_contactButton"
+            android:layout_width="125dp"
+            android:layout_height="80dp"
+            android:onClick="onClick"
+            android:text="問題反饋"
+            app:layout_constraintBottom_toBottomOf="@+id/UserHome_gymButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/UserHome_gymButton"
+            app:layout_constraintTop_toTopOf="@+id/UserHome_gymButton" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
