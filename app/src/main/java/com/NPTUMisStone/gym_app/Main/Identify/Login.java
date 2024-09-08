@@ -71,9 +71,9 @@ public class Login extends AppCompatActivity {
         initFirst();
     }
     private void initFirst() {
+        ProgressBarHandler progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
+        runOnUiThread(progressBarHandler::showProgressBar);
         Executors.newSingleThreadExecutor().execute(() -> {
-            ProgressBarHandler progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
-            progressBarHandler.showProgressBar();
             MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
             user = getSharedPreferences("remember", MODE_PRIVATE);
             isUser = user.getBoolean("isUser", false);
@@ -87,11 +87,10 @@ public class Login extends AppCompatActivity {
                     }
                 }
                 initSecond();
-                progressBarHandler.hideProgressBar();
+                runOnUiThread(progressBarHandler::hideProgressBar);
             });
         });
     }
-
     private void initSecond() {
         et_account = findViewById(R.id.login_account);
         et_password = findViewById(R.id.login_password);

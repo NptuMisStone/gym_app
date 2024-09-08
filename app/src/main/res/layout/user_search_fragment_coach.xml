@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.Search.CoachList">
+    tools:context=".User.Search.Coach.CoachFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar2"
@@ -25,7 +25,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/all_effect_ripple"
-        android:contentDescription="goBack"
+        android:contentDescription="@string/goBack"
         android:scaleType="centerCrop"
         android:src="@drawable/all_ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
@@ -305,24 +305,10 @@
                     android:scrollbars="none"
                     android:overScrollMode="never">
 
-                    <!-- 在这里放置您的水平滚动内容 -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
-                        <!-- 这里放置水平滚动的内容，例如一些TextView或其他视图 -->
-
-                        <!--                        <androidx.appcompat.widget.AppCompatButton-->
-                        <!--                            android:id="@+id/button"-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:layout_marginRight="10dp"-->
-                        <!--                            android:background="@drawable/hollow_button1"-->
-                        <!--                            android:drawableStart="@drawable/ic_9"-->
-                        <!--                            android:drawableTintMode="src_in"-->
-                        <!--                            android:text="Now"-->
-                        <!--                            android:textAllCaps="false" />-->
 
                         <Button
                             android:id="@+id/BookableNow"
@@ -366,13 +352,9 @@
                         android:orientation="vertical">
 
                         <include layout="@layout/user_search_coach_list_loading" />
-
                         <include layout="@layout/user_search_coach_list_loading" />
-
                         <include layout="@layout/user_search_coach_list_loading" />
-
                         <include layout="@layout/user_search_coach_list_loading" />
-
                         <include layout="@layout/user_search_coach_list_loading" />
 
                     </LinearLayout>
@@ -422,7 +404,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone" />
-
 
             </LinearLayout>
 

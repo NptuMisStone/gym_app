@@ -1,21 +1,21 @@
-package com.NPTUMisStone.gym_app.User.Search;
+package com.NPTUMisStone.gym_app.User.Search.Coach;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
-import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.databinding.UserSearchFragmentCoachBinding;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.sql.Connection;
@@ -25,30 +25,32 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
-public class CoachList extends AppCompatActivity {
-    Connection MyConnection;
+public class CoachFragment extends Fragment {
+
+    private UserSearchFragmentCoachBinding binding;
+    private Connection MyConnection;
     ArrayList<CoachListData> coachList = new ArrayList<>();
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.user_search_coach_list);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        ShimmerFrameLayout shimmerFrameLayout = findViewById(R.id.shimmerLayout);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        CoachViewModel coachViewModel = new ViewModelProvider(this).get(CoachViewModel.class);
+
+        binding = UserSearchFragmentCoachBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+        ShimmerFrameLayout shimmerFrameLayout = binding.shimmerLayout;
         shimmerFrameLayout.startShimmer();
         fetchCoaches(shimmerFrameLayout);
-        findViewById(R.id.findCoach_goBack).setOnClickListener(v -> finish());
+
+        binding.findCoachGoBack.setOnClickListener(v -> requireActivity().finish());
+
+        return root;
     }
 
     private void fetchCoaches(ShimmerFrameLayout shimmerFrameLayout) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+                MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
                 coachList.clear();
                 String sql = "SELECT 健身教練編號, 健身教練圖片, 健身教練姓名, 健身教練介紹 FROM 健身教練資料";
                 ResultSet rs = MyConnection.createStatement().executeQuery(sql);
@@ -62,14 +64,19 @@ public class CoachList extends AppCompatActivity {
     }
 
     private void updateUI(ShimmerFrameLayout shimmerFrameLayout) {
-        if (!isFinishing()) {
-            CoachListAdapter coachListAdapter = new CoachListAdapter(CoachList.this, coachList);
-            RecyclerView coachRecyclerView = findViewById(R.id.coach_recyclerView);
-            coachRecyclerView.setLayoutManager(new LinearLayoutManager(CoachList.this));
+        if (getActivity() != null && isAdded()) {
+            CoachListAdapter coachListAdapter = new CoachListAdapter(getActivity(), coachList);
+            RecyclerView coachRecyclerView = binding.coachRecyclerView;
+            coachRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             coachRecyclerView.setAdapter(coachListAdapter);
             shimmerFrameLayout.stopShimmer();
             shimmerFrameLayout.setVisibility(View.GONE);
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

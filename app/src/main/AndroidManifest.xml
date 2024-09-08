@@ -15,7 +15,7 @@
         android:theme="@style/Theme.Gym_app"
         tools:targetApi="31">
         <activity
-            android:name=".User.Search.CoachDetail"
+            android:name=".User.Search.Coach.CoachDetail"
             android:exported="false" />
         <activity
             android:name=".User.Main.UserInfo"
@@ -39,9 +39,6 @@
             android:name=".User_And_Coach.ContactInfo"
             android:exported="false" />
         <activity
-            android:name=".User.Search.SportList"
-            android:exported="false" />
-        <activity
             android:name=".User.Search.GymList"
             android:exported="false" />
         <activity
@@ -51,7 +48,7 @@
             android:name=".User.Search.CoachLove"
             android:exported="false" />
         <activity
-            android:name=".User.Search.CoachList"
+            android:name=".User.Search.Search"
             android:exported="false" />
         <activity
             android:name=".Main.Identify.Register"

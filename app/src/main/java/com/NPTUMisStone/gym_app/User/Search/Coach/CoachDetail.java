@@ -1,4 +1,4 @@
-package com.NPTUMisStone.gym_app.User.Search;
+package com.NPTUMisStone.gym_app.User.Search.Coach;
 
 import android.os.Bundle;
 import android.util.Log;

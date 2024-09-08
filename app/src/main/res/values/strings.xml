@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">gym_app</string>
     <string name="main_welcome_content_description">welcome</string>
-    <string name="User_welcome">%1$s，您好！</string>
+    <string name="User_welcome">%1$s %2$s！</string>
     <string name="Coach_welcome">%1$s，您好！</string>
     <string name="Coach_CoachInfo">教練ID：%1$s</string>
     <string name="User_UserInfo">用戶ID：%1$s</string>
@@ -9,4 +9,8 @@
     <string name="ScheduledSet_limitHint">%1$d人</string>
     <string name="ScheduledSet_feeHint">$%1$d</string>
     <string name="ScheduledSet_timeText">%02d:%02d</string>
+    <string name="title_home">首頁</string>
+    <string name="title_dashboard">教練</string>
+    <string name="title_notifications">用戶</string>
+    <string name="goBack">返回</string>
 </resources>

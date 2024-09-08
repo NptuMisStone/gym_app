@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.Search.CoachDetail">
+    tools:context=".User.Search.Coach.CoachDetail">
 
     <ImageButton
         android:id="@+id/CoachDetail_goBack"
@@ -14,7 +14,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/all_effect_ripple"
-        android:contentDescription="goBack"
+        android:contentDescription="@string/goBack"
         android:scaleType="centerCrop"
         android:src="@drawable/all_ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
