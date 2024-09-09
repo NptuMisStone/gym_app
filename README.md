@@ -7,7 +7,9 @@
 
 規劃方向：
 短期:健身教練審核狀態顯示、個人資訊完善
+
 中期:(參考:https://play.google.com/store/apps/details?id=com.jb.gms.admin&hl=zh_TW)
+
 長期:串接Google Ads API, Google Authentication, Google Map, Google Calendar, 多國語言設定
 
 專案開發日誌：
@@ -98,7 +100,11 @@ R.drawable.main_login_ic_account：預設使用者圖片
         //UI Thread work here
     });
 });】方法
+
 2.各個Activity中的ID請注意分別取不同名字，避免互相干擾，建議取名方式為「layout名稱_+元件功能+元件類型」，例：「forget_accountEdit」
 當確認帳密無誤時可發送驗證碼，並將enable關掉，並隱藏帳密欄位顯示重設欄位
+
 3.要使用google提供的javamail-android發送電子郵件首先需要Google帳戶啟用兩步驟驗證->取得應用程式密碼->使用此密碼登入JavaMailAPI
+
 4.當遇到「It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort.」問題，請將目前使用的RecycleView更新方法從notifyDataSetChanged()方法改成使用notifyItemRangeChanged(0, adList.size())
+
