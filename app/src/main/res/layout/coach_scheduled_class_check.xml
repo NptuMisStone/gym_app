@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/ClassCheck_nameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:text="名稱："
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/ClassCheck_nameEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:hint="Class Name"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassCheck_nameText"
+        app:layout_constraintStart_toEndOf="@+id/ClassCheck_nameText"
+        app:layout_constraintTop_toTopOf="@+id/ClassCheck_nameText" />
+
+    <TextView
+        android:id="@+id/ClassCheck_typeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="類型："
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassCheck_nameText" />
+
+    <EditText
+        android:id="@+id/ClassCheck_typeEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:hint="Class Type"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassCheck_typeText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassCheck_typeText" />
+
+    <TextView
+        android:id="@+id/ClassCheck_descriptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="介紹："
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassCheck_typeText" />
+
+    <EditText
+        android:id="@+id/ClassCheck_descriptionEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:hint="Class Description"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassCheck_descriptionText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassCheck_descriptionText" />
+
+    <TextView
+        android:id="@+id/ClassCheck_timeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="時間："
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassCheck_descriptionText" />
+
+    <EditText
+        android:id="@+id/ClassCheck_timeEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="Class Time"
+        android:inputType="number"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassCheck_timeText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassCheck_timeText" />
+
+    <TextView
+        android:id="@+id/ClassCheck_limitText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="人數："
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassCheck_timeText" />
+
+    <EditText
+        android:id="@+id/ClassCheck_limitEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="Class Limit"
+        android:inputType="number"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassCheck_limitText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassCheck_limitText" />
+
+    <TextView
+        android:id="@+id/ClassCheck_locationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="地點："
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassCheck_limitText" />
+
+    <EditText
+        android:id="@+id/ClassCheck_locationEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:hint="Class Location"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassCheck_locationText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassCheck_locationText" />
+
+    <TextView
+        android:id="@+id/ClassCheck_feeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="費用："
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassCheck_locationText" />
+
+    <EditText
+        android:id="@+id/ClassCheck_feeEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:hint="Class Fee"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassCheck_feeText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassCheck_feeText" />
+
+    <ImageView
+        android:id="@+id/ClassCheck_uploadImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:contentDescription="Class Image"
+        app:layout_constraintStart_toStartOf="@+id/ClassCheck_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassCheck_feeText"
+        app:srcCompat="@drawable/main_register_selector_thumb_background" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

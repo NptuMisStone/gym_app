@@ -72,28 +72,6 @@ public class ScheduledSet extends AppCompatActivity {
         findViewById(R.id.ScheduledSet_addButton).setOnClickListener(v -> addClass(null));
         setRecyclerView();
     }
-    private int getClassPeriod(Integer classId){
-        Callable<Integer> task = () -> {
-            int classPeriod = 0;
-            try {
-                String searchQuery = "SELECT [課程時間長度] FROM [健身教練課程] WHERE [課程編號] = ?";
-                PreparedStatement searchStatement = MyConnection.prepareStatement(searchQuery);
-                searchStatement.setInt(1, classId);
-                ResultSet searchResult = searchStatement.executeQuery();
-                if (searchResult.next()) classPeriod = searchResult.getInt("課程時間長度");
-            } catch (SQLException e) {
-                Log.e("SQL", "Error in search SQL", e);
-            }
-            if (classPeriod == 0) new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(this, "取得課程時間長度失敗", Toast.LENGTH_SHORT).show());
-            return classPeriod;
-        };
-        try {
-            return Executors.newSingleThreadExecutor().submit(task).get();
-        } catch (Exception e) {
-            Log.e("FutureTask", "Error getting class period", e);
-            return 0;
-        }
-    }
 
     private void showDatePicker() {
         if (isDialogShow) return;    //避免重複開啟
@@ -260,7 +238,7 @@ public class ScheduledSet extends AppCompatActivity {
         dialog.show(); //阻止dialog關閉避免錯誤內容被傳入
     }
     private View initializeDialogViews() {
-        View dialogView = getLayoutInflater().inflate(R.layout.coach_scheduled_add, findViewById(R.id.main), false);
+        View dialogView = getLayoutInflater().inflate(R.layout.coach_scheduled_class_add, findViewById(R.id.main), false);
         showImage = dialogView.findViewById(R.id.ScheduledAdd_uploadImage);
         dialogView.findViewById(R.id.ScheduledAdd_uploadButton).setOnClickListener(v -> changeImage());
         setFocusChangeListeners(dialogView);
@@ -279,6 +257,7 @@ public class ScheduledSet extends AppCompatActivity {
                 .setView(dialogView).setTitle(classId == null ? "新增課程" : "課程修改")
                 .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
                 .setPositiveButton("確定", null).create();
+        //當classId為null時，表示新增課程，否則表示修改課程
         if (classId == null) {
             dialog.setOnShowListener(dialogInterface -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
                 if (saveClass(dialogView)) {
@@ -299,6 +278,7 @@ public class ScheduledSet extends AppCompatActivity {
         }
         return dialog;
     }
+    //將課程資料取出並填入dialogView
     private byte[] populateClassDetails(Integer classId,View dialogView) {
         try {
             String searchQuery = "SELECT * FROM [健身教練課程] WHERE [課程編號] = ?";
@@ -463,7 +443,7 @@ public class ScheduledSet extends AppCompatActivity {
                 itemViewHolder.textView.setText(nameList.get(position));
                 itemViewHolder.selectButton.setOnClickListener(v -> {
                     int previousSelectedPosition = selectedPosition;
-                    selectedPosition = viewHolder.getAdapterPosition();
+                    selectedPosition = viewHolder.getBindingAdapterPosition();
                     notifyItemChanged(previousSelectedPosition); // Notify previous selected item
                     notifyItemChanged(selectedPosition); // Notify new selected item
                     ((ScheduledSet) itemViewHolder.selectButton.getContext()).selectClass(idList.get(selectedPosition));
@@ -507,6 +487,29 @@ public class ScheduledSet extends AppCompatActivity {
         int classPeriod = getClassPeriod(classId);
         findViewById(R.id.ScheduledSet_startEdit).setOnClickListener(v -> showTimePicker(classPeriod, true));
         findViewById(R.id.ScheduledSet_endEdit).setOnClickListener(v -> showTimePicker(classPeriod, false));
+    }
+    //取得課程時間長度
+    private int getClassPeriod(Integer classId){
+        Callable<Integer> task = () -> {
+            int classPeriod = 0;
+            try {
+                String searchQuery = "SELECT [課程時間長度] FROM [健身教練課程] WHERE [課程編號] = ?";
+                PreparedStatement searchStatement = MyConnection.prepareStatement(searchQuery);
+                searchStatement.setInt(1, classId);
+                ResultSet searchResult = searchStatement.executeQuery();
+                if (searchResult.next()) classPeriod = searchResult.getInt("課程時間長度");
+            } catch (SQLException e) {
+                Log.e("SQL", "Error in search SQL", e);
+            }
+            if (classPeriod == 0) new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(this, "取得課程時間長度失敗", Toast.LENGTH_SHORT).show());
+            return classPeriod;
+        };
+        try {
+            return Executors.newSingleThreadExecutor().submit(task).get();
+        } catch (Exception e) {
+            Log.e("FutureTask", "Error getting class period", e);
+            return 0;
+        }
     }
     private void setRecyclerView() {
         CustomAdapter adapter = new CustomAdapter(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());

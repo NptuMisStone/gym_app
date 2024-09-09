@@ -5,11 +5,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,6 +24,7 @@ import com.NPTUMisStone.gym_app.Coach.Main.Coach;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.Main.Initial.SnackBarUtils;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.google.android.material.snackbar.Snackbar;
 import com.hdev.calendar.bean.DateInfo;
 import com.hdev.calendar.view.SingleCalendarView;
@@ -72,17 +76,75 @@ public class ScheduledCheck extends AppCompatActivity {
         @NonNull @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.coach_scheduled_check_item, viewGroup, false);
-            /*view.findViewById(R.id.CheckItem_chooseImage).setOnClickListener(v -> {
-                showClassDetail(viewGroup.getContext(), idList.get(viewGroup.(view)));
-            });*/
             return new ViewHolder(view);
         }
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, int position) {
             viewHolder.getTextView().setText(nameList.get(position));
+            viewHolder.imageView.setTag(idList.get(position)); // Ensure tag is set
+            viewHolder.imageView.setOnClickListener(v -> {
+                ((ScheduledCheck) v.getContext()).addClass((Integer) v.getTag());
+            });
         }
         @Override
         public int getItemCount() { return nameList.size(); }
+    }
+    boolean isDialogShow = false;
+    private void addClass(Integer classId) {
+        if (isDialogShow) return;    //避免重複開啟
+        isDialogShow = true;
+        AlertDialog dialog = createDialog(classId, initializeDialogViews());
+        dialog.setOnDismissListener(dialogInterface -> isDialogShow = false);
+        dialog.show(); //阻止dialog關閉避免錯誤內容被傳入
+    }
+    private AlertDialog createDialog(Integer classId, View dialogView) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        builder.setPositiveButton("確定", (dialog, which) -> {
+            // Do something when the user clicks the positive button
+        });
+        builder.setNegativeButton("取消", (dialog, which) -> {
+            // Do something when the user clicks the negative button
+        });
+        byte[] finalImage = populateClassDetails(classId, dialogView);
+        return builder.create();
+    }
+    private View initializeDialogViews() {
+        View dialogView = getLayoutInflater().inflate(R.layout.coach_scheduled_class_check, findViewById(R.id.main), false);
+        showImage = dialogView.findViewById(R.id.ClassCheck_uploadImage);
+        return dialogView;
+    }
+
+    ImageView showImage;
+    private byte[] populateClassDetails(Integer classId,View dialogView) {
+        try {
+            String searchQuery = "SELECT * FROM [健身教練課程] WHERE [課程編號] = ?";
+            PreparedStatement searchStatement = MyConnection.prepareStatement(searchQuery);
+            searchStatement.setInt(1, classId);
+            ResultSet searchResult = searchStatement.executeQuery();
+            if (searchResult.next()) {
+                Log.d("ScheduledCheck", "Class details found for classId: " + classId);
+                setDialogViewData(dialogView, searchResult);
+                byte[] image = searchResult.getBytes("課程圖片");
+                showImage.setImageBitmap(ImageHandle.getBitmap(image));
+                return image;
+            }else {
+                Log.e("ScheduledCheck", "No class details found for classId: " + classId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        Toast.makeText(this, "填充課程資訊失敗", Toast.LENGTH_SHORT).show();
+        return null;
+    }
+    private void setDialogViewData(View dialogView, ResultSet searchResult) throws SQLException {
+        ((EditText) dialogView.findViewById(R.id.ClassCheck_nameEdit)).setText(searchResult.getString("課程名稱"));
+        ((EditText) dialogView.findViewById(R.id.ClassCheck_typeEdit)).setText(searchResult.getString("課程類型"));
+        ((EditText) dialogView.findViewById(R.id.ClassCheck_descriptionEdit)).setText(searchResult.getString("課程內容介紹"));
+        ((EditText) dialogView.findViewById(R.id.ClassCheck_timeEdit)).setText(getString(R.string.ScheduledSet_timeHint, searchResult.getInt("課程時間長度")));
+        ((EditText) dialogView.findViewById(R.id.ClassCheck_limitEdit)).setText(getString(R.string.ScheduledSet_limitHint, searchResult.getInt("上課人數")));
+        ((EditText) dialogView.findViewById(R.id.ClassCheck_locationEdit)).setText(searchResult.getString("上課地點"));
+        ((EditText) dialogView.findViewById(R.id.ClassCheck_feeEdit)).setText(getString(R.string.ScheduledSet_feeHint, searchResult.getInt("課程費用")));
     }
     private void setupCalendarView() {
         loadSchedule(new DateInfo(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH) + 1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
