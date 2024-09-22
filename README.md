@@ -110,3 +110,4 @@ R.drawable.main_login_ic_account：預設使用者圖片
 
 4.當遇到「It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort.」問題，請將目前使用的RecycleView更新方法從notifyDataSetChanged()方法改成使用notifyItemRangeChanged(0, adList.size())
 
+5.如果出現「SQL Connection: Network error IOException: Socket closed」，可試試看延長逾期時間
