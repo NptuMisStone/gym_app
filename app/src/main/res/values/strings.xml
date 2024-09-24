@@ -9,6 +9,8 @@
     <string name="ScheduledSet_limitHint">%1$d人</string>
     <string name="ScheduledSet_feeHint">$%1$d</string>
     <string name="ScheduledSet_timeText">%02d:%02d</string>
+    <string name="CoachClass_costText">$%1$d</string>
+    <string name="CoachClass_numberText">%1$d人</string>
     <string name="title_home">首頁</string>
     <string name="title_dashboard">教練</string>
     <string name="title_notifications">用戶</string>

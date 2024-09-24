@@ -49,9 +49,9 @@
         app:layout_constraintTop_toTopOf="@+id/CoachDetail_guideline1"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/CoachDetail_classListview"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="400dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="48dp"
