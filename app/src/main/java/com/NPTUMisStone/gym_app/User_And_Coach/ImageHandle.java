@@ -29,4 +29,22 @@ public class ImageHandle {
         InputStream iStream = context.getContentResolver().openInputStream(uri);    //將圖片路徑取得準備轉型
         return iStream != null ? ImageHandle.getBytes(iStream) : null;
     }
+    //將Bitmap縮小避免卡頓：Github Copilot
+    public static Bitmap resizeBitmap(Bitmap bitmap) {
+        int maxWidth = 1000;
+        int maxHeight = 1000;
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        float aspectRatio = (float) width / height;
+        if (width > maxWidth || height > maxHeight) {
+            if (width > height) {
+                width = maxWidth;
+                height = (int) (width / aspectRatio);
+            } else {
+                height = maxHeight;
+                width = (int) (height * aspectRatio);
+            }
+        }
+        return Bitmap.createScaledBitmap(bitmap, width, height, true);
+    }
 }

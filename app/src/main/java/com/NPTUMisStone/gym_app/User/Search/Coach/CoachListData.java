@@ -6,13 +6,13 @@ public class CoachListData {
 
     int id;
     String coachName;
-    byte[] coachHead;
+    byte[] coachImage;
     String coachDescription;
     static ArrayList<CoachListData> coaches = new ArrayList<>();
 
-    public CoachListData(int id, byte[] coachHead, String coachName, String coachDescription) {
+    public CoachListData(int id, byte[] coachImage, String coachName, String coachDescription) {
         this.id = id;
-        this.coachHead = coachHead;
+        this.coachImage = coachImage;
         this.coachName = coachName;
         this.coachDescription = coachDescription;
     }
@@ -36,8 +36,8 @@ public class CoachListData {
         return id;
     }
 
-    public byte[] getCoachHead() {
-        return coachHead;
+    public byte[] getcoachImage() {
+        return coachImage;
     }
 
     public String getCoachName() {

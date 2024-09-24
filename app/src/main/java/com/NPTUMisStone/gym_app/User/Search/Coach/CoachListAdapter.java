@@ -2,6 +2,7 @@ package com.NPTUMisStone.gym_app.User.Search.Coach;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,8 +51,10 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CoachListData item = coachList.get(position);
-        if (item.getCoachHead() != null)
-            holder.imageView_head.setImageBitmap(ImageHandle.getBitmap(item.getCoachHead()));
+        if (item.getcoachImage() != null){
+            Bitmap bitmap = ImageHandle.getBitmap(item.getcoachImage());
+            holder.imageView_head.setImageBitmap(ImageHandle.resizeBitmap(bitmap));
+        }
         holder.textView_name.setText(item.getCoachName());
         holder.textView_address.setText(item.getCoachDescription());
         holder.itemView.setTag(item);

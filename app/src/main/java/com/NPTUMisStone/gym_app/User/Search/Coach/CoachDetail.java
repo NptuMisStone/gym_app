@@ -2,6 +2,7 @@ package com.NPTUMisStone.gym_app.User.Search.Coach;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,13 +58,16 @@ public class CoachDetail extends AppCompatActivity {
             ResultSet resultSet = MyConnection.createStatement().executeQuery("SELECT * FROM 健身教練資料 WHERE 健身教練編號 = " + coach_id);
             if (resultSet.next()) {
                 ((TextView)findViewById(R.id.CoachDetail_coachText)).setText(resultSet.getString("健身教練姓名"));
-                ((ImageView)findViewById(R.id.CoachDetail_coachImage)).setImageBitmap(ImageHandle.getBitmap(resultSet.getBytes("健身教練圖片")));
+                Bitmap bitmap = ImageHandle.getBitmap(resultSet.getBytes("健身教練圖片"));
+                Bitmap resizedBitmap = ImageHandle.resizeBitmap(bitmap); // Resize to a maximum of 1000x1000 pixels
+                ((ImageView)findViewById(R.id.CoachDetail_coachImage)).setImageBitmap(resizedBitmap);
                 getTheClassList(coach_id);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("CoachDetail", "getTheCoach: ", e);
         }
     }
+
     private void getTheClassList(int coach_id) {
         try {
             ResultSet resultSet = MyConnection.createStatement().executeQuery(
@@ -157,7 +161,7 @@ public class CoachDetail extends AppCompatActivity {
                     .setPositiveButton("我要預約" , (dialog, which) -> {
                         try {
                             ResultSet updateResult = MyConnection.prepareStatement(
-                                    "INSERT INTO [健身教練預約] (課程編號, 會員編號) " +
+                                    "INSERT INTO [使用者預約] (使用者編號,健身教練編號,課程編號,預約狀態) " +
                                             "VALUES ((SELECT 課程編號 FROM [健身教練課表] WHERE 課程編號 = ?), ?)"
                             ).executeQuery();
                             updateResult.updateInt(1, position);
