@@ -97,6 +97,8 @@ v0.40：將Bitmap縮小避免卡頓(侑宸)
 
 v0.41：教練首頁版面重編(侑宸)
 
+v0.42：教練首頁暫時定案(侑宸)
+
 圖片：
 R.drawable.main_login_ic_account：預設使用者圖片
 

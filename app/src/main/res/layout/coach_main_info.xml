@@ -221,7 +221,7 @@
         app:layout_constraintStart_toStartOf="@+id/CoachInfo_tv_phone"
         app:layout_constraintTop_toBottomOf="@+id/CoachInfo_tv_phone" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/CoachInfo_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
@@ -230,7 +230,9 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/CoachInfo_guideline1"
-        app:srcCompat="@drawable/all_ic_null_image_account" />
+        app:srcCompat="@drawable/all_ic_null_image_account"
+        app:civ_border_color="@color/dark_gray"
+        app:civ_border_width="1dp" />
 
     <Button
         android:id="@+id/CoachInfo_return"
@@ -269,7 +271,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/all_shape_round_button"
-        android:backgroundTint="@color/light_yellow"
+        android:backgroundTint="@color/light_yellow3"
         android:drawableStart="@android:drawable/ic_menu_edit"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"

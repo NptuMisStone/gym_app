@@ -269,7 +269,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/all_shape_round_button"
-        android:backgroundTint="@color/light_yellow"
+        android:backgroundTint="@color/light_yellow3"
         android:drawableStart="@android:drawable/ic_menu_edit"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"

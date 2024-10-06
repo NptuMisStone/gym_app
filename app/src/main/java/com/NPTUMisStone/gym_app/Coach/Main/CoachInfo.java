@@ -5,6 +5,7 @@ import static com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle.convertImageTo
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -89,8 +90,7 @@ public class CoachInfo extends AppCompatActivity {
         CoachInfo_image = findViewById(R.id.CoachInfo_image);
         //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
         byte[] image = Coach.getInstance().getCoachImage();
-        if (image != null)
-            CoachInfo_image.setImageBitmap(ImageHandle.getBitmap(image));
+        if (image != null) CoachInfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
     }
     private void logout() {
         Coach.setInstance(0,"","", "", true,"",null);

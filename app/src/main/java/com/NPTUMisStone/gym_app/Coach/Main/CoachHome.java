@@ -70,7 +70,7 @@ public class CoachHome extends AppCompatActivity {
         coach_image.setOnClickListener(v -> startActivity(new Intent(this, CoachInfo.class)));
         registerReceiver(broadcastReceiver, new IntentFilter("com.NPTUMisStone.gym_app.LOGOUT"),Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Context.RECEIVER_NOT_EXPORTED : 0);
         byte[] image = Coach.getInstance().getCoachImage(); //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
-        if (image != null) coach_image.setImageBitmap(ImageHandle.getBitmap(image));
+        if (image != null) coach_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
     }
     private void init_banner() {
         ViewPager2 coach_viewPager = findViewById(R.id.CoachHome_viewPager);

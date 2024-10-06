@@ -5,6 +5,7 @@
     <string name="Coach_welcome">%1$s，您好！</string>
     <string name="Coach_id">ID:%1$d</string>
     <string name="Coach_CoachInfo">教練ID：%1$s</string>
+    <string name="Coach_imageDescription">ShowCoachImage</string>
     <string name="User_UserInfo">用戶ID：%1$s</string>
     <string name="ScheduledSet_timeHint">%1$d分鐘</string>
     <string name="ScheduledSet_limitHint">%1$d人</string>
