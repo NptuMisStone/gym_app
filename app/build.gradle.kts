@@ -39,7 +39,6 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.shimmer)                        //等待效果
     implementation(libs.activity)
-    implementation(libs.fragment)                       //分頁效果
     implementation(libs.material)
     implementation(libs.appcompat)
     implementation(libs.calendarview)                   //自定義日歷元件：https://blog.csdn.net/coffee_shop/article/details/130709029
@@ -51,6 +50,7 @@ dependencies {
     implementation(files("libs/jtds-1.3.3.jar")) //使用JDBC連接SQL Server
     implementation(files("libs/activation.jar")) //使用Java Mail API 發送郵件：https://www.youtube.com/watch?v=RahBCY5BfS0&ab_channel=MusfickJamil
     implementation(files("libs/additional.jar")) //javamail-android：https://code.google.com/archive/p/javamail-android/downloads
+    implementation(libs.fragment)                       //分頁效果
     implementation(libs.navigation.compose) // Jetpack Compose integration
     implementation(libs.navigation.fragment) // Views/Fragments integration
     implementation(libs.navigation.ui)

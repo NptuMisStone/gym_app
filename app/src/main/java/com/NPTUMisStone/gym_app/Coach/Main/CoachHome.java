@@ -65,6 +65,7 @@ public class CoachHome extends AppCompatActivity {
     }
     private void init_coachInfo() {
         ((TextView)findViewById(R.id.CoachHome_nameText)).setText(getString(R.string.Coach_welcome, Coach.getInstance().getCoachName()));
+        ((TextView)findViewById(R.id.CoachHome_idText)).setText(getString(R.string.Coach_id, Coach.getInstance().getCoachId()));
         ImageView coach_image = findViewById(R.id.CoachHome_photoImage);
         coach_image.setOnClickListener(v -> startActivity(new Intent(this, CoachInfo.class)));
         registerReceiver(broadcastReceiver, new IntentFilter("com.NPTUMisStone.gym_app.LOGOUT"),Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Context.RECEIVER_NOT_EXPORTED : 0);

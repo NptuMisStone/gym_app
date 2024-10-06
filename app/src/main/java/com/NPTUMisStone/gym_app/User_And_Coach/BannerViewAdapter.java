@@ -29,6 +29,7 @@ public class BannerViewAdapter extends RecyclerView.Adapter<BannerViewAdapter.Vi
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ImageView imageView = new ImageView(parent.getContext());
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // Ensure the image fills the entire space
         imageView.setId(View.generateViewId());
         return new ViewHolder(imageView);
     }
