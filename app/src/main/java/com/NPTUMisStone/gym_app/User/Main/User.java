@@ -7,7 +7,7 @@ public class User {
     private String UserAccount;
     private String UserName;
     private String UserPhone;
-    private boolean UserSex;
+    private int UserSex;
     private String UserMail;
     private byte[] UserImage;
     private static volatile User user = null;
@@ -21,7 +21,7 @@ public class User {
         }
         return user;
     }
-    public static void setInstance(int id, String userAccount,  String userName,String userPhone,Boolean userSex,String userMail,byte[] userImage) {
+    public static void setInstance(int id, String userAccount,  String userName,String userPhone,int userSex,String userMail,byte[] userImage) {
         if (user == null) {
             user = new User(id);
             user.setUserAccount(userAccount);
@@ -45,14 +45,14 @@ public class User {
     public void setUserAccount(String userAccount) {    this.UserAccount = userAccount;  }
     public void setUserName(String userName) {    this.UserName = userName;  }
     public void setUserPhone(String userPhone) {    this.UserPhone = userPhone;  }
-    public void setUserSex(Boolean userSex) {    this.UserSex = userSex;  }
+    public void setUserSex(int userSex) {    this.UserSex = userSex;  }
     public void setUserMail(String userMail) {    this.UserMail = userMail;  }
     public void setUserImage(byte[] userImage) {    this.UserImage = userImage;  }
     public int getUserId() {    return UserId;  }
     public String getUserAccount() {    return UserAccount;  }
     public String getUserName() {    return UserName;  }
     public String getUserPhone() {    return UserPhone;  }
-    public boolean getUserSex() {    return UserSex;  }
+    public int getUserSex() {    return UserSex;  }
     public String getUserMail() {    return UserMail;  }
     public byte[] getUserImage() {    return UserImage;  }
 }

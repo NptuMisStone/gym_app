@@ -7,6 +7,19 @@
     <string name="Coach_CoachInfo">教練ID：%1$s</string>
     <string name="Coach_imageDescription">ShowCoachImage</string>
     <string name="User_UserInfo">用戶ID：%1$s</string>
+    <string name="Info_idUserHint">用戶ID</string>
+    <string name="Info_accountHint">帳號名稱</string>
+    <string name="Info_nameHint">姓名</string>
+    <string name="Info_phoneHint">手機號碼</string>
+    <string name="Info_emailHint">電子郵件</string>
+    <string name="Info_identityUserHint">性別</string>
+    <string name="Info_sex1Text">男♂</string>
+    <string name="Info_sex2Text">女♀</string>
+    <string name="Info_sex3Text">保密</string>
+    <string name="Info_uploadDescription">上傳圖片</string>
+    <string name="Info_resetDescription">重設密碼</string>
+    <string name="Info_deleteDescription">刪除帳號</string>
+    <string name="Info_identityCoachHint">身份</string>
     <string name="ScheduledSet_timeHint">%1$d分鐘</string>
     <string name="ScheduledSet_limitHint">%1$d人</string>
     <string name="ScheduledSet_feeHint">$%1$d</string>
@@ -16,5 +29,7 @@
     <string name="title_home">首頁</string>
     <string name="title_dashboard">教練</string>
     <string name="title_notifications">用戶</string>
+    <string name="title_Info">個人資料</string>
     <string name="goBack">返回</string>
+    <string name="logOut">登出</string>
 </resources>

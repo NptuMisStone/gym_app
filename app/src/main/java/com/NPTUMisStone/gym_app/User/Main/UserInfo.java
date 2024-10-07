@@ -1,7 +1,6 @@
 package com.NPTUMisStone.gym_app.User.Main;
 
 import static com.NPTUMisStone.gym_app.User_And_Coach.ErrorHints.editHint;
-import static com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle.convertImageToBytes;
 import static com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle.getBitmap;
 
 import android.app.Activity;
@@ -10,19 +9,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -30,19 +30,20 @@ import androidx.core.view.WindowInsetsCompat;
 import com.NPTUMisStone.gym_app.Main.Identify.Login;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User_And_Coach.PasswordReset;
+import com.NPTUMisStone.gym_app.User_And_Coach.Validator;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserInfo extends AppCompatActivity {
     Connection MyConnection;
     ImageView userinfo_image;
-    Button edit,upload,cancel,save;
-    TextView[] userinfo_tv;
-    EditText[] userinfo_et;
-    String[] userinfo_name = new String[]{"姓名", "帳號", "電話", "信箱"};
+    Button upload;
+    AutoCompleteTextView[] userinfo_tv;
+    TextInputLayout[] userinfo_layout;
     Uri uri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,34 +58,159 @@ public class UserInfo extends AppCompatActivity {
         init();
     }
     private void init() {
-        TextView title = findViewById(R.id.userinfo_userid);
+        TextView title = findViewById(R.id.UserInfo_idText);
         title.setText(getString(R.string.User_UserInfo, Integer.toString(User.getInstance().getUserId())));
         findViewById(R.id.userinfo_return).setOnClickListener(v -> finish());
         findViewById(R.id.userinfo_logout).setOnClickListener(v -> logout());
-        edit = findViewById(R.id.userinfo_edit);
-        edit.setOnClickListener(v -> changeInfo());
         upload = findViewById(R.id.userinfo_upload);
         upload.setOnClickListener(v -> changeImage());
-        cancel = findViewById(R.id.userinfo_cancel);
-        cancel.setOnClickListener(v -> cancelEdit());
-        save = findViewById(R.id.userinfo_save);
-        save.setOnClickListener(v -> saveInfo());
         Button change_password = findViewById(R.id.userinfo_change);
-        change_password.setOnClickListener(v -> change_password());
-        userinfo_tv = new TextView[]{findViewById(R.id.userinfo_et_showName), findViewById(R.id.userinfo_et_showAccount), findViewById(R.id.userinfo_et_showPhone), findViewById(R.id.userinfo_et_showMail)};
-        userinfo_et = new EditText[]{findViewById(R.id.userinfo_et_editName), findViewById(R.id.userinfo_et_editAccount), findViewById(R.id.userinfo_et_editPhone), findViewById(R.id.userinfo_et_editMail)};
+        change_password.setOnClickListener(v -> new PasswordReset(this, true, MyConnection).showPasswordResetDialog());
+        userinfo_tv = new AutoCompleteTextView[]{
+                findViewById(R.id.UserInfo_nameText),
+                findViewById(R.id.UserInfo_accountText),
+                findViewById(R.id.UserInfo_phoneText),
+                findViewById(R.id.UserInfo_emailText),
+                findViewById(R.id.UserInfo_identifyText)
+        };
+        userinfo_layout = new TextInputLayout[]{
+                findViewById(R.id.UserInfo_nameLayout),
+                findViewById(R.id.UserInfo_accountLayout),
+                findViewById(R.id.UserInfo_phoneLayout),
+                findViewById(R.id.UserInfo_emailLayout),
+                findViewById(R.id.UserInfo_identifyLayout)
+        };
         for (int i = 0; i < userinfo_tv.length; i++) {
             userinfo_tv[i].setText(get_info(i));
-            userinfo_et[i].setText(get_info(i));
+            int finalI = i;
+            userinfo_tv[i].setOnClickListener(v -> changeData(finalI));
         }
         init_image();
+        MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
     }
-    private String get_info(int index){
+    private void changeData(int index) {
+        Log.d("ChangeData", "ChangeData: " + index);
+        AutoCompleteTextView autoCompleteTextView = userinfo_tv[index];
+        TextInputLayout textInputLayout = userinfo_layout[index];
+        View dialogView;
+        Validator validator = new Validator(MyConnection);
+        ViewGroup parent = findViewById(android.R.id.content); // Get the parent view group
+
+        switch (index) {
+            case 0, 1, 2, 3 -> {
+                dialogView = getLayoutInflater().inflate(R.layout.info_edit_layout, parent, false);
+                TextInputLayout textInputLayout1 = dialogView.findViewById(R.id.InfoEdit_Layout);
+                textInputLayout1.setHint(textInputLayout.getHint());
+                AutoCompleteTextView autoCompleteTextView1 = dialogView.findViewById(R.id.InfoEdit_Text);
+                autoCompleteTextView1.setText(autoCompleteTextView.getText().toString());
+                AlertDialog alertDialog = new AlertDialog.Builder(this)
+                        .setTitle("修改資料")
+                        .setMessage("是否要修改資料？")
+                        .setView(dialogView)
+                        .setPositiveButton("確定", null)
+                        .setNegativeButton("否", null)
+                        .create();
+                alertDialog.show();
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                    String errorMessage = null;
+                    switch (index) {
+                        case 0 -> errorMessage = validator.checkInput(autoCompleteTextView1, "姓名", 20,null);
+                        case 1 -> {
+                            errorMessage = validator.checkInput(autoCompleteTextView1, "帳號", 20,null);
+                            if (errorMessage == null) {
+                                errorMessage = validator.checkAccount(autoCompleteTextView1, User.getInstance().getUserAccount(), null);
+                            }
+                        }
+                        case 2 -> {
+                            errorMessage = validator.checkInput(autoCompleteTextView1, "電話", 10,null);
+                            if (errorMessage == null) {
+                                errorMessage = validator.checkPhone(autoCompleteTextView1, null);
+                            }
+                        }
+                        case 3 -> {
+                            errorMessage = validator.checkInput(autoCompleteTextView1, "信箱", 30,null);
+                            if (errorMessage == null) {
+                                errorMessage = validator.checkEmail(autoCompleteTextView1, null);
+                            }
+                        }
+                    }
+                    if (errorMessage == null) {
+                        autoCompleteTextView.setText(autoCompleteTextView1.getText().toString());
+                        try {
+                            String updateQuery = getUpdateQuery(index);
+                            PreparedStatement ps = MyConnection.prepareStatement(updateQuery);
+                            ps.setString(1, autoCompleteTextView1.getText().toString());
+                            ps.setInt(2, User.getInstance().getUserId());
+                            ps.executeUpdate();
+                            switch (index) {
+                                case 0 -> User.getInstance().setUserName(autoCompleteTextView1.getText().toString());
+                                case 1 -> User.getInstance().setUserAccount(autoCompleteTextView1.getText().toString());
+                                case 2 -> User.getInstance().setUserPhone(autoCompleteTextView1.getText().toString());
+                                case 3 -> User.getInstance().setUserMail(autoCompleteTextView1.getText().toString());
+                            }
+                            alertDialog.dismiss();
+                        } catch (SQLException e) {
+                            Log.e("SQL", "Error updating user info", e);
+                        }
+                    } else {
+                        editHint(autoCompleteTextView1, errorMessage);
+                    }
+                });
+            }
+            case 4 -> {
+                dialogView = getLayoutInflater().inflate(R.layout.info_sex_layout, parent, false);
+                RadioButton[] radioButtons = new RadioButton[]{dialogView.findViewById(R.id.InfoSex_sexRadio1), dialogView.findViewById(R.id.InfoSex_sexRadio2), dialogView.findViewById(R.id.InfoSex_sexRadio3)};
+                for (int i = 0; i < radioButtons.length; i++)
+                    if (i == User.getInstance().getUserSex() - 1) radioButtons[i].setChecked(true);
+                AlertDialog alertDialog = new AlertDialog.Builder(this)
+                        .setTitle("修改資料")
+                        .setMessage("是否要修改資料？")
+                        .setView(dialogView)
+                        .setPositiveButton("是", (dialog, which) -> {
+                            for (int i = 0; i < radioButtons.length; i++) {
+                                if (radioButtons[i].isChecked()) {
+                                    try {
+                                        MyConnection.prepareStatement("UPDATE 使用者資料 SET 使用者性別 = " + (i + 1) + " WHERE 使用者編號 = " + User.getInstance().getUserId()).executeUpdate();
+                                        User.getInstance().setUserSex(i + 1);
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    autoCompleteTextView.setText(radioButtons[i].getText().toString());
+                                    break;
+                                }
+                            }
+                        })
+                        .setNegativeButton("否", null)
+                        .create();
+                alertDialog.show();
+            }
+        }
+    }
+
+    @NonNull
+    private static String getUpdateQuery(int index) {
+        String columnName = switch (index) {
+            case 0 -> "使用者姓名";
+            case 1 -> "使用者帳號";
+            case 2 -> "使用者電話";
+            case 3 -> "使用者郵件";
+            default -> throw new IllegalStateException("Unexpected value: " + index);
+        };
+        return "UPDATE 使用者資料 SET " + columnName + " = ? WHERE 使用者編號 = ?";
+    }
+
+    private String get_info(int index) {
         return switch (index) {
             case 0 -> User.getInstance().getUserName();
             case 1 -> User.getInstance().getUserAccount();
             case 2 -> User.getInstance().getUserPhone();
             case 3 -> User.getInstance().getUserMail();
+            case 4 -> switch (User.getInstance().getUserSex()) {
+                case 1 -> "男♂";
+                case 2 -> "女♀";
+                case 3 -> "保密⚲";
+                default -> "未設定";
+            };
             default -> "";
         };
     }
@@ -96,139 +222,11 @@ public class UserInfo extends AppCompatActivity {
             userinfo_image.setImageBitmap(getBitmap(image));
     }
     private void logout() {
-        User.setInstance(0,"","", "", true,"",null);
+        User.setInstance(0,"","", "", 0,"",null);
         //Delete SharedPreferences Data：https://stackoverflow.com/questions/3687315/how-to-delete-shared-preferences-data-from-app-in-android
         getSharedPreferences("remember", MODE_PRIVATE).edit().remove("last_login").apply();
         startActivity(new Intent(this, Login.class));
         finish();
-    }
-    private void changeInfo() {
-        edit.setEnabled(false);
-        upload.setVisibility(View.VISIBLE);
-        cancel.setVisibility(View.VISIBLE);
-        save.setVisibility(View.VISIBLE);
-        for (int i = 0; i < userinfo_tv.length; i++) {
-            userinfo_tv[i].setVisibility(View.GONE);
-            userinfo_et[i].setVisibility(View.VISIBLE);
-        }
-        imageShift();
-    }
-    private void imageShift() {
-        ConstraintLayout layout = findViewById(R.id.main);
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(layout);
-        // 將userinfo_image對齊到parent的左邊
-        constraintSet.connect(R.id.userinfo_image, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
-        constraintSet.connect(R.id.userinfo_image, ConstraintSet.END, R.id.userinfo_upload, ConstraintSet.START, 0);
-        // 將userinfo_upload對齊到parent的右邊
-        constraintSet.connect(R.id.userinfo_upload, ConstraintSet.START, R.id.userinfo_image, ConstraintSet.END, 0);
-        constraintSet.connect(R.id.userinfo_upload, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-        // 應用新的約束
-        constraintSet.applyTo(layout);
-    }
-    private void imageReturn() {
-        ConstraintLayout layout = findViewById(R.id.main);
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(layout);
-        // 將userinfo_image對齊到parent的左邊
-        constraintSet.connect(R.id.userinfo_image, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
-        constraintSet.connect(R.id.userinfo_image, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-        // 將userinfo_upload對齊到parent的右邊
-        constraintSet.connect(R.id.userinfo_upload, ConstraintSet.START, R.id.userinfo_image, ConstraintSet.END, 0);
-        constraintSet.connect(R.id.userinfo_upload, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-        // 應用新的約束
-        constraintSet.applyTo(layout);
-    }
-    private void cancelEdit() {
-        edit.setEnabled(true);
-        upload.setVisibility(View.GONE);
-        cancel.setVisibility(View.GONE);
-        save.setVisibility(View.GONE);
-        for (int i = 0; i < userinfo_tv.length; i++) {
-            userinfo_tv[i].setVisibility(View.VISIBLE);
-            userinfo_et[i].setText(get_info(i));
-            userinfo_et[i].setVisibility(View.GONE);
-        }
-        imageReturn();
-    }
-    private void saveInfo() {
-        if(!checkInput()) return;
-        try {
-            String[] inputData = new String[]{userinfo_et[0].getText().toString(), userinfo_et[1].getText().toString(), userinfo_et[2].getText().toString(), userinfo_et[3].getText().toString()};
-            byte[] inputImage = uri == null ? User.getInstance().getUserImage(): convertImageToBytes(this,uri);
-            updateUserInfoInDatabase(inputData, inputImage);
-            updateUserInstance(inputData, inputImage);
-            Toast.makeText(this, "資料更新成功", Toast.LENGTH_SHORT).show();
-            edit.setEnabled(true);
-            upload.setVisibility(View.GONE);
-            cancel.setVisibility(View.GONE);
-            save.setVisibility(View.GONE);
-            for (int i = 0; i < userinfo_tv.length; i++) {
-                userinfo_tv[i].setText(get_info(i));
-                userinfo_tv[i].setVisibility(View.VISIBLE);
-                userinfo_et[i].setVisibility(View.GONE);
-            }
-            imageReturn();
-        }catch (Exception e){
-            Log.e("SQL", "Error in SQL", e);
-            Toast.makeText(this, "資料更新失敗", Toast.LENGTH_SHORT).show();
-        }
-    }
-    private boolean checkInput() {
-        boolean isValid = true;
-        int max = userinfo_et.length-1;
-        EditText editText;
-        int[] max_length = new int[]{20, 20, 10, 30};
-        for (int i = max-1; i >= 0; i--) { //從後面開始檢查(跳過信箱)，讓最上面的EditText可以focus
-            editText = userinfo_et[i];
-            if (editText.getText().toString().trim().isEmpty()) {
-                editHint(editText, "請輸入"+ userinfo_name[i]);
-                isValid = false;
-            }else if (editText.getText().toString().length() > max_length[i]) {
-                editHint(editText, userinfo_name[i] + "過長");
-                isValid = false;
-            }
-        }
-        editText = userinfo_et[max];
-        if (!isEmailValid(editText.getText().toString())) {
-            editHint(editText, "請輸入有效的電子郵件");
-            isValid = false;
-        }
-        editText = userinfo_et[max-1];
-        if (editText.getText().toString().length() != 10) {
-            editHint(editText, "請輸入正確的聯絡電話");
-            isValid = false;
-        }
-        try {
-            MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-            editText = userinfo_et[1];
-            if (!editText.getText().toString().equals(User.getInstance().getUserAccount())) {
-                String check_account = "SELECT * FROM 使用者資料 WHERE 使用者帳號 ='" + editText.getText().toString()+ "'";
-                ResultSet account_result = MyConnection.createStatement().executeQuery(check_account);
-                if (account_result.next()) {
-                    editHint(editText, "此帳號已被使用");
-                    isValid = false;
-                }
-            }
-        } catch (Exception e) {
-            Log.e("SQL", "Error in SQL", e);
-            isValid = false;
-        }
-        return isValid;
-    }
-    boolean isEmailValid(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-    private void updateUserInfoInDatabase(String[] userInfo, byte[] imageData) throws SQLException {
-        MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-        PreparedStatement ps = MyConnection.prepareStatement("UPDATE 使用者資料 SET 使用者姓名 = ?, 使用者帳號 = ?, 使用者電話 = ?, 使用者郵件 = ?, 使用者圖片 = ? WHERE 使用者編號 = ?");
-        for (int i = 0; i < userInfo.length; i++) ps.setString(i + 1, userInfo[i]);
-        ps.setBytes(5, imageData);
-        ps.setInt(6, User.getInstance().getUserId());
-        ps.executeUpdate();
-    }
-    private void updateUserInstance(String[] userInfo, byte[] imageData) {
-        User.setInstance(User.getInstance().getUserId(), userInfo[1], userInfo[0], userInfo[2], User.getInstance().getUserSex(), userInfo[3], imageData);
     }
     private void changeImage() {
         userinfo_image = findViewById(R.id.userinfo_image);
@@ -252,19 +250,4 @@ public class UserInfo extends AppCompatActivity {
                 }
             }
     );
-    boolean isDialogShow = false;
-    private void change_password() {
-        if (isDialogShow) return;
-        View dialogView = getLayoutInflater().inflate(R.layout.main_login_forget, null);
-        ((TextView) dialogView.findViewById(R.id.forget_title)).setText("用戶密碼重設");
-        AlertDialog dialog = new AlertDialog.Builder(this).setView(dialogView).create();
-        dialogView.findViewById(R.id.forget_getButton).setOnClickListener(v -> handleGetCodeClick(dialogView, dialog));
-        dialog.setOnDismissListener(dialogInterface -> isDialogShow = false);
-        dialog.show();
-        isDialogShow = true;
-    }
-    private void handleGetCodeClick(View dialogView, AlertDialog dialog) {
-
-    }
-
 }
