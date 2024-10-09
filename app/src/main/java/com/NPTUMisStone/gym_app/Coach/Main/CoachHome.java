@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,18 +26,13 @@ import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledCheck;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User_And_Coach.Advertisement;
-import com.NPTUMisStone.gym_app.User_And_Coach.BannerViewAdapter;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.NPTUMisStone.gym_app.User_And_Coach.ContactInfo;
 import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Executors;
 
 
 public class CoachHome extends AppCompatActivity {
@@ -63,66 +56,29 @@ public class CoachHome extends AppCompatActivity {
         init_banner();
         //getString();
     }
+
     private void init_coachInfo() {
-        ((TextView)findViewById(R.id.CoachHome_nameText)).setText(getString(R.string.Coach_welcome, Coach.getInstance().getCoachName()));
-        ((TextView)findViewById(R.id.CoachHome_idText)).setText(getString(R.string.Coach_id, Coach.getInstance().getCoachId()));
+        ((TextView) findViewById(R.id.CoachHome_nameText)).setText(getString(R.string.Coach_welcome, Coach.getInstance().getCoachName()));
+        ((TextView) findViewById(R.id.CoachHome_idText)).setText(getString(R.string.Coach_id, Coach.getInstance().getCoachId()));
         ImageView coach_image = findViewById(R.id.CoachHome_photoImage);
         coach_image.setOnClickListener(v -> startActivity(new Intent(this, CoachInfo.class)));
-        registerReceiver(broadcastReceiver, new IntentFilter("com.NPTUMisStone.gym_app.LOGOUT"),Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Context.RECEIVER_NOT_EXPORTED : 0);
+        registerReceiver(broadcastReceiver, new IntentFilter("com.NPTUMisStone.gym_app.LOGOUT"), Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Context.RECEIVER_NOT_EXPORTED : 0);
         byte[] image = Coach.getInstance().getCoachImage(); //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
-        if (image != null) coach_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+        if (image != null)
+            coach_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
     }
+
     private void init_banner() {
-        ViewPager2 coach_viewPager = findViewById(R.id.CoachHome_viewPager);
-        coach_viewPager.setAdapter(new BannerViewAdapter(adList, this));
-        loadAdvertisements(coach_viewPager);
-        startAutoSlide(coach_viewPager); // Start auto slide
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.CoachHome_swipeRefreshLayout); // Setup SwipeRefreshLayout
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            loadAdvertisements(coach_viewPager);
-            swipeRefreshLayout.setRefreshing(false);
-        });
-    }
-    private void loadAdvertisements(ViewPager2 viewPager) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            try {
-                String searchQuery = "SELECT 圖片, 連結, 上架日, 下架日 FROM 廣告 WHERE GETDATE() BETWEEN 上架日 AND 下架日";
-                ResultSet resultSet = MyConnection.prepareStatement(searchQuery).executeQuery();
-                List<Advertisement> newAdList = new ArrayList<>();
-                while (resultSet.next()) {
-                    byte[] image = resultSet.getBytes("圖片");
-                    String link = resultSet.getString("連結");
-                    Date startDate = resultSet.getDate("上架日");
-                    Date endDate = resultSet.getDate("下架日");
-                    newAdList.add(new Advertisement(image, link, startDate, endDate));
-                }
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    adList.clear();
-                    adList.addAll(newAdList);
-                    Objects.requireNonNull(viewPager.getAdapter()).notifyItemRangeChanged(0, adList.size());
-                });
-            } catch (Exception e) {
-                Log.e("SQL", "Error in SQL", e);
-            }
-        });
-    }
-    private void startAutoSlide(ViewPager2 viewPager) {
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!adList.isEmpty()) {
-                    viewPager.setCurrentItem((viewPager.getCurrentItem() + 1) % adList.size());
-                    new Handler(Looper.getMainLooper()).postDelayed(this, 6000);
-                } else Log.e("AutoSlide", "Advertisement list is empty, cannot slide");
-            }
-        }, 6000);
+        ViewPager2 user_viewPager = findViewById(R.id.UserHome_viewPager);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.CoachHome_swipeRefreshLayout);
+        Advertisement.init_banner(this, MyConnection, adList, user_viewPager, swipeRefreshLayout);
     }
 
     public void onClick(View view) {
         if (progressBarHandler.isLoading()) return;
         progressBarHandler.showProgressBar();
         int id = view.getId();
-        try{
+        try {
             if (id == R.id.CoachHome_addButton)
                 startActivity(new Intent(this, ScheduledSet.class));
             else if (id == R.id.CoachHome_checkButton)
@@ -135,16 +91,18 @@ public class CoachHome extends AppCompatActivity {
                 startActivity(new Intent(this, Achievement.class));
             else if (id == R.id.CoachHome_contactButton)
                 startActivity(new Intent(this, ContactInfo.class));
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("Button", "Button click error", e);
         }
     }
+
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(android.content.Context context, Intent intent) {
             finish();
         }
     };
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -152,6 +110,7 @@ public class CoachHome extends AppCompatActivity {
         init_coachInfo();
         Log.d("ActivityState", "Activity resumed, progress bar hidden.");
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

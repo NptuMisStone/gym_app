@@ -21,7 +21,7 @@ public class SQLConnection {
         try {
             Class.forName(JtdsClass);
             //String ConnURL = "jdbc:jtds:sqlserver://" + ip + ";databaseName=" + dbname + ";user=" + username + ";password=" + password + ";loginTimeout=2;";//設定連線逾時才能顯示錯誤訊息
-            String ConnURL ="jdbc:jtds:sqlserver://" + ip + ":1433;ssl=require;databaseName=" + dbname + ";user=" + username + ";password=" + password + ";loginTimeout=5";
+            String ConnURL ="jdbc:jtds:sqlserver://" + ip + ":1433;ssl=require;databaseName=" + dbname + ";user=" + username + ";password=" + password + ";loginTimeout=5;socketTimeout=30";
             INSTANCE = DriverManager.getConnection(ConnURL);
         } catch (SQLException e) {
             Log.e("SQLConnection", "SQL 錯誤: " + e.getMessage());
