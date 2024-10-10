@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,12 +29,13 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class PasswordReset {
-    private final Context context;
-    private final boolean isUser;
-    private final Connection MyConnection;
-    private final Validator validator;
-    private boolean isDialogShow = false;
-    private CountDownTimer countDownTimer;
+    Context context;
+    Connection MyConnection;
+    boolean isUser,isDialogShow = false;
+    Validator validator;
+    CountDownTimer countDownTimer;
+    Handler handler;
+    Runnable runnable;
 
     public PasswordReset(Context context, boolean isUser, Connection MyConnection) {
         this.context = context;
@@ -60,23 +62,30 @@ public class PasswordReset {
         String userEmail = editEmail.getText().toString();
         TextView statusHint1 = dialogView.findViewById(R.id.forget_statusHint1);
         Button getCode = dialogView.findViewById(R.id.forget_getButton);
-        String validationError = validator.validateEmailAndAccount(inputAccount, userEmail, isUser,statusHint1);
-        if (validationError == null) {
+        String validationError = validator.validateEmailAndAccount(inputAccount, userEmail, isUser, statusHint1);
+        if (validationError == null)
             sendVerificationEmail(userEmail, statusHint1, getCode, dialogView, dialog);
-        } else {
+        else
             textHint(statusHint1, validationError);
-        }
     }
 
     private void sendVerificationEmail(String userEmail, TextView statusHint1, Button getCode, View dialogView, AlertDialog dialog) {
-        textHint(statusHint1, "確認中...");
+        animateTextHint(statusHint1);
         String randomCode = generateRandomNumber();
-        String mSubject = "【益身GYM】驗證碼";
-        String mMessage = "您的驗證碼為：" + randomCode + "\n\n有效期限為10分鐘，請務必妥善保管驗證碼，勿將其告知他人。逾時請返回APP重新發送驗證信，感謝您。";
+        Log.d("randomCode", randomCode);
+        String mSubject = "【NPTU GYM】密碼重設通知信";
+        String mMessage = "我們收到您重設密碼的請求。\n\n" +
+                "您的驗證碼：" + randomCode + "\n\n" +
+                "有效期限為3分鐘，請妥善保管驗證碼，勿將其告知他人。\n\n" +
+                "如果這不是您的操作，請忽略這封郵件。\n\n" +
+                "（本郵件是由系統自動寄發，請勿直接回覆，謝謝。）\n\n" +
+                "NPTU GYM 團隊\n" +
+                "NptuMisStone@gmail.com";
         new JavaMailAPI(context, userEmail, mSubject, mMessage).sendMail(new JavaMailAPI.EmailSendResultCallback() {
             @Override
             public void onSuccess() {
                 ((Activity) context).runOnUiThread(() -> {
+                    stopAnimateTextHint();
                     textHint(statusHint1, "✔ 驗證碼已成功寄送，請前往您的信箱查看");
                     LocalTime sendTime = LocalTime.now(ZoneId.of("Asia/Taipei"));
                     if (countDownTimer != null) countDownTimer.cancel();
@@ -87,9 +96,29 @@ public class PasswordReset {
 
             @Override
             public void onFailure(Exception e) {
+                stopAnimateTextHint();
                 ((Activity) context).runOnUiThread(() -> textHint(statusHint1, "❌ 郵件發送失敗，請再試一次。"));
             }
         });
+    }
+
+    private void animateTextHint(TextView statusHint1) {
+        handler = new Handler(Looper.getMainLooper());
+        runnable = new Runnable() {
+            private boolean toggle = true;
+            @Override
+            public void run() {
+                statusHint1.setVisibility(View.VISIBLE);
+                statusHint1.setText(toggle ? "⏳確認中..." : "⌛確認中...");
+                toggle = !toggle;
+                handler.postDelayed(this, 500);
+            }
+        };
+        handler.post(runnable);
+    }
+
+    private void stopAnimateTextHint() {
+        if (handler != null && runnable != null) handler.removeCallbacks(runnable);
     }
 
     private void setupCodeValidation(View dialogView, String randomCode, LocalTime sendTime, AlertDialog dialog) {
@@ -111,14 +140,11 @@ public class PasswordReset {
     private boolean validateCode(String randomCode, String inputCode, TextView statusHint1, LocalTime sendTime) {
         LocalTime nowTime = LocalTime.now(ZoneId.of("Asia/Taipei"));
         Duration duration = Duration.between(sendTime, nowTime);
-        if (duration.toMinutes() > 10 && duration.toMinutes() <= 0 && inputCode.equals(randomCode)) {
-            textHint(statusHint1, "❌ 驗證碼已過期，請再獲取一次。");
+        if (duration.toMinutes() > 3 || duration.toMinutes() <= 0 && !inputCode.equals(randomCode)) {
+            textHint(statusHint1, duration.toMinutes() > 3 ? "❌ 驗證碼已過期，請再獲取一次。" : "❌ 驗證碼有誤，請再輸入一次。");
             return false;
-        } else if (!inputCode.equals(randomCode)) {
-            textHint(statusHint1, "❌ 驗證碼有誤，請再輸入一次。");
-            return false;
-        } else
-            textHint(statusHint1, "✔ 驗證碼驗證成功");
+        }
+        textHint(statusHint1, "✔ 驗證碼驗證成功");
         return true;
     }
 
@@ -173,5 +199,4 @@ public class PasswordReset {
             return false;
         }
     }
-
 }

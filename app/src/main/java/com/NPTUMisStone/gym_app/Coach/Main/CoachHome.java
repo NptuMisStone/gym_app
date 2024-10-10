@@ -69,7 +69,7 @@ public class CoachHome extends AppCompatActivity {
     }
 
     private void init_banner() {
-        ViewPager2 user_viewPager = findViewById(R.id.UserHome_viewPager);
+        ViewPager2 user_viewPager = findViewById(R.id.CoachHome_viewPager);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.CoachHome_swipeRefreshLayout);
         Advertisement.init_banner(this, MyConnection, adList, user_viewPager, swipeRefreshLayout);
     }

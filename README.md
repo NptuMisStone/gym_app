@@ -103,6 +103,8 @@ v0.43：整理驗證函式、錯誤提示、用戶資料介面重編(侑宸)
 
 v0.44：廣告函式整理(侑宸)
 
+v0.45：忘記密碼傳送內容與Web統一(侑宸)、新增用戶資料確認載入特效、修復廣告顯示問題(侑宸)
+
 圖片：
 R.drawable.main_login_ic_account：預設使用者圖片
 
@@ -123,3 +125,7 @@ R.drawable.main_login_ic_account：預設使用者圖片
 4.當遇到「It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort.」問題，請將目前使用的RecycleView更新方法從notifyDataSetChanged()方法改成使用notifyItemRangeChanged(0, adList.size())
 
 5.如果出現「SQL Connection: Network error IOException: Socket closed」，可試試看延長逾期時間
+
+6.當愈到「The emulator process for AVD Pixel_4_API_30 has terminated.」問題，可嘗試更新NVIDIA驅動程式
+
+7.如果遇到AGP版本問題，請將專案的AGP版本與Android Studio可支援AGP版本調整至對應
