@@ -36,7 +36,7 @@
             android:name=".Coach.Scheduled.ScheduledCheck"
             android:exported="false" />
         <activity
-            android:name=".User_And_Coach.ContactInfo"
+            android:name=".User_And_Coach.AIInteractive"
             android:exported="false" />
         <activity
             android:name=".User.Search.GymList"

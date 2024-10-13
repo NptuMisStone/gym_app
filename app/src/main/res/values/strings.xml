@@ -32,4 +32,8 @@
     <string name="title_Info">個人資料</string>
     <string name="goBack">返回</string>
     <string name="logOut">登出</string>
+    <string name="AIInteractive_titleText">AI互動區</string>
+    <string name="AIInteractive_inputHint">請輸入你想問健身的問題</string>
+    <string name="AIInteractive_outputText">AI的回答</string>
+    <string name="AIInteractive_submitText">提問</string>
 </resources>

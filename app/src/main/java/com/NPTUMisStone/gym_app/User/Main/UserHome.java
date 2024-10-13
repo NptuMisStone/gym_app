@@ -18,9 +18,9 @@ import com.NPTUMisStone.gym_app.User.Search.CoachLove;
 import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
 import com.NPTUMisStone.gym_app.User.Search.GymList;
 import com.NPTUMisStone.gym_app.User.Search.Search;
+import com.NPTUMisStone.gym_app.User_And_Coach.AIInteractive;
 import com.NPTUMisStone.gym_app.User_And_Coach.Advertisement;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.User_And_Coach.ContactInfo;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class UserHome extends AppCompatActivity {
         } else if (id == R.id.UserHome_sportsButton) {
             //startActivity(new Intent(this, SportList.class));
         } else if (id == R.id.UserHome_contactButton) {
-            startActivity(new Intent(this, ContactInfo.class));
+            startActivity(new Intent(this, AIInteractive.class));
         }
     }
 

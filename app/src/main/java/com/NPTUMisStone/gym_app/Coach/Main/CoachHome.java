@@ -25,9 +25,9 @@ import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledSet;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledCheck;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User_And_Coach.AIInteractive;
 import com.NPTUMisStone.gym_app.User_And_Coach.Advertisement;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.User_And_Coach.ContactInfo;
 import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
 
 import java.sql.Connection;
@@ -90,7 +90,7 @@ public class CoachHome extends AppCompatActivity {
             else if (id == R.id.CoachHome_workButton)
                 startActivity(new Intent(this, Achievement.class));
             else if (id == R.id.CoachHome_contactButton)
-                startActivity(new Intent(this, ContactInfo.class));
+                startActivity(new Intent(this, AIInteractive.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);
         }
