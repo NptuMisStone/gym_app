@@ -48,7 +48,10 @@ dependencies {
     implementation(libs.navigation.compose)             // Jetpack Compose integration
     implementation(libs.navigation.fragment)            // Views/Fragments integration
     implementation(libs.navigation.ui)
-    implementation(libs.navigation.dynamic.features.fragment) // Feature module support for Fragments
+    implementation(libs.navigation.dynamic.features.fragment)
+    implementation(libs.legacy.support.v4)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx) // Feature module support for Fragments
     androidTestImplementation(libs.navigation.testing)  // Testing Navigation
 
     // Networking Libraries
