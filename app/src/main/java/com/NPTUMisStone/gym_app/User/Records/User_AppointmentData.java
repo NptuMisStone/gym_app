@@ -1,18 +1,16 @@
 package com.NPTUMisStone.gym_app.User.Records;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class User_AppointmentData {
-    private Date date;
-    private Time time;
-    private int reservationID, timeLong, status, coachId;
-    private byte[] coachimage;
-    private String className, classPrice, coachName, note,week;
+    Date date;
+    int reservationID, timeLong, status, coachId;
+    byte[] coachimage;
+    String className, classPrice, coachName, note,week,time;
     static ArrayList<User_AppointmentData> appointments = new ArrayList<>();
 
-    public User_AppointmentData(int reservationID, Date date,String week, Time time, int timeLong, String className, String classPrice,  byte[] coachimage, String coachName,  int status, String note) {
+    public User_AppointmentData(int reservationID, Date date, String week, String time, int timeLong, String className, String classPrice, byte[] coachimage, String coachName, int status, String note) {
         this.reservationID = reservationID;
         this.date = date;
         this.week=week;
@@ -26,7 +24,12 @@ public class User_AppointmentData {
         this.note = note;
 
     }
-
+    public static ArrayList<User_AppointmentData> getAppointments() {
+        if (appointments == null) {
+            return null;
+        }
+        return appointments;
+    }
 
     public int getReservationID() {
         return reservationID;
@@ -37,7 +40,7 @@ public class User_AppointmentData {
     }
     public String getWeek(){return week;}
 
-    public Time getTime(){return  time;}
+    public String getTime(){return  time;}
 
     public int getTimeLong() {
         return timeLong;

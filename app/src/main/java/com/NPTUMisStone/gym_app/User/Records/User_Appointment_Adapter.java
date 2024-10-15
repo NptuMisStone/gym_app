@@ -18,8 +18,8 @@ import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import java.util.List;
 
 public class User_Appointment_Adapter extends RecyclerView.Adapter<User_Appointment_Adapter.ViewHolder> {
-    private final List<User_AppointmentData> appointmentDataList;
-    private final Context context;
+    List<User_AppointmentData> appointmentDataList;
+    Context context;
 
     public User_Appointment_Adapter(Context context, List<User_AppointmentData> appointmentList) {
         this.context = context;
@@ -62,7 +62,7 @@ public class User_Appointment_Adapter extends RecyclerView.Adapter<User_Appointm
         }
         holder.ap_date.setText(item.getDate().toString());
         holder.ap_week.setText(item.getWeek());
-        holder.ap_Time.setText(String.valueOf(item.getTime()));
+        holder.ap_Time.setText(item.getTime());
         holder.class_time_long.setText(String.valueOf(item.getTimeLong()));
         holder.class_name.setText(item.getClassName());
         holder.class_price.setText(item.getClassPrice());

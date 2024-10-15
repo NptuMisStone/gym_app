@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".User.Records.CancelAppointment.CancelAppointmentFragment">
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/user_ap_cancel_sml">
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_ap_cancel_recycleview"
         android:layout_width="match_parent"

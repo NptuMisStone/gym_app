@@ -5,7 +5,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -15,22 +18,29 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
+import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User.Records.User_AppointmentData;
 import com.NPTUMisStone.gym_app.User.Records.User_Appointment_Adapter;
+import com.NPTUMisStone.gym_app.User.Search.Coach.CoachListAdapter;
+import com.NPTUMisStone.gym_app.User.Search.Coach.CoachListData;
 import com.NPTUMisStone.gym_app.databinding.UserFragmentCancelAppointmentBinding;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
 public class CancelAppointmentFragment extends Fragment {
 
     private UserFragmentCancelAppointmentBinding binding;
-    private User_Appointment_Adapter adapter;
-    private final ArrayList<User_AppointmentData> appointmentData = new ArrayList<>();
+//    private User_Appointment_Adapter adapter;
+    private Connection MyConnection;
+    ArrayList<User_AppointmentData> appointmentData = new ArrayList<>();
 
     public static CancelAppointmentFragment newInstance() {
         return new CancelAppointmentFragment();
@@ -40,60 +50,60 @@ public class CancelAppointmentFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         Log.i("CancelAppointment", "CancelAppointmentFragment 已創建");
-        binding = UserFragmentCancelAppointmentBinding.inflate(inflater, container, false);
-        setupRecyclerView();
-        fetchAppointments();
-        return binding.getRoot();
+        CancelAppointmentViewModel cancelAppointmentViewModel=new ViewModelProvider(this).get(CancelAppointmentViewModel.class);
+
+        binding = UserFragmentCancelAppointmentBinding.inflate(inflater,container,false);
+        View root = binding.getRoot();
+
+        ShimmerFrameLayout shimmerFrameLayout = binding.userApCancelSml;
+        shimmerFrameLayout.startShimmer();
+        fetchAppointments(shimmerFrameLayout);
+        return root;
     }
 
-    private void setupRecyclerView() {
-        adapter = new User_Appointment_Adapter(getContext(), appointmentData);
-        binding.userApCancelRecycleview.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.userApCancelRecycleview.setAdapter(adapter);
-    }
+    private void fetchAppointments(ShimmerFrameLayout shimmerFrameLayout) {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                try {
+                    MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
+                    appointmentData.clear();
+                    String sql = "SELECT 預約編號,日期,星期幾,開始時間,課程時間長度,課程名稱,課程費用,健身教練圖片,健身教練姓名,預約狀態,備註 FROM [使用者預約-有預約的] WHERE [預約狀態] = 3 AND 使用者編號 = ?";
+                    PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
+                    searchStatement.setInt(1, User.getInstance().getUserId());
+                    ResultSet rs = searchStatement.executeQuery();
+                    while (rs.next())
 
-    private void fetchAppointments() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            try (Connection conn = new SQLConnection(binding.getRoot()).IWantToConnection();
-                 ResultSet rs = conn.createStatement().executeQuery(
-                         "SELECT 預約編號,日期,星期幾,開始時間,課程時間長度,課程名稱,課程費用,健身教練圖片,健身教練姓名,預約狀態,備註 FROM [使用者預約-有預約的] WHERE [預約狀態] = 3")) {
-
-                appointmentData.clear(); // 確保每次刷新都從空的列表開始
-                boolean hasData = false;  // 新增標記檢查是否有數據
-
-                while (rs.next()) {
-                    hasData = true;  // 若有資料則設為 true
-                    appointmentData.add(new User_AppointmentData(
-                            rs.getInt("預約編號"),
-                            rs.getDate("日期"),
-                            rs.getString("星期幾"),
-                            rs.getTime("開始時間"),
-                            rs.getInt("課程時間長度"),
-                            rs.getString("課程名稱"),
-                            rs.getString("課程費用"),
-                            rs.getBytes("健身教練圖片"),
-                            rs.getString("健身教練姓名"),
-                            rs.getInt("預約狀態"),
-                            rs.getString("備註")
-                    ));
+                        appointmentData.add(new User_AppointmentData(
+                                rs.getInt("預約編號"),
+                                rs.getDate("日期"),
+                                rs.getString("星期幾"),
+                                rs.getString("開始時間"),
+                                rs.getInt("課程時間長度"),
+                                rs.getString("課程名稱"),
+                                rs.getString("課程費用"),
+                                rs.getBytes("健身教練圖片"),
+                                rs.getString("健身教練姓名"),
+                                rs.getInt("預約狀態"),
+                                rs.getString("備註")
+                        ));
+                } catch (SQLException e) {
+                    Log.e("SQL", Objects.requireNonNull(e.getMessage()));
                 }
+                new Handler(Looper.getMainLooper()).post(() -> updateUI(shimmerFrameLayout));
+            });
 
-                if (!hasData) {
-                    Log.e("CancelAppointment", "沒有任何預約數據！");
-                }
-
-                // 在主线程更新 UI
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    adapter.notifyDataSetChanged();  // 刷新 RecyclerView
-                    Log.i("CancelAppointment", "已更新 UI 並顯示資料");
-                });
-
-            } catch (SQLException e) {
-                Log.e("SQL", "Database error: " + e.getMessage());
-            }
-        });
     }
-
+    private void updateUI(ShimmerFrameLayout shimmerFrameLayout) {
+        if (getActivity() != null && isAdded()) {
+            User_Appointment_Adapter userAppointmentAdapter = new User_Appointment_Adapter(getActivity(),appointmentData);
+            RecyclerView cancelApRecyclerView = binding.userApCancelRecycleview;
+            cancelApRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            cancelApRecyclerView.setAdapter(userAppointmentAdapter);
+            shimmerFrameLayout.stopShimmer();
+            shimmerFrameLayout.setVisibility(View.GONE);
+            Log.i("SQL", "獲得資料筆數：" + appointmentData.size());
+            Log.i("CancelAppointment", "更新 UI，資料筆數：" + appointmentData.size());
+        }
+    }
 
     @Override
     public void onDestroyView() {
