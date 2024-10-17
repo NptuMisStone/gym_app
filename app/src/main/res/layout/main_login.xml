@@ -112,7 +112,7 @@
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="32dp"
             android:contentDescription="ic_visibility"
             android:elevation="10dp"
             android:padding="5dp"
@@ -182,13 +182,13 @@
         app:layout_constraintStart_toEndOf="@+id/login_register"
         app:layout_constraintTop_toTopOf="@+id/login_register" />
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/GoogleSignIn"
+    <Button
+        android:id="@+id/login_anonymous"
         android:layout_width="200sp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
-        android:text="Button"
+        android:text="匿名登入"
         app:layout_constraintBottom_toTopOf="@+id/login_register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

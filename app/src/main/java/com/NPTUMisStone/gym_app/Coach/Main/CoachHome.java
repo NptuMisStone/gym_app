@@ -60,12 +60,10 @@ public class CoachHome extends AppCompatActivity {
     private void init_coachInfo() {
         ((TextView) findViewById(R.id.CoachHome_nameText)).setText(getString(R.string.Coach_welcome, Coach.getInstance().getCoachName()));
         ((TextView) findViewById(R.id.CoachHome_idText)).setText(getString(R.string.Coach_id, Coach.getInstance().getCoachId()));
-        ImageView coach_image = findViewById(R.id.CoachHome_photoImage);
-        coach_image.setOnClickListener(v -> startActivity(new Intent(this, CoachInfo.class)));
+        findViewById(R.id.CoachHome_editButton).setOnClickListener(v -> startActivity(new Intent(this, CoachInfo.class)));
         registerReceiver(broadcastReceiver, new IntentFilter("com.NPTUMisStone.gym_app.LOGOUT"), Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Context.RECEIVER_NOT_EXPORTED : 0);
         byte[] image = Coach.getInstance().getCoachImage(); //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
-        if (image != null)
-            coach_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+        if (image != null) ((ImageView)findViewById(R.id.CoachHome_photoImage)).setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
     }
 
     private void init_banner() {

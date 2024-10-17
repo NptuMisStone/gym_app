@@ -58,15 +58,11 @@ public class PasswordReset {
     private void handleGetCodeClick(View dialogView, AlertDialog dialog) {
         EditText editAccount = dialogView.findViewById(R.id.forget_accountEdit);
         EditText editEmail = dialogView.findViewById(R.id.forget_emailEdit);
-        String inputAccount = editAccount.getText().toString();
-        String userEmail = editEmail.getText().toString();
         TextView statusHint1 = dialogView.findViewById(R.id.forget_statusHint1);
         Button getCode = dialogView.findViewById(R.id.forget_getButton);
-        String validationError = validator.validateEmailAndAccount(inputAccount, userEmail, isUser, statusHint1);
-        if (validationError == null)
-            sendVerificationEmail(userEmail, statusHint1, getCode, dialogView, dialog);
-        else
-            textHint(statusHint1, validationError);
+        String validationError = validator.validateEmailAndAccount(editAccount, editEmail, isUser, statusHint1);
+        if (validationError == null) sendVerificationEmail(editEmail.getText().toString(), statusHint1, getCode, dialogView, dialog);
+        else textHint(statusHint1, validationError);
     }
 
     private void sendVerificationEmail(String userEmail, TextView statusHint1, Button getCode, View dialogView, AlertDialog dialog) {
@@ -172,7 +168,12 @@ public class PasswordReset {
     }
 
     private void handleResetPasswordClick(EditText newPass, EditText checkPass, String account, TextView statusHint2, AlertDialog dialog) {
-        String validationError = validator.validatePasswords(newPass, checkPass, statusHint2);
+        String validationError = validator.validateAgainPasswords(newPass, checkPass, statusHint2);
+        if (validationError != null) {
+            textHint(statusHint2, validationError);
+            return;
+        }
+        validationError = validator.validatePasswords(newPass, statusHint2);
         if (validationError != null) {
             textHint(statusHint2, validationError);
             return;

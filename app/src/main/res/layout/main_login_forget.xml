@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/SetNewPassword"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -189,7 +190,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/forget_little_title2"
@@ -225,6 +227,7 @@
                 android:layout_marginBottom="8dp"
                 android:ems="10"
                 android:inputType="textPassword"
+                android:minHeight="48dp"
                 android:textColor="@color/dark_green"
                 android:textColorHint="@color/gray" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -252,6 +255,7 @@
                 android:layout_marginBottom="8dp"
                 android:ems="10"
                 android:inputType="textPassword"
+                android:minHeight="48dp"
                 android:textColor="@color/dark_green"
                 android:textColorHint="@color/gray" />
 
@@ -263,7 +267,8 @@
             android:layout_height="0dp"
             android:layout_marginStart="3dp"
             android:layout_weight="1.3"
-            android:text="✔️ 驗證碼已成功寄送，請前往您的信箱查看。"
+            android:minLines="2"
+            android:text="密碼已成功重置\n"
             android:textColor="@color/dark_green"
             android:textSize="12sp"
             android:visibility="gone" />

@@ -111,6 +111,8 @@ v0.47：使用者預約紀錄(尚未完成，尚在摸索中)(煒楷)
 
 v0.48：使用者預約紀錄(狀態已取消完成)(煒楷)
 
+v0.49：補充登入介面、驗證項整合，準備除錯匿名登入(侑宸)
+
 圖片：
 R.drawable.main_login_ic_account：預設使用者圖片
 
@@ -135,3 +137,5 @@ R.drawable.main_login_ic_account：預設使用者圖片
 6.當愈到「The emulator process for AVD Pixel_4_API_30 has terminated.」問題，可嘗試更新NVIDIA驅動程式
 
 7.如果遇到AGP版本問題，請將專案的AGP版本與Android Studio可支援AGP版本調整至對應
+
+8.當遇到「'getAdapterPosition()' is deprecated」，把getAdapterPosition()改成getBindingAdapterPosition()

@@ -89,8 +89,8 @@ public class Login extends AppCompatActivity {
         remember_output();
         findViewById(R.id.login_register).setOnClickListener(v -> register());
         findViewById(R.id.login_button).setOnClickListener(v -> checkLogin(et_account.getText().toString(), et_password.getText().toString()));
-        PasswordReset passwordReset = new PasswordReset(this, isUser, MyConnection);
-        findViewById(R.id.login_forgot).setOnClickListener(v -> passwordReset.showPasswordResetDialog());
+        findViewById(R.id.login_anonymous).setOnClickListener(v -> anonymousLogin());
+        findViewById(R.id.login_forgot).setOnClickListener(v -> new PasswordReset(this, isUser, MyConnection).showPasswordResetDialog());
         Button login_user = findViewById(R.id.login_user);
         Button login_coach = findViewById(R.id.login_coach);
         login_user.setOnClickListener(v -> change_toUser(login_user, login_coach));
@@ -120,11 +120,6 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(this, "取消註冊", Toast.LENGTH_SHORT).show();
             }
     );
-
-    private void set_last_login() {
-        user.edit().putInt("last_login", isUser ? User.getInstance().getUserId() : Coach.getInstance().getCoachId())
-                .putBoolean("isUser", isUser).apply();
-    }
 
     private void get_last_login(int last_login, ProgressBarHandler progressBarHandler) throws SQLException {
         if (isUser) {
@@ -176,9 +171,16 @@ public class Login extends AppCompatActivity {
             });
         });
     }
+    private void anonymousLogin() {
+        User.setInstance(-1, "Anonymous", "Anonymous", "Anonymous", 0, "Anonymous", null);
+        startActivity(new Intent(this, UserHome.class));
+        finish();
+    }
     private void goHome() {
         remember_input();
-        set_last_login();
+        //設定最後登入的使用者或教練
+        user.edit().putInt("last_login", isUser ? User.getInstance().getUserId() : Coach.getInstance().getCoachId()).putBoolean("isUser", isUser).apply();
+        //開啟使用者或教練的主頁面
         startActivity(isUser ? new Intent(this, UserHome.class) : new Intent(this, CoachHome.class));
         finish();
     }

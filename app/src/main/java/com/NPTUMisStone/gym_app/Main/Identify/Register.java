@@ -17,9 +17,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User_And_Coach.Validator;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Register extends AppCompatActivity {
@@ -54,64 +54,46 @@ public class Register extends AppCompatActivity {
         isUser = !isUser;
         ((TextView)findViewById(R.id.register_title)).setText(isUser ? "用戶註冊" : "教練註冊");
     }
-    private boolean ValidateInput() {   //為了在最後Focus在最上面的錯誤輸入，所以將順序倒過來
+    private boolean ValidateInput() {
         boolean isValid = true;
-        try {
-            if(!et_register_email.getText().toString().isEmpty()){
-                if (!isEmailValid(et_register_email.getText().toString())) {
-                    editHint(et_register_email, "請輸入有效的電子郵件");
-                    isValid = false;
-                }
-            }
-            if (et_register_phone.getText().toString().isEmpty()) {
-                editHint(et_register_phone, "請輸入聯絡電話");
-                isValid = false;
-            }else if (et_register_phone.getText().toString().length() != 10) {
-                editHint(et_register_phone, "請輸入正確的聯絡電話");
-                isValid = false;
-            }
-            if (et_register_passwd_again.getText().toString().isEmpty()) {
-                editHint(et_register_passwd_again, "請輸入確認密碼");
-                isValid = false;
-            }
-            if (et_register_passwd.getText().toString().isEmpty()) {
-                editHint(et_register_passwd, "請輸入密碼");
-                isValid = false;
-            }else if (et_register_passwd.getText().toString().length() < 6) {
-                editHint(et_register_passwd, "密碼長度至少6個字元");
-                isValid = false;
-            } else if (et_register_passwd.getText().toString().length()==et_register_account.getText().toString().length()) {
-                editHint(et_register_passwd, "密碼不可與帳號相同");
-                isValid = false;
-            }
-            if (!et_register_passwd.getText().toString().equals(et_register_passwd_again.getText().toString())) {
-                editHint(et_register_passwd_again, "確認密碼不一致");
-                isValid = false;
-            }
-            MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-            if (et_register_account.getText().toString().isEmpty()) {
-                editHint(et_register_account, "請輸入帳號");
-                isValid = false;
-            }else{
-                String searchQuery = isUser ? "SELECT * FROM 使用者資料 WHERE 使用者帳號 ='" + et_register_account.getText().toString()+ "'" : "SELECT * FROM 健身教練資料 WHERE 健身教練帳號 ='" + et_register_account.getText().toString()+ "'";
-                ResultSet account_result = MyConnection.createStatement().executeQuery(searchQuery);
-                if (account_result.next()) {
-                    editHint(et_register_account, "此帳號已被使用");
-                    isValid = false;
-                }
-            }
-            if (et_register_name.getText().toString().isEmpty()) {
-                editHint(et_register_name, "請輸入姓名");
-                isValid = false;
-            }
-            return isValid;
-        } catch (SQLException e) {
-            Log.e("SQL", "Error in SQL", e);
-            return false;
+        Validator validator = new Validator(MyConnection);
+        String resultValidation = validator.checkEmail(et_register_email, null);
+        if (resultValidation != null) {
+            editHint(et_register_email, resultValidation);
+            isValid = false;
         }
-    }
-    boolean isEmailValid(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        resultValidation = validator.checkPhone(et_register_phone, null);
+        if (resultValidation != null) {
+            editHint(et_register_phone, resultValidation);
+            isValid = false;
+        }
+        resultValidation = validator.validateAgainPasswords(et_register_passwd, et_register_passwd_again, null);
+        if (resultValidation != null) {
+            editHint(et_register_passwd_again, resultValidation);
+            isValid = false;
+        }
+        resultValidation = validator.validatePasswords(et_register_passwd, null);
+        if (resultValidation != null) {
+            editHint(et_register_passwd, resultValidation);
+            isValid = false;
+        }
+        MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+        resultValidation = validator.checkAccount(et_register_account, et_register_account.getText().toString(), null);
+        if (resultValidation != null) {
+            editHint(et_register_account, resultValidation);
+            isValid = false;
+        }
+        resultValidation = validator.checkInput(et_register_account, "帳號", 20, null);
+        if (resultValidation != null) {
+            editHint(et_register_account, resultValidation);
+            isValid = false;
+        }
+        resultValidation = validator.checkInput(et_register_name, "姓名", 20, null);
+        if (resultValidation != null) {
+            editHint(et_register_name, resultValidation);
+            isValid = false;
+        }
+        return isValid;
     }
     private void register_input() {
         if (ValidateInput())

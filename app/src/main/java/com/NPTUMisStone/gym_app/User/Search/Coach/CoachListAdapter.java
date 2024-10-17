@@ -2,7 +2,6 @@ package com.NPTUMisStone.gym_app.User.Search.Coach;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,19 +50,14 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CoachListData item = coachList.get(position);
-        if (item.getcoachImage() != null){
-            Bitmap bitmap = ImageHandle.getBitmap(item.getcoachImage());
-            holder.imageView_head.setImageBitmap(ImageHandle.resizeBitmap(bitmap));
-        }
+        if (item.getcoachImage() != null)
+            holder.imageView_head.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(item.getcoachImage())));
         holder.textView_name.setText(item.getCoachName());
         holder.textView_address.setText(item.getCoachDescription());
         holder.itemView.setTag(item);
         holder.itemView.setOnClickListener(view -> {
-            if (holder.getAdapterPosition() != RecyclerView.NO_POSITION) {
-                Intent intent = new Intent(context, CoachDetail.class);
-                intent.putExtra("coach_id", item.getId());
-                context.startActivity(intent);
-            }
+            if (holder.getBindingAdapterPosition() != RecyclerView.NO_POSITION)
+                context.startActivity(new Intent(context, CoachDetail.class).putExtra("coach_id", item.getId()));
         });
     }
 
