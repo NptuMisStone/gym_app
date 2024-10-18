@@ -22,44 +22,11 @@
                 android:id="@+id/statusColor"
                 android:layout_width="10dp"
                 android:layout_height="0dp"
-                android:background="#475766"
+                android:background="#86B817"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/cancel_background"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/car_ui_list_item_divider"
-                    android:backgroundTint="#787676"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageButton
-                    android:id="@+id/user_ap_cancel_confirmbtn"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_margin="8dp"
-                    android:backgroundTint="@android:color/transparent"
-                    android:scaleType="center"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/cancel_background"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/car_ui_icon_close" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="250dp"
@@ -135,7 +102,7 @@
                         android:layout_height="1dp"
                         android:layout_marginTop="6dp"
                         android:layout_marginBottom="6dp"
-                         />
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -283,7 +250,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#475766"
+                    android:background="#86B817"
                     android:orientation="vertical"
                     android:paddingTop="3dp"
                     android:paddingBottom="3dp">

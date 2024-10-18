@@ -9,7 +9,7 @@ public class CancelAppointmentViewModel extends ViewModel {
 
     public CancelAppointmentViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is cancel fragment");
+        mText.setValue("This is CancelAP fragment");
     }
 
     public LiveData<String> getText() {

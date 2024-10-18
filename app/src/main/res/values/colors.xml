@@ -21,5 +21,8 @@
     <color name="black">#FF000000</color>
     <color name="dark_black">#2E2E2E</color>
     <color name="transparent">#00000000</color>
+    <color name="cancel_ap">#B6B6B6</color>
+    <color name="past_ap">#CF808B</color>
+    <color name="coach_cancel_ap">#E5B76A</color>
 
 </resources>

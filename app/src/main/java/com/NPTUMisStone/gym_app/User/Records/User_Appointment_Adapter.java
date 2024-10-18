@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.R;
@@ -29,7 +31,8 @@ public class User_Appointment_Adapter extends RecyclerView.Adapter<User_Appointm
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView coach_image;
         TextView ap_date, ap_Time, class_time_long, class_name, class_price, coach_name, note, ap_week;
-
+        View status;
+        LinearLayout statusarea;
         public ViewHolder(View itemView) {
             super(itemView);
             coach_image = itemView.findViewById(R.id.user_ap_coach_img);
@@ -41,6 +44,8 @@ public class User_Appointment_Adapter extends RecyclerView.Adapter<User_Appointm
             class_price = itemView.findViewById(R.id.user_ap_class_price);
             coach_name = itemView.findViewById(R.id.user_ap_coach_name);
             note = itemView.findViewById(R.id.user_ap_note);
+            status=itemView.findViewById(R.id.statusColor);
+            statusarea=itemView.findViewById(R.id.StatusArea);
         }
     }
 
@@ -56,6 +61,24 @@ public class User_Appointment_Adapter extends RecyclerView.Adapter<User_Appointm
         User_AppointmentData item = appointmentDataList.get(position);
         Log.i("Adapter", "正在綁定數據: " + item.getClassName());
 
+        int statusColor;
+        switch (item.getStatus()) {
+            case 3:
+                statusColor = ContextCompat.getColor(context, R.color.cancel_ap);
+                break;
+            case 4:
+                statusColor = ContextCompat.getColor(context, R.color.past_ap);
+                break;
+            case 5:
+                statusColor = ContextCompat.getColor(context, R.color.coach_cancel_ap);
+                break;
+            default:
+                statusColor = ContextCompat.getColor(context, R.color.black);
+                break;
+        }
+        holder.status.setBackgroundColor(statusColor);
+        holder.statusarea.setBackgroundColor(statusColor);
+
         if (item.getCoachimage() != null) {
             Bitmap bitmap = ImageHandle.getBitmap(item.getCoachimage());
             holder.coach_image.setImageBitmap(ImageHandle.resizeBitmap(bitmap));
@@ -65,9 +88,9 @@ public class User_Appointment_Adapter extends RecyclerView.Adapter<User_Appointm
         holder.ap_Time.setText(item.getTime());
         holder.class_time_long.setText(String.valueOf(item.getTimeLong()));
         holder.class_name.setText(item.getClassName());
-        holder.class_price.setText(item.getClassPrice());
+        holder.class_price.setText(item.getClassPrice().split("\\.")[0]);
         holder.coach_name.setText(item.getCoachName());
-        holder.note.setText(item.getNote() != null ? item.getNote() : "");
+        holder.note.setText(item.getNote());
     }
 
 

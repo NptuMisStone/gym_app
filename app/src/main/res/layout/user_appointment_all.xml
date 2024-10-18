@@ -104,5 +104,4 @@
         app:layout_constraintTop_toBottomOf="@+id/AppointmentTabLayout"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
