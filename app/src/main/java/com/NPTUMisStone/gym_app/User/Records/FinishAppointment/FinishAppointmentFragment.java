@@ -47,6 +47,7 @@ public class FinishAppointmentFragment extends Fragment {
     private Connection MyConnection;
     ArrayList<FinishAppointmentFragment.User_Finish_AppointmentData> appointmentData = new ArrayList<>();
     private ProgressBar progressBar;
+    TextView nodata;
 
     public static FinishAppointmentFragment newInstance() {
         return new FinishAppointmentFragment();
@@ -59,6 +60,8 @@ public class FinishAppointmentFragment extends Fragment {
         binding=UserFragmentFinishAppointmentBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
 
+        nodata=binding.userApNodata;
+        nodata.setVisibility(View.GONE);
         progressBar = binding.progressBar;
         progressBar.setVisibility(View.VISIBLE);
         fetchAppointments();
@@ -102,6 +105,11 @@ public class FinishAppointmentFragment extends Fragment {
             finishApRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             finishApRecyclerView.setAdapter(userAppointmentAdapter);
             progressBar.setVisibility(View.GONE);
+            if (appointmentData.isEmpty()) {
+                nodata.setVisibility(View.VISIBLE);
+            } else {
+                nodata.setVisibility(View.GONE);
+            }
 
         }
     }

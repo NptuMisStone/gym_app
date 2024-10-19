@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
@@ -39,7 +40,7 @@ public class CoachCancelAppointmentFragment extends Fragment {
     private Connection MyConnection;
     ArrayList<User_AppointmentData> appointmentData = new ArrayList<>();
     private ProgressBar progressBar;
-
+    TextView nodata;
     public static CoachCancelAppointmentFragment newInstance() {
         return new CoachCancelAppointmentFragment();
     }
@@ -50,7 +51,8 @@ public class CoachCancelAppointmentFragment extends Fragment {
         CoachCancelAppointmentViewModel coachCancelAppointmentViewModel =new ViewModelProvider(this).get(CoachCancelAppointmentViewModel.class);
         binding=UserFragmentCoachCancelAppointmentBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
-
+        nodata=binding.userApNodata;
+        nodata.setVisibility(View.GONE);
         progressBar = binding.progressBar;
         progressBar.setVisibility(View.VISIBLE);
         fetchAppointments();
@@ -94,6 +96,11 @@ public class CoachCancelAppointmentFragment extends Fragment {
             coachcancelApRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             coachcancelApRecyclerView.setAdapter(userAppointmentAdapter);
             progressBar.setVisibility(View.GONE);
+            if (appointmentData.isEmpty()) {
+                nodata.setVisibility(View.VISIBLE);
+            } else {
+                nodata.setVisibility(View.GONE);
+            }
         }
     }
     @Override

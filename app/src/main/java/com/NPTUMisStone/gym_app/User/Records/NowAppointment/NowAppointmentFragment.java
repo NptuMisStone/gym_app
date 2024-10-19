@@ -282,7 +282,6 @@ public class NowAppointmentFragment extends Fragment {
                     searchStatement.setInt(1,scheduleID);
                     ResultSet rs = searchStatement.executeQuery();
                     if (rs.next()) {
-                        // 获取人数并进行处理
                         apPeople = rs.getInt("預約人數");
                     }
                 } catch (SQLException e) {
@@ -297,8 +296,7 @@ public class NowAppointmentFragment extends Fragment {
                 try {
                     // 建立数据库连接
                     MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
-
-                    // 首先查询当前的預約人數
+                    // 查询預約人數
                     int People = SearchAPPeople(scheduleID);
 
                     // 更新 SQL
@@ -306,10 +304,8 @@ public class NowAppointmentFragment extends Fragment {
                     PreparedStatement updateStatement = MyConnection.prepareStatement(query);
                     updateStatement.setInt(1, (People-1));
                     updateStatement.setInt(2, scheduleID);
-
-                    // 执行更新操作
                     updateStatement.executeUpdate();
-                    // 关闭资源
+                    // 關閉資源
                     updateStatement.close();
                 } catch (SQLException e) {
                     Log.e("SQL", Objects.requireNonNull(e.getMessage()));
