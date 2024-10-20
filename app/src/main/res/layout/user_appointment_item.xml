@@ -184,7 +184,6 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="center_vertical"
-                        android:onClick="modify"
                         android:padding="4dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/all_ic_null_image_account"

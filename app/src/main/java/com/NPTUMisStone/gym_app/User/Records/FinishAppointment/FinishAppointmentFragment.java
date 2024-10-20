@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User.Comments.User_Comments;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.NPTUMisStone.gym_app.databinding.UserFragmentFinishAppointmentBinding;
@@ -35,6 +38,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -91,6 +95,8 @@ public class FinishAppointmentFragment extends Fragment {
                             rs.getInt("預約狀態"),
                             rs.getString("備註")
                     ));
+                rs.close();
+                searchStatement.close();
             } catch (SQLException e) {
                 Log.e("SQL", Objects.requireNonNull(e.getMessage()));
             }
@@ -177,7 +183,7 @@ public class FinishAppointmentFragment extends Fragment {
         }
 
     }
-    static  class FinishAppointmentAdapter extends RecyclerView.Adapter<FinishAppointmentFragment.FinishAppointmentAdapter.ViewHolder>
+    class FinishAppointmentAdapter extends RecyclerView.Adapter<FinishAppointmentFragment.FinishAppointmentAdapter.ViewHolder>
     {
 
         List<FinishAppointmentFragment.User_Finish_AppointmentData> appointmentDataList;
@@ -191,6 +197,7 @@ public class FinishAppointmentFragment extends Fragment {
         public static class ViewHolder extends RecyclerView.ViewHolder {
             ImageView coach_image;
             TextView ap_date, ap_Time, class_time_long, class_name, class_price, coach_name, note, ap_week;
+            Button comment_btn;
             public ViewHolder(View itemView) {
                 super(itemView);
                 coach_image = itemView.findViewById(R.id.user_ap_coach_img);
@@ -202,6 +209,7 @@ public class FinishAppointmentFragment extends Fragment {
                 class_price = itemView.findViewById(R.id.user_ap_class_price);
                 coach_name = itemView.findViewById(R.id.user_ap_coach_name);
                 note = itemView.findViewById(R.id.user_ap_note);
+                comment_btn=itemView.findViewById(R.id.user_comment_btn);
             }
         }
 
@@ -228,7 +236,30 @@ public class FinishAppointmentFragment extends Fragment {
             holder.class_price.setText(item.getClassPrice().split("\\.")[0]);
             holder.coach_name.setText(item.getCoachName());
             holder.note.setText(item.getNote());
+            try {
+                MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
+                String query = "SELECT * FROM 完成預約評論表 WHERE 預約編號 = ? " ;
+                PreparedStatement Statement = MyConnection.prepareStatement(query);
+                Statement.setInt(1,item.getReservationID());
+                ResultSet rs = Statement.executeQuery();
+                if (!rs.next()) {
+                    holder.comment_btn.setText("評論");
+                    holder.comment_btn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.user_ap_comment_edit, 0, 0);
+                }else {
 
+                    holder.comment_btn.setText("修改評論");
+                    holder.comment_btn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.user_ap_comment_check, 0, 0);
+                }
+                rs.close();
+                Statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            holder.comment_btn.setOnClickListener(v -> {
+                Intent intent = new Intent(requireActivity(),User_Comments.class);
+                intent.putExtra("reservationID", item.getReservationID());
+                startActivity(intent);
+            });
         }
 
         @Override

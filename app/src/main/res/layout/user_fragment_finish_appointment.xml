@@ -11,11 +11,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_ap_finish_recycleview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/user_appointment_item" />
+        tools:listitem="@layout/user_finish_appointment_item" />
     <TextView
         android:id="@+id/user_ap_nodata"
         android:layout_width="wrap_content"

@@ -94,6 +94,7 @@
 
 
     </com.google.android.material.tabs.TabLayout>
+
     <FrameLayout
         android:id="@+id/AppointmentFrameLayout"
         android:layout_width="match_parent"

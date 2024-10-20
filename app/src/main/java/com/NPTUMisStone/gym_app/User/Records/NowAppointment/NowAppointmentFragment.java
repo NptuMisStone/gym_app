@@ -92,6 +92,8 @@ public class NowAppointmentFragment extends Fragment {
                             rs.getString("備註"),
                             rs.getInt("課表編號")
                     ));
+                rs.close();
+                searchStatement.close();
             } catch (SQLException e) {
                 Log.e("SQL", Objects.requireNonNull(e.getMessage()));
             }
@@ -265,6 +267,7 @@ public class NowAppointmentFragment extends Fragment {
                                 Toast.makeText(context, "預約已取消", Toast.LENGTH_SHORT).show());
                         fetchAppointments();
                     }
+                    deleteStatement.close();
                 } catch (SQLException e) {
                     Log.e("SQL", Objects.requireNonNull(e.getMessage()));
                     new Handler(Looper.getMainLooper()).post(() ->
@@ -283,7 +286,10 @@ public class NowAppointmentFragment extends Fragment {
                     ResultSet rs = searchStatement.executeQuery();
                     if (rs.next()) {
                         apPeople = rs.getInt("預約人數");
+                        searchStatement.close();
                     }
+                    rs.close();
+                    searchStatement.close();
                 } catch (SQLException e) {
                     Log.e("SQL", Objects.requireNonNull(e.getMessage()));
                 }

@@ -84,6 +84,8 @@ public class CancelAppointmentFragment extends Fragment {
                                 rs.getInt("預約狀態"),
                                 rs.getString("備註")
                         ));
+                    rs.close();
+                    searchStatement.close();
                 } catch (SQLException e) {
                     Log.e("SQL", Objects.requireNonNull(e.getMessage()));
                 }
