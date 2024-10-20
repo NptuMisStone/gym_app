@@ -144,42 +144,42 @@ public class NowAppointmentFragment extends Fragment {
             return appointments;
         }
 
-        public int getReservationID() {
+        private int getReservationID() {
             return reservationID;
         }
 
-        public Date getDate() {
+        private Date getDate() {
             return date;
         }
-        public String getWeek(){return week;}
+        private String getWeek(){return week;}
 
-        public String getTime(){return  time;}
+        private String getTime(){return  time;}
 
-        public int getTimeLong() {
+        private int getTimeLong() {
             return timeLong;
         }
 
-        public String getClassName() {
+        private String getClassName() {
             return className;
         }
-        public String getClassPrice(){
+        private String getClassPrice(){
             return classPrice;
         }
 
-        public byte[] getCoachimage() {
+        private byte[] getCoachimage() {
             return coachimage;
         }
 
-        public String getCoachName() {
+        private String getCoachName() {
             return coachName;
         }
 
 
-        public String getNote() {
+        private String getNote() {
             return note;
         }
 
-        public int getScheduleID() {
+        private int getScheduleID() {
             return scheduleID;
         }
     }
@@ -203,12 +203,12 @@ public class NowAppointmentFragment extends Fragment {
                 coach_image = itemView.findViewById(R.id.user_ap_coach_img);
                 ap_date = itemView.findViewById(R.id.user_ap_date);
                 ap_week = itemView.findViewById(R.id.user_ap_week);
-                ap_Time = itemView.findViewById(R.id.user_ap_time);
+                ap_Time = itemView.findViewById(R.id.user_like_class_classname);
                 class_time_long = itemView.findViewById(R.id.user_ap_timelong);
-                class_name = itemView.findViewById(R.id.user_ap_class_name);
+                class_name = itemView.findViewById(R.id.user_like_class_coachname);
                 class_price = itemView.findViewById(R.id.user_ap_class_price);
-                coach_name = itemView.findViewById(R.id.user_ap_coach_name);
-                note = itemView.findViewById(R.id.user_ap_note);
+                coach_name = itemView.findViewById(R.id.user_like_class_people);
+                note = itemView.findViewById(R.id.user_like_coach_type);
                 user_ap_cancel_btn=itemView.findViewById(R.id.user_ap_cancel_confirmbtn);
             }
         }

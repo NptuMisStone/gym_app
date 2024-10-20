@@ -38,12 +38,12 @@ public class User_Appointment_Adapter extends RecyclerView.Adapter<User_Appointm
             coach_image = itemView.findViewById(R.id.user_ap_coach_img);
             ap_date = itemView.findViewById(R.id.user_ap_date);
             ap_week = itemView.findViewById(R.id.user_ap_week);
-            ap_Time = itemView.findViewById(R.id.user_ap_time);
+            ap_Time = itemView.findViewById(R.id.user_like_class_classname);
             class_time_long = itemView.findViewById(R.id.user_ap_timelong);
-            class_name = itemView.findViewById(R.id.user_ap_class_name);
+            class_name = itemView.findViewById(R.id.user_like_class_coachname);
             class_price = itemView.findViewById(R.id.user_ap_class_price);
-            coach_name = itemView.findViewById(R.id.user_ap_coach_name);
-            note = itemView.findViewById(R.id.user_ap_note);
+            coach_name = itemView.findViewById(R.id.user_like_class_people);
+            note = itemView.findViewById(R.id.user_like_coach_type);
             status=itemView.findViewById(R.id.statusColor);
             statusarea=itemView.findViewById(R.id.StatusArea);
         }

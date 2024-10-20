@@ -1,14 +1,10 @@
-package com.NPTUMisStone.gym_app.User.Records;
+package com.NPTUMisStone.gym_app.User.Like;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.Switch;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.Main.UserHome;
 import com.NPTUMisStone.gym_app.User.Records.CancelAppointment.CancelAppointmentFragment;
 import com.NPTUMisStone.gym_app.User.Records.CoachCancelAppointment.CoachCancelAppointmentFragment;
 import com.NPTUMisStone.gym_app.User.Records.FinishAppointment.FinishAppointmentFragment;
@@ -27,50 +22,39 @@ import com.NPTUMisStone.gym_app.User.Records.NowAppointment.NowAppointmentFragme
 import com.NPTUMisStone.gym_app.User.Records.PastAppointment.PastAppointmentFragment;
 import com.google.android.material.tabs.TabLayout;
 
-public class AppointmentAll extends AppCompatActivity {
-
+public class User_Like extends AppCompatActivity {
     FrameLayout frameLayout;
     TabLayout tabLayout;
     ImageButton Gobackbtn;
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.user_appointment_all);
+        setContentView(R.layout.user_like_activity);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Gobackbtn=(ImageButton)findViewById(R.id.user_Appointment_back);
-        frameLayout=(FrameLayout)findViewById(R.id.AppointmentFrameLayout);
-        tabLayout=(TabLayout)findViewById(R.id.AppointmentTabLayout);
-        getSupportFragmentManager().beginTransaction().replace(R.id.AppointmentFrameLayout,new NowAppointmentFragment()).addToBackStack(null).commit();
+        Gobackbtn=(ImageButton)findViewById(R.id.user_Like_back);
+        frameLayout=(FrameLayout)findViewById(R.id.LikeFrameLayout);
+        tabLayout=(TabLayout)findViewById(R.id.LikeTabLayout);
+        getSupportFragmentManager().beginTransaction().replace(R.id.LikeFrameLayout,new User_LikeCoachFragment()).addToBackStack(null).commit();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Fragment fragment = null;
                 switch (tab.getPosition()) {
                     case 0:
-                        fragment = new NowAppointmentFragment();
+                        fragment = new User_LikeCoachFragment();
                         break;
                     case 1:
-                        fragment = new FinishAppointmentFragment();
-                        break;
-                    case 2:
-                        fragment = new CancelAppointmentFragment();
-                        break;
-                    case 3:
-                        fragment = new PastAppointmentFragment();
-                        break;
-                    case 4:
-                        fragment = new CoachCancelAppointmentFragment();
+                        fragment = new User_LikeClassFragment();
                         break;
                 }
                 if (fragment != null) {
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.AppointmentFrameLayout, fragment)
+                            .replace(R.id.LikeFrameLayout, fragment)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .commit();
                 } else {
@@ -84,9 +68,8 @@ public class AppointmentAll extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
-
     }
-    public  void user_Appointment_goback(View view){
+    public void user_Like_goback(View view){
         finish();
     }
 }
