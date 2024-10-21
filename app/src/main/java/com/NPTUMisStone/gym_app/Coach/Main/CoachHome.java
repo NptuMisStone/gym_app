@@ -32,6 +32,7 @@ import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -58,12 +59,28 @@ public class CoachHome extends AppCompatActivity {
     }
 
     private void init_coachInfo() {
-        ((TextView) findViewById(R.id.CoachHome_nameText)).setText(getString(R.string.Coach_welcome, Coach.getInstance().getCoachName()));
-        ((TextView) findViewById(R.id.CoachHome_idText)).setText(getString(R.string.Coach_id, Coach.getInstance().getCoachId()));
+        ((TextView) findViewById(R.id.CoachHome_nameText)).setText(getGreetingMessage());
+        ((TextView) findViewById(R.id.CoachHome_idText)).setText(getString(R.string.All_idText, Coach.getInstance().getCoachId()));
         findViewById(R.id.CoachHome_editButton).setOnClickListener(v -> startActivity(new Intent(this, CoachInfo.class)));
+        findViewById(R.id.CoachHome_photoImage).setOnClickListener(v -> startActivity(new Intent(this, CoachInfo.class)));
         registerReceiver(broadcastReceiver, new IntentFilter("com.NPTUMisStone.gym_app.LOGOUT"), Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Context.RECEIVER_NOT_EXPORTED : 0);
+        setUserImage();
+    }
+
+    private String getGreetingMessage() {
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        String greeting;
+        if (hour < 6) greeting = "🌙 凌晨，該休息了";
+        else if (hour < 12) greeting = "☀️ 早上好";
+        else if (hour < 18) greeting = "🌤️ 下午好";
+        else greeting = "🌙 晚上好";
+        return getString(R.string.All_welcome, greeting, Coach.getInstance().getCoachName());
+    }
+
+    private void setUserImage() {
         byte[] image = Coach.getInstance().getCoachImage(); //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
-        if (image != null) ((ImageView)findViewById(R.id.CoachHome_photoImage)).setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+        if (image != null)
+            ((ImageView) findViewById(R.id.CoachHome_photoImage)).setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
     }
 
     private void init_banner() {
@@ -94,6 +111,7 @@ public class CoachHome extends AppCompatActivity {
         }
     }
 
+    //為了要在登出時關閉Home頁面，註冊廣播器
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(android.content.Context context, Intent intent) {

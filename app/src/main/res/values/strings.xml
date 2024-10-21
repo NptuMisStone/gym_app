@@ -1,12 +1,23 @@
 <resources>
     <string name="app_name">gym_app</string>
     <string name="main_welcome_content_description">welcome</string>
-    <string name="User_welcome">%1$s %2$s！</string>
-    <string name="Coach_welcome">%1$s，您好！</string>
-    <string name="Coach_id">ID:%1$d</string>
+    <string name="All_idText">ID:%1$d</string>
+    <string name="All_welcome">%1$s %2$s！</string>
     <string name="Coach_CoachInfo">教練ID：%1$s</string>
-    <string name="Coach_imageDescription">ShowCoachImage</string>
     <string name="User_UserInfo">用戶ID：%1$s</string>
+    <string name="Home_imageDescription">ShowImage</string>
+    <string name="Home_userButton1">【課程查詢】</string>
+    <string name="Home_userButton2">【教練查詢】</string>
+    <string name="Home_userButton3">【收藏清單】</string>
+    <string name="Home_userButton4">【預約紀錄】</string>
+    <string name="Home_userButton5">【附近健身房】</string>
+    <string name="Home_userButton6">【AI互動區】</string>
+    <string name="Home_coachButton1">【安排課程】</string>
+    <string name="Home_coachButton2">【課表管理】</string>
+    <string name="Home_coachButton3">【預約管理】</string>
+    <string name="Home_coachButton4">【預約紀錄】</string>
+    <string name="Home_coachButton5">【我的成果】</string>
+    <string name="Home_coachButton6">【AI互動區】</string>
     <string name="Info_idUserHint">用戶ID</string>
     <string name="Info_idCoachHint">用戶ID</string>
     <string name="Info_accountHint">帳號名稱</string>

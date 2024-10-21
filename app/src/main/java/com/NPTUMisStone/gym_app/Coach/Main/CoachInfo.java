@@ -1,7 +1,6 @@
 package com.NPTUMisStone.gym_app.Coach.Main;
 
 import static com.NPTUMisStone.gym_app.User_And_Coach.ErrorHints.editHint;
-import static com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle.getBitmap;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,6 +28,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.NPTUMisStone.gym_app.Main.Identify.Login;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.NPTUMisStone.gym_app.User_And_Coach.PasswordReset;
 import com.NPTUMisStone.gym_app.User_And_Coach.Validator;
 import com.google.android.material.textfield.TextInputLayout;
@@ -58,7 +58,7 @@ public class CoachInfo extends AppCompatActivity {
     }
 
     private void init() {
-        ((TextView)findViewById(R.id.CoachInfo_idText)).setText(getString(R.string.Coach_CoachInfo, Integer.toString(Coach.getInstance().getCoachId())));
+        ((TextView) findViewById(R.id.CoachInfo_idText)).setText(getString(R.string.Coach_CoachInfo, Integer.toString(Coach.getInstance().getCoachId())));
         findViewById(R.id.CoachInfo_return).setOnClickListener(v -> finish());
         findViewById(R.id.CoachInfo_logout).setOnClickListener(v -> logout());
         findViewById(R.id.CoachInfo_upload).setOnClickListener(v -> changeImage());
@@ -156,6 +156,7 @@ public class CoachInfo extends AppCompatActivity {
                 .create();
         alertDialog.show();
     }
+
     private String validateInput(int index, AutoCompleteTextView autoCompleteTextView1, Validator validator) {
         return switch (index) {
             case 0 -> validator.checkInput(autoCompleteTextView1, "姓名", 20, null);
@@ -207,6 +208,7 @@ public class CoachInfo extends AppCompatActivity {
             case 3 -> Coach.getInstance().setCoachMail(newValue);
         }
     }
+
     @NonNull
     private static String getUpdateQuery(int index) {
         String columnName = switch (index) {
@@ -240,7 +242,7 @@ public class CoachInfo extends AppCompatActivity {
         //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
         byte[] image = Coach.getInstance().getCoachImage();
         if (image != null)
-            coachInfo_image.setImageBitmap(getBitmap(image));
+            coachInfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
     }
 
     private void logout() {

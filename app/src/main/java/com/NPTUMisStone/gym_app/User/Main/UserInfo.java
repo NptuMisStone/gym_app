@@ -1,12 +1,13 @@
 package com.NPTUMisStone.gym_app.User.Main;
 
 import static com.NPTUMisStone.gym_app.User_And_Coach.ErrorHints.editHint;
-import static com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle.getBitmap;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.NPTUMisStone.gym_app.Main.Identify.Login;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.NPTUMisStone.gym_app.User_And_Coach.PasswordReset;
 import com.NPTUMisStone.gym_app.User_And_Coach.Validator;
 import com.google.android.material.textfield.TextInputLayout;
@@ -43,6 +45,7 @@ public class UserInfo extends AppCompatActivity {
     AutoCompleteTextView[] userinfo_tv;
     TextInputLayout[] userinfo_layout;
     Uri uri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +58,9 @@ public class UserInfo extends AppCompatActivity {
         });
         init();
     }
+
     private void init() {
-        ((TextView)findViewById(R.id.UserInfo_idText)).setText(getString(R.string.User_UserInfo, Integer.toString(User.getInstance().getUserId())));
+        ((TextView) findViewById(R.id.UserInfo_idText)).setText(getString(R.string.User_UserInfo, Integer.toString(User.getInstance().getUserId())));
         findViewById(R.id.UserInfo_return).setOnClickListener(v -> finish());
         findViewById(R.id.UserInfo_logout).setOnClickListener(v -> logout());
         findViewById(R.id.UserInfo_upload).setOnClickListener(v -> changeImage());
@@ -83,6 +87,7 @@ public class UserInfo extends AppCompatActivity {
         init_image();
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
     }
+
     private void changeData(int index) {
         Log.d("ChangeData", "ChangeData: " + index);
         AutoCompleteTextView autoCompleteTextView = userinfo_tv[index];
@@ -195,6 +200,7 @@ public class UserInfo extends AppCompatActivity {
             Log.e("SQL", "Error updating user info", e);
         }
     }
+
     private void updateUserInstance(int index, String newValue) {
         switch (index) {
             case 0 -> User.getInstance().setUserName(newValue);
@@ -231,20 +237,24 @@ public class UserInfo extends AppCompatActivity {
             default -> "";
         };
     }
+
     private void init_image() {
         userinfo_image = findViewById(R.id.UserInfo_image);
         //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
         byte[] image = User.getInstance().getUserImage();
         if (image != null)
-            userinfo_image.setImageBitmap(getBitmap(image));
+            userinfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
     }
+
     private void logout() {
-        User.setInstance(0,"","", "", 0,"",null);
+        User.setInstance(0, "", "", "", 0, "", null);
         //Delete SharedPreferences Data：https://stackoverflow.com/questions/3687315/how-to-delete-shared-preferences-data-from-app-in-android
         getSharedPreferences("remember", MODE_PRIVATE).edit().remove("last_login").apply();
+        sendBroadcast(new Intent("com.NPTUMisStone.gym_app.LOGOUT"));
         startActivity(new Intent(this, Login.class));
         finish();
     }
+/*
     private void changeImage() {
         userinfo_image = findViewById(R.id.UserInfo_image);
         Intent intent = new Intent();   //上傳圖片：https://www.youtube.com/watch?v=9oNujFx_ZaI&ab_channel=ShihFinChen
@@ -253,14 +263,65 @@ public class UserInfo extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         uploadImage_ActivityResult.launch(intent);
     }
+
     ActivityResultLauncher<Intent> uploadImage_ActivityResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
-                    if (data == null)   return;
+                    if (data == null) return;
                     uri = data.getData();
                     userinfo_image.setImageURI(uri);
+                } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                    Toast.makeText(this, "取消圖片上傳", Toast.LENGTH_SHORT).show();
+                }
+            }
+    );*/
+    private void changeImage() {
+        showImageSourceDialog();
+    }
+
+    private void showImageSourceDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("選擇圖片來源")
+                .setItems(new CharSequence[]{"從相簿選擇", "拍照"}, (dialog, which) -> {
+                    if (which == 0) {
+                        chooseFromGallery();
+                    } else {
+                        takePhoto();
+                    }
+                })
+                .show();
+    }
+
+    private void chooseFromGallery() {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        uploadImage_ActivityResult.launch(intent);
+    }
+
+    private void takePhoto() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            uploadImage_ActivityResult.launch(intent);
+        }
+    }
+
+    ActivityResultLauncher<Intent> uploadImage_ActivityResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data == null) return;
+                    uri = data.getData();
+                    if (uri == null && data.getExtras() != null) {
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        userinfo_image.setImageBitmap(bitmap);
+                    } else {
+                        userinfo_image.setImageURI(uri);
+                    }
                 } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                     Toast.makeText(this, "取消圖片上傳", Toast.LENGTH_SHORT).show();
                 }

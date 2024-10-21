@@ -28,8 +28,8 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="15dp"
-            android:contentDescription="@string/Coach_imageDescription"
-            android:src="@drawable/home_shape_coach"
+            android:contentDescription="@string/Home_imageDescription"
+            android:src="@drawable/home_shape_image"
             app:civ_border_color="@color/dark_gray"
             app:civ_border_width="1dp" />
 
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:gravity="bottom"
-                android:text="@string/Coach_welcome"
+                android:text="@string/All_welcome"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="top"
-                android:text="@string/Coach_id"
+                android:text="@string/All_idText"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -117,7 +117,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/home_stroke_left_button"
                         android:onClick="onClick"
-                        android:text="【安排課表】" />
+                        android:text="@string/Home_coachButton1" />
 
                     <Button
                         android:id="@+id/CoachHome_checkButton"
@@ -126,7 +126,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/home_stroke_right_button"
                         android:onClick="onClick"
-                        android:text="【課表管理】" />
+                        android:text="@string/Home_coachButton2" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -142,7 +142,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/home_stroke_left_button"
                         android:onClick="onClick"
-                        android:text="【預約管理】" />
+                        android:text="@string/Home_coachButton3" />
 
                     <Button
                         android:id="@+id/CoachHome_historyButton"
@@ -151,8 +151,9 @@
                         android:layout_weight="1"
                         android:background="@drawable/home_stroke_right_button"
                         android:onClick="onClick"
-                        android:text="【預約紀錄】" />
+                        android:text="@string/Home_coachButton4" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -166,7 +167,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/home_stroke_left_bottom_button"
                         android:onClick="onClick"
-                        android:text="【我的成果】" />
+                        android:text="@string/Home_coachButton5" />
 
                     <Button
                         android:id="@+id/CoachHome_contactButton"
@@ -175,7 +176,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/home_stroke_right_bottom_button"
                         android:onClick="onClick"
-                        android:text="【問題反饋】" />
+                        android:text="@string/Home_coachButton6" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -210,11 +211,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
-
-        </ScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <Button

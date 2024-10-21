@@ -5,125 +5,243 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/all_background"
     tools:context=".User.Main.UserHome">
 
-
-    <TextView
-        android:id="@+id/UserHome_nameText"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/Coach_welcome"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/UserHome_photoImage"
-        app:layout_constraintEnd_toStartOf="@+id/UserHome_photoImage"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/UserHome_photoImage" />
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="@color/white"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/guideline16"
+        app:layout_constraintStart_toStartOf="@+id/guideline21"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/UserHome_photoImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@drawable/main_login_shape_edittext"
-        android:backgroundTint="@android:color/darker_gray"
-        android:contentDescription="ShowUserImage"
-        app:layout_constraintBottom_toTopOf="@+id/UserHome_viewPager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/UserHome_nameText"
-        app:layout_constraintTop_toTopOf="parent" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/UserHome_photoImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:contentDescription="@string/Home_imageDescription"
+            android:src="@drawable/home_shape_image"
+            app:civ_border_color="@color/dark_gray"
+            app:civ_border_width="1dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/UserHome_nameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.2"
+                android:gravity="bottom"
+                android:text="@string/All_welcome"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/UserHome_idText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:text="@string/All_idText"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/UserHome_viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        app:layout_constraintBottom_toTopOf="@+id/UserHome_constraintLayout"
-        app:layout_constraintTop_toBottomOf="@+id/UserHome_photoImage" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/UserHome_constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/UserHome_viewPager">
+        app:layout_constraintTop_toTopOf="@+id/guideline11" />
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/UserHome_swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/UserHome_viewPager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
-        <Button
-            android:id="@+id/UserHome_coachButton"
-            android:layout_width="125dp"
-            android:layout_height="80dp"
-            android:onClick="onClick"
-            android:text="查詢"
-            app:layout_constraintEnd_toStartOf="@+id/UserHome_sportsButton"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/UserHome_sportsButton"
-            android:layout_width="125dp"
-            android:layout_height="80dp"
-            android:onClick="onClick"
-            android:text="a"
-            app:layout_constraintBottom_toBottomOf="@+id/UserHome_coachButton"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/UserHome_constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/UserHome_coachButton"
-            app:layout_constraintTop_toTopOf="@+id/UserHome_coachButton" />
-
-        <Button
-            android:id="@+id/UserHome_loveButton"
-            android:layout_width="125dp"
-            android:layout_height="80dp"
-            android:onClick="onClick"
-            android:text="我的收藏"
-            app:layout_constraintBottom_toBottomOf="@+id/UserHome_appointmentButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/UserHome_appointmentButton"
-            app:layout_constraintTop_toTopOf="@+id/UserHome_appointmentButton"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <Button
-            android:id="@+id/UserHome_appointmentButton"
-            android:layout_width="125dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="32dp"
-            android:onClick="onClick"
-            android:text="預約紀錄"
-            app:layout_constraintEnd_toStartOf="@+id/UserHome_loveButton"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/UserHome_coachButton" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/UserHome_gymButton"
-            android:layout_width="125dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="32dp"
-            android:onClick="onClick"
-            android:text="附近健身房"
-            app:layout_constraintEnd_toStartOf="@+id/UserHome_contactButton"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/UserHome_appointmentButton" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:alpha="0.90"
+                android:background="@drawable/main_register_shape_edittext"
+                android:backgroundTint="@color/white"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/guideline17"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline18">
 
-        <Button
-            android:id="@+id/UserHome_contactButton"
-            android:layout_width="125dp"
-            android:layout_height="80dp"
-            android:onClick="onClick"
-            android:text="問題反饋"
-            app:layout_constraintBottom_toBottomOf="@+id/UserHome_gymButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/UserHome_gymButton"
-            app:layout_constraintTop_toTopOf="@+id/UserHome_gymButton" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <Button
+                        android:id="@+id/UserHome_classButton"
+                        android:layout_width="125dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/home_stroke_left_button"
+                        android:onClick="onClick"
+                        android:text="@string/Home_userButton1" />
+
+                    <Button
+                        android:id="@+id/UserHome_coachButton"
+                        android:layout_width="125dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/home_stroke_right_button"
+                        android:onClick="onClick"
+                        android:text="@string/Home_userButton2" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/UserHome_loveButton"
+                        android:layout_width="125dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/home_stroke_left_button"
+                        android:onClick="onClick"
+                        android:text="@string/Home_userButton3" />
+
+                    <Button
+                        android:id="@+id/UserHome_historyButton"
+                        android:layout_width="125dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/home_stroke_right_button"
+                        android:onClick="onClick"
+                        android:text="@string/Home_userButton4" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/UserHome_gymButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/home_stroke_left_bottom_button"
+                        android:onClick="onClick"
+                        android:text="@string/Home_userButton5" />
+
+                    <Button
+                        android:id="@+id/UserHome_contactButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/home_stroke_right_bottom_button"
+                        android:onClick="onClick"
+                        android:text="@string/Home_userButton6" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.9" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.1" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.04" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.96" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <Button
+        android:id="@+id/UserHome_editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/main_register_selector_track_backgrounds"
+        android:backgroundTint="@color/red"
+        android:text="編輯資料"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/guideline16"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.92" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.17" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
