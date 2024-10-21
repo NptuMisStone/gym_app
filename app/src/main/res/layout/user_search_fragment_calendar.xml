@@ -15,7 +15,7 @@
         android:background="@drawable/all_effect_ripple"
         android:contentDescription="@string/goBack"
         android:scaleType="centerCrop"
-        android:src="@drawable/all_ic_arrow_back"
+        android:src="@drawable/all_ic_arrow_back1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

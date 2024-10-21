@@ -7,12 +7,10 @@ public class Coach {
     private String CoachAccount;
     private String CoachName;
     private String CoachPhone;
-    private Boolean CoachSex;
+    private int CoachSex;
     private String CoachMail;
     private byte[] CoachImage;
-
     private static volatile Coach coach = null;
-
     private Coach(int id) {
         this.CoachId = id;
     }
@@ -23,7 +21,7 @@ public class Coach {
         }
         return coach;
     }
-    public static void setInstance(int id, String coachAccount, String coachName, String coachPhone, Boolean coachSex, String coachMail,byte[] coachImage) {
+    public static void setInstance(int id, String coachAccount, String coachName, String coachPhone, int coachSex, String coachMail,byte[] coachImage) {
         if (coach == null) {
             coach = new Coach(id);
             coach.setCoachAccount(coachAccount);
@@ -47,14 +45,14 @@ public class Coach {
     public void setCoachAccount(String coachAccount) {    this.CoachAccount = coachAccount;  }
     public void setCoachName(String coachName) {    this.CoachName = coachName;  }
     public void setCoachPhone(String coachPhone) {    this.CoachPhone = coachPhone;  }
-    public void setCoachSex(Boolean coachSex) {    this.CoachSex = coachSex;  }
+    public void setCoachSex(int coachSex) {    this.CoachSex = coachSex;  }
     public void setCoachMail(String coachMail) {    this.CoachMail = coachMail;  }
     public void setCoachImage(byte[] coachImage) {    this.CoachImage = coachImage;  }
     public int getCoachId() {    return CoachId;  }
     public String getCoachAccount() {    return CoachAccount;  }
     public String getCoachName() {    return CoachName;  }
     public String getCoachPhone() {    return CoachPhone;  }
-    public Boolean getCoachSex() {    return CoachSex;  }
+    public int getCoachSex() {    return CoachSex;  }
     public String getCoachMail() {    return CoachMail;  }
     public byte[] getCoachImage() {    return CoachImage;  }
 }

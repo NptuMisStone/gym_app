@@ -5,334 +5,276 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dark_black"
     tools:context=".Coach.Main.CoachInfo">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/CoachInfo_topConstraint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/red"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/CoachInfo_return"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="@string/goBack"
+            android:src="@drawable/all_ic_arrow_back2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <TextView
+            android:id="@+id/CoachInfo_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_Info"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <ImageView
+            android:id="@+id/CoachInfo_logout"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:background="#1A000000"
+            android:contentDescription="@string/logOut"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/main_login_ic_arrow" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/CoachInfo_guideline1"
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/CoachInfo_guideline2"
+        android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.24" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/CoachInfo_guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.38" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/CoachInfo_guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.3" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/CoachInfo_guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
-
-    <TextView
-        android:id="@+id/CoachInfo_et_showName"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:inputType="text"
-        android:paddingHorizontal="5dp"
-        android:text="Name"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/CoachInfo_tv_name"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_guideline7"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_tv_name" />
-
-    <TextView
-        android:id="@+id/CoachInfo_et_showAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:inputType="text"
-        android:paddingHorizontal="5dp"
-        android:text="Account"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/CoachInfo_tv_account"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_et_showName"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_tv_account" />
-
-    <TextView
-        android:id="@+id/CoachInfo_et_showPhone"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:inputType="phone"
-        android:paddingHorizontal="5dp"
-        android:text="Phone"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/CoachInfo_tv_phone"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_et_showAccount"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_tv_phone" />
-
-    <TextView
-        android:id="@+id/CoachInfo_et_showMail"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:inputType="textEmailAddress"
-        android:paddingHorizontal="5dp"
-        android:text="Email"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/CoachInfo_tv_mail"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_et_showPhone"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_tv_mail" />
-
-    <EditText
-        android:id="@+id/CoachInfo_et_editName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:enabled="true"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:text="Name"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/CoachInfo_tv_name"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_guideline7"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_tv_name" />
-
-    <EditText
-        android:id="@+id/CoachInfo_et_editAccount"
-        android:layout_width="211dp"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:enabled="true"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:text="Account"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/CoachInfo_tv_account"
-        app:layout_constraintEnd_toEndOf="@+id/CoachInfo_et_editName"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_et_editName"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_tv_account" />
-
-    <EditText
-        android:id="@+id/CoachInfo_et_editPhone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:enabled="true"
-        android:inputType="phone"
-        android:minHeight="48dp"
-        android:text="Phone"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/CoachInfo_tv_phone"
-        app:layout_constraintEnd_toEndOf="@+id/CoachInfo_et_editName"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_et_editName"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_tv_phone" />
-
-    <EditText
-        android:id="@+id/CoachInfo_et_editMail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:enabled="true"
-        android:inputType="textEmailAddress"
-        android:minHeight="48dp"
-        android:text="Email"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/CoachInfo_tv_mail"
-        app:layout_constraintEnd_toEndOf="@+id/CoachInfo_et_editName"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_et_editName"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_tv_mail" />
-
-    <TextView
-        android:id="@+id/CoachInfo_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="個人資訊"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/CoachInfo_guideline1"
-        app:layout_constraintEnd_toStartOf="@+id/CoachInfo_logout"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/CoachInfo_return"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
-
-    <TextView
-        android:id="@+id/CoachInfo_coachId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="教練ID"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/CoachInfo_guideline4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_guideline2" />
-
-    <TextView
-        android:id="@+id/CoachInfo_tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="暱稱："
-        app:layout_constraintBottom_toTopOf="@+id/CoachInfo_tv_account"
-        app:layout_constraintEnd_toStartOf="@+id/CoachInfo_guideline6"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_guideline6"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_guideline3" />
-
-    <TextView
-        android:id="@+id/CoachInfo_tv_account"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="帳號名稱："
-        app:layout_constraintBottom_toTopOf="@+id/CoachInfo_tv_phone"
-        app:layout_constraintEnd_toEndOf="@+id/CoachInfo_tv_name"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_tv_name"
-        app:layout_constraintTop_toBottomOf="@+id/CoachInfo_tv_name" />
-
-    <TextView
-        android:id="@+id/CoachInfo_tv_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="電話："
-        app:layout_constraintBottom_toTopOf="@+id/CoachInfo_tv_mail"
-        app:layout_constraintEnd_toEndOf="@+id/CoachInfo_tv_account"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_tv_account"
-        app:layout_constraintTop_toBottomOf="@+id/CoachInfo_tv_account" />
-
-    <TextView
-        android:id="@+id/CoachInfo_tv_mail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="電子郵件："
-        app:layout_constraintBottom_toTopOf="@+id/CoachInfo_guideline5"
-        app:layout_constraintEnd_toEndOf="@+id/CoachInfo_tv_phone"
-        app:layout_constraintStart_toStartOf="@+id/CoachInfo_tv_phone"
-        app:layout_constraintTop_toBottomOf="@+id/CoachInfo_tv_phone" />
+        app:layout_constraintGuide_percent="0.28" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/CoachInfo_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:layout_constraintBottom_toTopOf="@+id/CoachInfo_guideline2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_guideline1"
-        app:srcCompat="@drawable/all_ic_null_image_account"
         app:civ_border_color="@color/dark_gray"
-        app:civ_border_width="1dp" />
-
-    <Button
-        android:id="@+id/CoachInfo_return"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:background="#1A000000"
-        android:paddingLeft="5dp"
-        android:paddingTop="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="5dp"
-        android:text="返回主頁"
-        app:cornerRadius="17.5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/CoachInfo_title"
-        app:layout_constraintEnd_toStartOf="@+id/CoachInfo_title"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_title" />
-
-    <Button
-        android:id="@+id/CoachInfo_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:background="#1A000000"
-        android:text="登出"
-        app:layout_constraintBottom_toBottomOf="@+id/CoachInfo_title"
+        app:civ_border_width="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/CoachInfo_title"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_title" />
-
-    <Button
-        android:id="@+id/CoachInfo_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/all_shape_round_button"
-        android:backgroundTint="@color/light_yellow3"
-        android:drawableStart="@android:drawable/ic_menu_edit"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:text="編輯個人資料"
-        app:layout_constraintBottom_toTopOf="@+id/CoachInfo_guideline3"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_guideline4"
-        app:layout_constraintVertical_bias="0.5" />
-
-    <Button
-        android:id="@+id/CoachInfo_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:text="儲存"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/CoachInfo_cancel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/CoachInfo_cancel"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_cancel" />
-
-    <Button
-        android:id="@+id/CoachInfo_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="24dp"
-        android:text="取消"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/CoachInfo_save"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_guideline5" />
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:srcCompat="@drawable/all_ic_null_image_account" />
 
     <Button
         android:id="@+id/CoachInfo_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableEnd="@android:drawable/ic_menu_upload"
-        android:text="上傳圖片"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/CoachInfo_guideline2"
+        android:text="@string/Info_uploadDescription"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/CoachInfo_image"
-        app:layout_constraintTop_toTopOf="@+id/CoachInfo_guideline1" />
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/CoachInfo_guideline6"
+        android:id="@+id/guideline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.18" />
+        app:layout_constraintGuide_percent="0.07" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/CoachInfo_guideline7"
+        android:id="@+id/guideline8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.36" />
+        app:layout_constraintGuide_percent="0.93" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline8"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toTopOf="@+id/guideline2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/CoachInfo_idLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:hintEnabled="true"
+                app:passwordToggleEnabled="false">
+
+                <AutoCompleteTextView
+                    android:id="@+id/CoachInfo_idText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:hint="@string/Info_idCoachHint"
+                    android:inputType="none"
+                    android:text="@string/Coach_id" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/CoachInfo_accountLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:hintEnabled="true"
+                app:passwordToggleEnabled="false">
+
+                <AutoCompleteTextView
+                    android:id="@+id/CoachInfo_accountText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:hint="@string/Info_accountHint"
+                    android:inputType="none"
+                    android:text="@string/Info_accountHint" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/CoachInfo_nameLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:hintEnabled="true"
+                app:passwordToggleEnabled="false">
+
+                <AutoCompleteTextView
+                    android:id="@+id/CoachInfo_nameText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:hint="@string/Info_nameHint"
+                    android:inputType="none"
+                    android:text="@string/Info_nameHint" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/CoachInfo_phoneLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:hintEnabled="true"
+                app:passwordToggleEnabled="false">
+
+                <AutoCompleteTextView
+                    android:id="@+id/CoachInfo_phoneText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:hint="@string/Info_phoneHint"
+                    android:inputType="none"
+                    android:text="@string/Info_phoneHint" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/CoachInfo_emailLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:hintEnabled="true"
+                app:passwordToggleEnabled="false">
+
+                <AutoCompleteTextView
+                    android:id="@+id/CoachInfo_emailText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:hint="@string/Info_emailHint"
+                    android:inputType="none"
+                    android:text="@string/Info_emailHint" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/CoachInfo_identifyLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:hintEnabled="true"
+                app:passwordToggleEnabled="false">
+
+                <AutoCompleteTextView
+                    android:id="@+id/CoachInfo_sexText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:hint="@string/Info_sexCoachHint"
+                    android:inputType="none"
+                    android:text="@string/Info_sexCoachHint" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/CoachInfo_resetButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="@string/Info_resetDescription" />
+
+            <Button
+                android:id="@+id/CoachInfo_delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/Info_deleteDescription" />
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

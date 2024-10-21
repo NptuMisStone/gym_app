@@ -9,7 +9,7 @@
     tools:context=".User.Main.UserInfo">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/userinfo_topConstraint"
+        android:id="@+id/UserInfo_topConstraint"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/red"
@@ -17,20 +17,20 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/userinfo_return"
+            android:id="@+id/UserInfo_return"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:background="@drawable/all_effect_ripple"
             android:contentDescription="@string/goBack"
-            android:src="@drawable/all_ic_arrow_back"
+            android:src="@drawable/all_ic_arrow_back2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5" />
 
         <TextView
-            android:id="@+id/userinfo_title"
+            android:id="@+id/UserInfo_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_Info"
@@ -44,7 +44,7 @@
             app:layout_constraintVertical_bias="0.5" />
 
         <ImageView
-            android:id="@+id/userinfo_logout"
+            android:id="@+id/UserInfo_logout"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="8dp"
@@ -71,7 +71,7 @@
         app:layout_constraintGuide_percent="0.28" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/userinfo_image"
+        android:id="@+id/UserInfo_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:civ_border_color="@color/dark_gray"
@@ -84,7 +84,7 @@
         app:srcCompat="@drawable/all_ic_null_image_account" />
 
     <Button
-        android:id="@+id/userinfo_upload"
+        android:id="@+id/UserInfo_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableEnd="@android:drawable/ic_menu_upload"
@@ -92,7 +92,7 @@
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/userinfo_image"
+        app:layout_constraintStart_toEndOf="@+id/UserInfo_image"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -246,18 +246,18 @@
                 app:passwordToggleEnabled="false">
 
                 <AutoCompleteTextView
-                    android:id="@+id/UserInfo_identifyText"
+                    android:id="@+id/UserInfo_sexText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:cursorVisible="false"
                     android:focusable="false"
-                    android:hint="@string/Info_identityUserHint"
+                    android:hint="@string/Info_sexUserHint"
                     android:inputType="none"
-                    android:text="@string/Info_identityUserHint" />
+                    android:text="@string/Info_sexUserHint" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/userinfo_change"
+                android:id="@+id/UserInfo_resetButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -266,7 +266,7 @@
                 android:text="@string/Info_resetDescription" />
 
             <Button
-                android:id="@+id/userinfo_delete"
+                android:id="@+id/UserInfo_delete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"

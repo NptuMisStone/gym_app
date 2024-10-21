@@ -132,7 +132,7 @@ public class Login extends AppCompatActivity {
         } else {
             ResultSet resultSet = MyConnection.createStatement().executeQuery("SELECT * FROM [健身教練資料] WHERE [健身教練編號] = " + last_login);
             if (resultSet.next()) {
-                Coach.setInstance(resultSet.getInt("健身教練編號"), resultSet.getString("健身教練帳號"), resultSet.getString("健身教練姓名"), resultSet.getString("健身教練電話"), resultSet.getBoolean("健身教練性別"), resultSet.getString("健身教練郵件"), resultSet.getBytes("健身教練圖片"));
+                Coach.setInstance(resultSet.getInt("健身教練編號"), resultSet.getString("健身教練帳號"), resultSet.getString("健身教練姓名"), resultSet.getString("健身教練電話"), resultSet.getInt("健身教練性別"), resultSet.getString("健身教練郵件"), resultSet.getBytes("健身教練圖片"));
                 startActivity(new Intent(this, CoachHome.class));
                 finish();
             }
@@ -205,7 +205,7 @@ public class Login extends AppCompatActivity {
         if (isUser)
             User.setInstance(rs.getInt("使用者編號"), rs.getString("使用者帳號"), rs.getString("使用者姓名"), rs.getString("使用者電話"), rs.getInt("使用者性別"), rs.getString("使用者郵件"), rs.getBytes("使用者圖片"));
         else
-            Coach.setInstance(rs.getInt("健身教練編號"), rs.getString("健身教練帳號"), rs.getString("健身教練姓名"), rs.getString("健身教練電話"), rs.getBoolean("健身教練性別"), rs.getString("健身教練郵件"), rs.getBytes("健身教練圖片"));
+            Coach.setInstance(rs.getInt("健身教練編號"), rs.getString("健身教練帳號"), rs.getString("健身教練姓名"), rs.getString("健身教練電話"), rs.getInt("健身教練性別"), rs.getString("健身教練郵件"), rs.getBytes("健身教練圖片"));
     }
 
     private void remember_input() {

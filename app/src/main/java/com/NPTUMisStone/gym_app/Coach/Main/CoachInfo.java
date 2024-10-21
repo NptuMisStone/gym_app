@@ -1,27 +1,27 @@
 package com.NPTUMisStone.gym_app.Coach.Main;
 
 import static com.NPTUMisStone.gym_app.User_And_Coach.ErrorHints.editHint;
-import static com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle.convertImageToBytes;
+import static com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle.getBitmap;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -29,21 +29,21 @@ import androidx.core.view.WindowInsetsCompat;
 import com.NPTUMisStone.gym_app.Main.Identify.Login;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
+import com.NPTUMisStone.gym_app.User_And_Coach.PasswordReset;
+import com.NPTUMisStone.gym_app.User_And_Coach.Validator;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CoachInfo extends AppCompatActivity {
     Connection MyConnection;
-    ImageView CoachInfo_image;
-    Button edit,upload,cancel,save;
-    TextView[] CoachInfo_tv;
-    EditText[] CoachInfo_et;
-    String[] CoachInfo_name = new String[]{"姓名", "帳號", "電話", "信箱"};
+    ImageView coachInfo_image;
+    AutoCompleteTextView[] coachInfo_tv;
+    TextInputLayout[] coachInfo_layout;
     Uri uri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,196 +56,220 @@ public class CoachInfo extends AppCompatActivity {
         });
         init();
     }
+
     private void init() {
-        TextView title = findViewById(R.id.CoachInfo_coachId);
-        title.setText(getString(R.string.Coach_CoachInfo, Integer.toString(Coach.getInstance().getCoachId())));
+        ((TextView)findViewById(R.id.CoachInfo_idText)).setText(getString(R.string.Coach_CoachInfo, Integer.toString(Coach.getInstance().getCoachId())));
         findViewById(R.id.CoachInfo_return).setOnClickListener(v -> finish());
         findViewById(R.id.CoachInfo_logout).setOnClickListener(v -> logout());
-        edit = findViewById(R.id.CoachInfo_edit);
-        edit.setOnClickListener(v -> changeInfo());
-        upload = findViewById(R.id.CoachInfo_upload);
-        upload.setOnClickListener(v -> changeImage());
-        cancel = findViewById(R.id.CoachInfo_cancel);
-        cancel.setOnClickListener(v -> cancelEdit());
-        save = findViewById(R.id.CoachInfo_save);
-        save.setOnClickListener(v -> saveInfo());
-        CoachInfo_tv = new TextView[]{findViewById(R.id.CoachInfo_et_showName), findViewById(R.id.CoachInfo_et_showAccount), findViewById(R.id.CoachInfo_et_showPhone), findViewById(R.id.CoachInfo_et_showMail)};
-        CoachInfo_et = new EditText[]{findViewById(R.id.CoachInfo_et_editName), findViewById(R.id.CoachInfo_et_editAccount), findViewById(R.id.CoachInfo_et_editPhone), findViewById(R.id.CoachInfo_et_editMail)};
-        for (int i = 0; i < CoachInfo_tv.length; i++) {
-            CoachInfo_tv[i].setText(get_info(i));
-            CoachInfo_et[i].setText(get_info(i));
+        findViewById(R.id.CoachInfo_upload).setOnClickListener(v -> changeImage());
+        findViewById(R.id.CoachInfo_resetButton).setOnClickListener(v -> new PasswordReset(this, true, MyConnection).showPasswordResetDialog());
+        coachInfo_tv = new AutoCompleteTextView[]{
+                findViewById(R.id.CoachInfo_nameText),
+                findViewById(R.id.CoachInfo_accountText),
+                findViewById(R.id.CoachInfo_phoneText),
+                findViewById(R.id.CoachInfo_emailText),
+                findViewById(R.id.CoachInfo_sexText)
+        };
+        coachInfo_layout = new TextInputLayout[]{
+                findViewById(R.id.CoachInfo_nameLayout),
+                findViewById(R.id.CoachInfo_accountLayout),
+                findViewById(R.id.CoachInfo_phoneLayout),
+                findViewById(R.id.CoachInfo_emailLayout),
+                findViewById(R.id.CoachInfo_identifyLayout)
+        };
+        for (int i = 0; i < coachInfo_tv.length; i++) {
+            coachInfo_tv[i].setText(get_info(i));
+            int finalI = i;
+            coachInfo_tv[i].setOnClickListener(v -> changeData(finalI));
         }
         init_image();
+        MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
     }
-    private String get_info(int index){
+
+    private void changeData(int index) {
+        Log.d("ChangeData", "ChangeData: " + index);
+        AutoCompleteTextView autoCompleteTextView = coachInfo_tv[index];
+        TextInputLayout textInputLayout = coachInfo_layout[index];
+        View dialogView;
+        Validator validator = new Validator(MyConnection);
+        ViewGroup parent = findViewById(android.R.id.content); // Get the parent view group
+
+        if (index < 4) {
+            dialogView = getLayoutInflater().inflate(R.layout.info_edit_layout, parent, false);
+            TextInputLayout textInputLayout1 = dialogView.findViewById(R.id.InfoEdit_Layout);
+            textInputLayout1.setHint(textInputLayout.getHint());
+            AutoCompleteTextView autoCompleteTextView1 = dialogView.findViewById(R.id.InfoEdit_Text);
+            autoCompleteTextView1.setText(autoCompleteTextView.getText().toString());
+            showEditDialog(index, autoCompleteTextView, autoCompleteTextView1, validator, dialogView);
+        } else {
+            dialogView = getLayoutInflater().inflate(R.layout.info_sex_layout, parent, false);
+            RadioButton[] radioButtons = new RadioButton[]{
+                    dialogView.findViewById(R.id.InfoSex_sexRadio1),
+                    dialogView.findViewById(R.id.InfoSex_sexRadio2),
+                    dialogView.findViewById(R.id.InfoSex_sexRadio3)
+            };
+            for (int i = 0; i < radioButtons.length; i++)
+                if (i == Coach.getInstance().getCoachSex() - 1) radioButtons[i].setChecked(true);
+            showSexDialog(autoCompleteTextView, radioButtons);
+        }
+    }
+
+    private void showEditDialog(int index, AutoCompleteTextView autoCompleteTextView, AutoCompleteTextView autoCompleteTextView1, Validator validator, View dialogView) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("修改資料")
+                .setMessage("是否要修改資料？")
+                .setView(dialogView)
+                .setPositiveButton("確定", null)
+                .setNegativeButton("否", null)
+                .create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String errorMessage = validateInput(index, autoCompleteTextView1, validator);
+            if (errorMessage == null) {
+                updateUserInfo(index, autoCompleteTextView, autoCompleteTextView1, alertDialog);
+            } else {
+                editHint(autoCompleteTextView1, errorMessage);
+            }
+        });
+    }
+
+    private void showSexDialog(AutoCompleteTextView autoCompleteTextView, RadioButton[] radioButtons) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("修改資料")
+                .setMessage("是否要修改資料？")
+                .setView((View) radioButtons[0].getParent())
+                .setPositiveButton("是", (dialog, which) -> {
+                    for (int i = 0; i < radioButtons.length; i++) {
+                        if (radioButtons[i].isChecked()) {
+                            try {
+                                MyConnection.prepareStatement("UPDATE 健身教練資料 SET 健身教練性別 = " + (i + 1) + " WHERE 健身教練編號 = " + Coach.getInstance().getCoachId()).executeUpdate();
+                                Coach.getInstance().setCoachSex(i + 1);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                            autoCompleteTextView.setText(radioButtons[i].getText().toString());
+                            break;
+                        }
+                    }
+                })
+                .setNegativeButton("否", null)
+                .create();
+        alertDialog.show();
+    }
+    private String validateInput(int index, AutoCompleteTextView autoCompleteTextView1, Validator validator) {
+        return switch (index) {
+            case 0 -> validator.checkInput(autoCompleteTextView1, "姓名", 20, null);
+            case 1 -> {
+                String errorMessage = validator.checkInput(autoCompleteTextView1, "帳號", 20, null);
+                if (errorMessage == null) {
+                    errorMessage = validator.checkAccount(autoCompleteTextView1, Coach.getInstance().getCoachAccount(), null);
+                }
+                yield errorMessage;
+            }
+            case 2 -> {
+                String errorMessage = validator.checkInput(autoCompleteTextView1, "電話", 10, null);
+                if (errorMessage == null) {
+                    errorMessage = validator.checkPhone(autoCompleteTextView1, null);
+                }
+                yield errorMessage;
+            }
+            case 3 -> {
+                String errorMessage = validator.checkInput(autoCompleteTextView1, "信箱", 30, null);
+                if (errorMessage == null) {
+                    errorMessage = validator.checkEmail(autoCompleteTextView1, null);
+                }
+                yield errorMessage;
+            }
+            default -> null;
+        };
+    }
+
+    private void updateUserInfo(int index, AutoCompleteTextView autoCompleteTextView, AutoCompleteTextView autoCompleteTextView1, AlertDialog alertDialog) {
+        autoCompleteTextView.setText(autoCompleteTextView1.getText().toString());
+        try {
+            String updateQuery = getUpdateQuery(index);
+            PreparedStatement ps = MyConnection.prepareStatement(updateQuery);
+            ps.setString(1, autoCompleteTextView1.getText().toString());
+            ps.setInt(2, Coach.getInstance().getCoachId());
+            ps.executeUpdate();
+            updateUserInstance(index, autoCompleteTextView1.getText().toString());
+            alertDialog.dismiss();
+        } catch (SQLException e) {
+            Log.e("SQL", "Error updating coach info", e);
+        }
+    }
+
+    private void updateUserInstance(int index, String newValue) {
+        switch (index) {
+            case 0 -> Coach.getInstance().setCoachName(newValue);
+            case 1 -> Coach.getInstance().setCoachAccount(newValue);
+            case 2 -> Coach.getInstance().setCoachPhone(newValue);
+            case 3 -> Coach.getInstance().setCoachMail(newValue);
+        }
+    }
+    @NonNull
+    private static String getUpdateQuery(int index) {
+        String columnName = switch (index) {
+            case 0 -> "健身教練姓名";
+            case 1 -> "健身教練帳號";
+            case 2 -> "健身教練電話";
+            case 3 -> "健身教練郵件";
+            default -> throw new IllegalStateException("Unexpected value: " + index);
+        };
+        return "UPDATE 健身教練資料 SET " + columnName + " = ? WHERE 健身教練編號 = ?";
+    }
+
+    private String get_info(int index) {
         return switch (index) {
             case 0 -> Coach.getInstance().getCoachName();
             case 1 -> Coach.getInstance().getCoachAccount();
             case 2 -> Coach.getInstance().getCoachPhone();
             case 3 -> Coach.getInstance().getCoachMail();
+            case 4 -> switch (Coach.getInstance().getCoachSex()) {
+                case 1 -> "男♂";
+                case 2 -> "女♀";
+                case 3 -> "保密⚲";
+                default -> "未設定";
+            };
             default -> "";
         };
     }
+
     private void init_image() {
-        CoachInfo_image = findViewById(R.id.CoachInfo_image);
+        coachInfo_image = findViewById(R.id.CoachInfo_image);
         //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
         byte[] image = Coach.getInstance().getCoachImage();
-        if (image != null) CoachInfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+        if (image != null)
+            coachInfo_image.setImageBitmap(getBitmap(image));
     }
+
     private void logout() {
-        Coach.setInstance(0,"","", "", true,"",null);
+        Coach.setInstance(0, "", "", "", 0, "", null);
         //Delete SharedPreferences Data：https://stackoverflow.com/questions/3687315/how-to-delete-shared-preferences-data-from-app-in-android
         getSharedPreferences("remember", MODE_PRIVATE).edit().remove("last_login").apply();
         sendBroadcast(new Intent("com.NPTUMisStone.gym_app.LOGOUT"));
         startActivity(new Intent(this, Login.class));
         finish();
     }
-    private void changeInfo() {
-        edit.setEnabled(false);
-        upload.setVisibility(View.VISIBLE);
-        cancel.setVisibility(View.VISIBLE);
-        save.setVisibility(View.VISIBLE);
-        for (int i = 0; i < CoachInfo_tv.length; i++) {
-            CoachInfo_tv[i].setVisibility(View.GONE);
-            CoachInfo_et[i].setVisibility(View.VISIBLE);
-        }
-        imageShift();
-    }
-    private void imageShift() {
-        ConstraintLayout layout = findViewById(R.id.main);
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(layout);
-        // 將CoachInfo_image對齊到parent的左邊
-        constraintSet.connect(R.id.CoachInfo_image, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
-        constraintSet.connect(R.id.CoachInfo_image, ConstraintSet.END, R.id.CoachInfo_upload, ConstraintSet.START, 0);
-        // 將CoachInfo_upload對齊到parent的右邊
-        constraintSet.connect(R.id.CoachInfo_upload, ConstraintSet.START, R.id.CoachInfo_image, ConstraintSet.END, 0);
-        constraintSet.connect(R.id.CoachInfo_upload, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-        // 應用新的約束
-        constraintSet.applyTo(layout);
-    }
-    private void imageReturn() {
-        ConstraintLayout layout = findViewById(R.id.main);
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(layout);
-        // 將CoachInfo_image對齊到parent的左邊
-        constraintSet.connect(R.id.CoachInfo_image, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
-        constraintSet.connect(R.id.CoachInfo_image, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-        // 將CoachInfo_upload對齊到parent的右邊
-        constraintSet.connect(R.id.CoachInfo_upload, ConstraintSet.START, R.id.CoachInfo_image, ConstraintSet.END, 0);
-        constraintSet.connect(R.id.CoachInfo_upload, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-        // 應用新的約束
-        constraintSet.applyTo(layout);
-    }
-    private void cancelEdit() {
-        edit.setEnabled(true);
-        upload.setVisibility(View.GONE);
-        cancel.setVisibility(View.GONE);
-        save.setVisibility(View.GONE);
-        for (int i = 0; i < CoachInfo_tv.length; i++) {
-            CoachInfo_tv[i].setVisibility(View.VISIBLE);
-            CoachInfo_et[i].setText(get_info(i));
-            CoachInfo_et[i].setVisibility(View.GONE);
-        }
-        imageReturn();
-    }
-    private void saveInfo() {
-        if(!checkInput()) return;
-        try {
-            String[] inputData = new String[]{CoachInfo_et[0].getText().toString(), CoachInfo_et[1].getText().toString(), CoachInfo_et[2].getText().toString(), CoachInfo_et[3].getText().toString()};
-            byte[] inputImage = uri == null ? Coach.getInstance().getCoachImage(): convertImageToBytes(this,uri);
-            updateCoachInfoInDatabase(inputData, inputImage);
-            updateCoachInstance(inputData, inputImage);
-            Toast.makeText(this, "資料更新成功", Toast.LENGTH_SHORT).show();
-            edit.setEnabled(true);
-            upload.setVisibility(View.GONE);
-            cancel.setVisibility(View.GONE);
-            save.setVisibility(View.GONE);
-            for (int i = 0; i < CoachInfo_tv.length; i++) {
-                CoachInfo_tv[i].setText(get_info(i));
-                CoachInfo_tv[i].setVisibility(View.VISIBLE);
-                CoachInfo_et[i].setVisibility(View.GONE);
-            }
-            imageReturn();
-        }catch (Exception e){
-            Log.e("SQL", "Error in SQL", e);
-        }
-    }
-    private boolean checkInput() {
-        boolean isValid = true;
-        int max = CoachInfo_et.length-1;
-        EditText editText;
-        int[] max_length = new int[]{20, 20, 10, 30};
-        for (int i = max-1; i >= 0; i--) { //從後面開始檢查(跳過信箱)，讓最上面的EditText可以focus
-            editText = CoachInfo_et[i];
-            if (editText.getText().toString().trim().isEmpty()) {
-                editHint(editText, "請輸入"+ CoachInfo_name[i]);
-                isValid = false;
-            }else if (editText.getText().toString().length() > max_length[i]) {
-                editHint(editText, CoachInfo_name[i] + "過長");
-                isValid = false;
-            }
-        }
-        editText = CoachInfo_et[max];
-        if (!isEmailValid(editText.getText().toString())) {
-            editHint(editText, "請輸入有效的電子郵件");
-            isValid = false;
-        }
-        editText = CoachInfo_et[max-1];
-        if (editText.getText().toString().length() != 10) {
-            editHint(editText, "請輸入正確的聯絡電話");
-            isValid = false;
-        }
-        try {
-            MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-            editText = CoachInfo_et[1];
-            if (!editText.getText().toString().equals(Coach.getInstance().getCoachAccount())) {
-                String check_account = "SELECT * FROM 使用者資料 WHERE 使用者帳號 ='" + editText.getText().toString()+ "'";
-                ResultSet account_result = MyConnection.createStatement().executeQuery(check_account);
-                if (account_result.next()) {
-                    editHint(editText, "此帳號已被使用");
-                    isValid = false;
-                }
-            }
-        } catch (Exception e) {
-            Log.e("SQL", "Error in SQL", e);
-            isValid = false;
-        }
-        return isValid;
-    }
-    boolean isEmailValid(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-    private void updateCoachInfoInDatabase(String[] coachInfo, byte[] imageData) throws SQLException {
-        MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-        PreparedStatement ps = MyConnection.prepareStatement("UPDATE 健身教練資料 SET 健身教練姓名 = ?, 健身教練帳號 = ?, 健身教練電話 = ?, 健身教練郵件 = ?, 健身教練圖片 = ? WHERE 健身教練編號 = ?");
-        for (int i = 0; i < coachInfo.length; i++) ps.setString(i + 1, coachInfo[i]);
-        ps.setBytes(5, imageData);
-        ps.setInt(6, Coach.getInstance().getCoachId());
-        ps.executeUpdate();
-    }
-    private void updateCoachInstance(String[] coachInfo, byte[] imageData) {
-        Coach.setInstance(Coach.getInstance().getCoachId(), coachInfo[1], coachInfo[0], coachInfo[2], Coach.getInstance().getCoachSex(), coachInfo[3], imageData);
-    }
+
     private void changeImage() {
-        CoachInfo_image = findViewById(R.id.CoachInfo_image);
+        coachInfo_image = findViewById(R.id.CoachInfo_image);
         Intent intent = new Intent();   //上傳圖片：https://www.youtube.com/watch?v=9oNujFx_ZaI&ab_channel=ShihFinChen
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         uploadImage_ActivityResult.launch(intent);
     }
+
     ActivityResultLauncher<Intent> uploadImage_ActivityResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
-                    if (data == null)
-                        return;
+                    if (data == null) return;
                     uri = data.getData();
-                    CoachInfo_image.setImageURI(uri);
-                }
-                else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                    coachInfo_image.setImageURI(uri);
+                } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                     Toast.makeText(this, "取消圖片上傳", Toast.LENGTH_SHORT).show();
                 }
             }

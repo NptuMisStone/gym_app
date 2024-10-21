@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -41,7 +40,6 @@ import java.sql.SQLException;
 public class UserInfo extends AppCompatActivity {
     Connection MyConnection;
     ImageView userinfo_image;
-    Button upload;
     AutoCompleteTextView[] userinfo_tv;
     TextInputLayout[] userinfo_layout;
     Uri uri;
@@ -58,20 +56,17 @@ public class UserInfo extends AppCompatActivity {
         init();
     }
     private void init() {
-        TextView title = findViewById(R.id.UserInfo_idText);
-        title.setText(getString(R.string.User_UserInfo, Integer.toString(User.getInstance().getUserId())));
-        findViewById(R.id.userinfo_return).setOnClickListener(v -> finish());
-        findViewById(R.id.userinfo_logout).setOnClickListener(v -> logout());
-        upload = findViewById(R.id.userinfo_upload);
-        upload.setOnClickListener(v -> changeImage());
-        Button change_password = findViewById(R.id.userinfo_change);
-        change_password.setOnClickListener(v -> new PasswordReset(this, true, MyConnection).showPasswordResetDialog());
+        ((TextView)findViewById(R.id.UserInfo_idText)).setText(getString(R.string.User_UserInfo, Integer.toString(User.getInstance().getUserId())));
+        findViewById(R.id.UserInfo_return).setOnClickListener(v -> finish());
+        findViewById(R.id.UserInfo_logout).setOnClickListener(v -> logout());
+        findViewById(R.id.UserInfo_upload).setOnClickListener(v -> changeImage());
+        findViewById(R.id.UserInfo_resetButton).setOnClickListener(v -> new PasswordReset(this, true, MyConnection).showPasswordResetDialog());
         userinfo_tv = new AutoCompleteTextView[]{
                 findViewById(R.id.UserInfo_nameText),
                 findViewById(R.id.UserInfo_accountText),
                 findViewById(R.id.UserInfo_phoneText),
                 findViewById(R.id.UserInfo_emailText),
-                findViewById(R.id.UserInfo_identifyText)
+                findViewById(R.id.UserInfo_sexText)
         };
         userinfo_layout = new TextInputLayout[]{
                 findViewById(R.id.UserInfo_nameLayout),
@@ -96,94 +91,116 @@ public class UserInfo extends AppCompatActivity {
         Validator validator = new Validator(MyConnection);
         ViewGroup parent = findViewById(android.R.id.content); // Get the parent view group
 
+        if (index < 4) {
+            dialogView = getLayoutInflater().inflate(R.layout.info_edit_layout, parent, false);
+            TextInputLayout textInputLayout1 = dialogView.findViewById(R.id.InfoEdit_Layout);
+            textInputLayout1.setHint(textInputLayout.getHint());
+            AutoCompleteTextView autoCompleteTextView1 = dialogView.findViewById(R.id.InfoEdit_Text);
+            autoCompleteTextView1.setText(autoCompleteTextView.getText().toString());
+            showEditDialog(index, autoCompleteTextView, autoCompleteTextView1, validator, dialogView);
+        } else {
+            dialogView = getLayoutInflater().inflate(R.layout.info_sex_layout, parent, false);
+            RadioButton[] radioButtons = new RadioButton[]{
+                    dialogView.findViewById(R.id.InfoSex_sexRadio1),
+                    dialogView.findViewById(R.id.InfoSex_sexRadio2),
+                    dialogView.findViewById(R.id.InfoSex_sexRadio3)
+            };
+            for (int i = 0; i < radioButtons.length; i++)
+                if (i == User.getInstance().getUserSex() - 1) radioButtons[i].setChecked(true);
+            showSexDialog(autoCompleteTextView, radioButtons);
+        }
+    }
+
+    private void showEditDialog(int index, AutoCompleteTextView autoCompleteTextView, AutoCompleteTextView autoCompleteTextView1, Validator validator, View dialogView) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("修改資料")
+                .setMessage("是否要修改資料？")
+                .setView(dialogView)
+                .setPositiveButton("確定", null)
+                .setNegativeButton("否", null)
+                .create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String errorMessage = validateInput(index, autoCompleteTextView1, validator);
+            if (errorMessage == null) {
+                updateUserInfo(index, autoCompleteTextView, autoCompleteTextView1, alertDialog);
+            } else {
+                editHint(autoCompleteTextView1, errorMessage);
+            }
+        });
+    }
+
+    private void showSexDialog(AutoCompleteTextView autoCompleteTextView, RadioButton[] radioButtons) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("修改資料").setMessage("是否要修改資料？")
+                .setView((View) radioButtons[0].getParent())
+                .setPositiveButton("是", (dialog, which) -> {
+                    for (int i = 0; i < radioButtons.length; i++) {
+                        if (radioButtons[i].isChecked()) {
+                            try {
+                                MyConnection.prepareStatement("UPDATE 使用者資料 SET 使用者性別 = " + (i + 1) + " WHERE 使用者編號 = " + User.getInstance().getUserId()).executeUpdate();
+                                User.getInstance().setUserSex(i + 1);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                            autoCompleteTextView.setText(radioButtons[i].getText().toString());
+                            break;
+                        }
+                    }
+                })
+                .setNegativeButton("否", null)
+                .create();
+        alertDialog.show();
+    }
+
+    private String validateInput(int index, AutoCompleteTextView autoCompleteTextView1, Validator validator) {
+        return switch (index) {
+            case 0 -> validator.checkInput(autoCompleteTextView1, "姓名", 20, null);
+            case 1 -> {
+                String errorMessage = validator.checkInput(autoCompleteTextView1, "帳號", 20, null);
+                if (errorMessage == null) {
+                    errorMessage = validator.checkAccount(autoCompleteTextView1, User.getInstance().getUserAccount(), null);
+                }
+                yield errorMessage;
+            }
+            case 2 -> {
+                String errorMessage = validator.checkInput(autoCompleteTextView1, "電話", 10, null);
+                if (errorMessage == null) {
+                    errorMessage = validator.checkPhone(autoCompleteTextView1, null);
+                }
+                yield errorMessage;
+            }
+            case 3 -> {
+                String errorMessage = validator.checkInput(autoCompleteTextView1, "信箱", 30, null);
+                if (errorMessage == null) {
+                    errorMessage = validator.checkEmail(autoCompleteTextView1, null);
+                }
+                yield errorMessage;
+            }
+            default -> null;
+        };
+    }
+
+    private void updateUserInfo(int index, AutoCompleteTextView autoCompleteTextView, AutoCompleteTextView autoCompleteTextView1, AlertDialog alertDialog) {
+        autoCompleteTextView.setText(autoCompleteTextView1.getText().toString());
+        try {
+            String updateQuery = getUpdateQuery(index);
+            PreparedStatement ps = MyConnection.prepareStatement(updateQuery);
+            ps.setString(1, autoCompleteTextView1.getText().toString());
+            ps.setInt(2, User.getInstance().getUserId());
+            ps.executeUpdate();
+            updateUserInstance(index, autoCompleteTextView1.getText().toString());
+            alertDialog.dismiss();
+        } catch (SQLException e) {
+            Log.e("SQL", "Error updating user info", e);
+        }
+    }
+    private void updateUserInstance(int index, String newValue) {
         switch (index) {
-            case 0, 1, 2, 3 -> {
-                dialogView = getLayoutInflater().inflate(R.layout.info_edit_layout, parent, false);
-                TextInputLayout textInputLayout1 = dialogView.findViewById(R.id.InfoEdit_Layout);
-                textInputLayout1.setHint(textInputLayout.getHint());
-                AutoCompleteTextView autoCompleteTextView1 = dialogView.findViewById(R.id.InfoEdit_Text);
-                autoCompleteTextView1.setText(autoCompleteTextView.getText().toString());
-                AlertDialog alertDialog = new AlertDialog.Builder(this)
-                        .setTitle("修改資料")
-                        .setMessage("是否要修改資料？")
-                        .setView(dialogView)
-                        .setPositiveButton("確定", null)
-                        .setNegativeButton("否", null)
-                        .create();
-                alertDialog.show();
-                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-                    String errorMessage = null;
-                    switch (index) {
-                        case 0 -> errorMessage = validator.checkInput(autoCompleteTextView1, "姓名", 20,null);
-                        case 1 -> {
-                            errorMessage = validator.checkInput(autoCompleteTextView1, "帳號", 20,null);
-                            if (errorMessage == null) {
-                                errorMessage = validator.checkAccount(autoCompleteTextView1, User.getInstance().getUserAccount(), null);
-                            }
-                        }
-                        case 2 -> {
-                            errorMessage = validator.checkInput(autoCompleteTextView1, "電話", 10,null);
-                            if (errorMessage == null) {
-                                errorMessage = validator.checkPhone(autoCompleteTextView1, null);
-                            }
-                        }
-                        case 3 -> {
-                            errorMessage = validator.checkInput(autoCompleteTextView1, "信箱", 30,null);
-                            if (errorMessage == null) {
-                                errorMessage = validator.checkEmail(autoCompleteTextView1, null);
-                            }
-                        }
-                    }
-                    if (errorMessage == null) {
-                        autoCompleteTextView.setText(autoCompleteTextView1.getText().toString());
-                        try {
-                            String updateQuery = getUpdateQuery(index);
-                            PreparedStatement ps = MyConnection.prepareStatement(updateQuery);
-                            ps.setString(1, autoCompleteTextView1.getText().toString());
-                            ps.setInt(2, User.getInstance().getUserId());
-                            ps.executeUpdate();
-                            switch (index) {
-                                case 0 -> User.getInstance().setUserName(autoCompleteTextView1.getText().toString());
-                                case 1 -> User.getInstance().setUserAccount(autoCompleteTextView1.getText().toString());
-                                case 2 -> User.getInstance().setUserPhone(autoCompleteTextView1.getText().toString());
-                                case 3 -> User.getInstance().setUserMail(autoCompleteTextView1.getText().toString());
-                            }
-                            alertDialog.dismiss();
-                        } catch (SQLException e) {
-                            Log.e("SQL", "Error updating user info", e);
-                        }
-                    } else {
-                        editHint(autoCompleteTextView1, errorMessage);
-                    }
-                });
-            }
-            case 4 -> {
-                dialogView = getLayoutInflater().inflate(R.layout.info_sex_layout, parent, false);
-                RadioButton[] radioButtons = new RadioButton[]{dialogView.findViewById(R.id.InfoSex_sexRadio1), dialogView.findViewById(R.id.InfoSex_sexRadio2), dialogView.findViewById(R.id.InfoSex_sexRadio3)};
-                for (int i = 0; i < radioButtons.length; i++)
-                    if (i == User.getInstance().getUserSex() - 1) radioButtons[i].setChecked(true);
-                AlertDialog alertDialog = new AlertDialog.Builder(this)
-                        .setTitle("修改資料")
-                        .setMessage("是否要修改資料？")
-                        .setView(dialogView)
-                        .setPositiveButton("是", (dialog, which) -> {
-                            for (int i = 0; i < radioButtons.length; i++) {
-                                if (radioButtons[i].isChecked()) {
-                                    try {
-                                        MyConnection.prepareStatement("UPDATE 使用者資料 SET 使用者性別 = " + (i + 1) + " WHERE 使用者編號 = " + User.getInstance().getUserId()).executeUpdate();
-                                        User.getInstance().setUserSex(i + 1);
-                                    } catch (SQLException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                    autoCompleteTextView.setText(radioButtons[i].getText().toString());
-                                    break;
-                                }
-                            }
-                        })
-                        .setNegativeButton("否", null)
-                        .create();
-                alertDialog.show();
-            }
+            case 0 -> User.getInstance().setUserName(newValue);
+            case 1 -> User.getInstance().setUserAccount(newValue);
+            case 2 -> User.getInstance().setUserPhone(newValue);
+            case 3 -> User.getInstance().setUserMail(newValue);
         }
     }
 
@@ -215,7 +232,7 @@ public class UserInfo extends AppCompatActivity {
         };
     }
     private void init_image() {
-        userinfo_image = findViewById(R.id.userinfo_image);
+        userinfo_image = findViewById(R.id.UserInfo_image);
         //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
         byte[] image = User.getInstance().getUserImage();
         if (image != null)
@@ -229,7 +246,7 @@ public class UserInfo extends AppCompatActivity {
         finish();
     }
     private void changeImage() {
-        userinfo_image = findViewById(R.id.userinfo_image);
+        userinfo_image = findViewById(R.id.UserInfo_image);
         Intent intent = new Intent();   //上傳圖片：https://www.youtube.com/watch?v=9oNujFx_ZaI&ab_channel=ShihFinChen
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.setType("image/*");
@@ -244,8 +261,7 @@ public class UserInfo extends AppCompatActivity {
                     if (data == null)   return;
                     uri = data.getData();
                     userinfo_image.setImageURI(uri);
-                }
-                else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                     Toast.makeText(this, "取消圖片上傳", Toast.LENGTH_SHORT).show();
                 }
             }

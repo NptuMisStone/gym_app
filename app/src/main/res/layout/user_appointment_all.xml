@@ -31,7 +31,7 @@
         app:layout_constraintHorizontal_bias="0.042"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/all_ic_arrow_back" />
+        app:srcCompat="@drawable/all_ic_arrow_back1" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
