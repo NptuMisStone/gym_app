@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.Records.NowAppointment.NowAppointmentFragment">
+    tools:context=".User.Like.User_LikeClassFragment">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -13,18 +13,17 @@
         android:layout_gravity="center"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/user_ap_now_recycleview"
+        android:id="@+id/user_like_class_recycleview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/user_now_appointment_item">
-
-    </androidx.recyclerview.widget.RecyclerView>
-
+        tools:listitem="@layout/user_like_class_item" />
     <TextView
-        android:id="@+id/user_ap_nodata"
+        android:id="@+id/user_like_nodata"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="暫無資料"/>
+        android:text="暫無收藏"/>
+
+
 
 </FrameLayout>

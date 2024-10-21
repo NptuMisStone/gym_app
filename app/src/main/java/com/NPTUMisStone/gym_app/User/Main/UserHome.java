@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User.Like.User_Like;
 import com.NPTUMisStone.gym_app.User.Search.CoachLove;
 import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
 import com.NPTUMisStone.gym_app.User.Search.GymList;
@@ -65,7 +66,7 @@ public class UserHome extends AppCompatActivity {
         if (id == R.id.UserHome_coachButton) {
             startActivity(new Intent(this, Search.class));
         } else if (id == R.id.UserHome_loveButton) {
-            startActivity(new Intent(this, CoachLove.class));
+            startActivity(new Intent(this, User_Like.class));
         } else if (id == R.id.UserHome_appointmentButton) {
             startActivity(new Intent(this, AppointmentAll.class));
         } else if (id == R.id.UserHome_gymButton) {

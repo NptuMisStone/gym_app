@@ -15,6 +15,12 @@
         android:theme="@style/Theme.Gym_app"
         tools:targetApi="31">
         <activity
+            android:name=".User.Like.User_Like"
+            android:exported="false" />
+        <activity
+            android:name=".User.Comments.User_Comments"
+            android:exported="false" />
+        <activity
             android:name=".User.Search.Coach.CoachDetail"
             android:exported="false" />
         <activity
@@ -57,7 +63,8 @@
         <activity
             android:name=".Coach.Main.CoachHome"
             android:exported="false" />
-        <activity android:name=".Coach.Main.CoachInfo"
+        <activity
+            android:name=".Coach.Main.CoachInfo"
             android:exported="false" />
         <activity
             android:name=".User.Main.UserHome"
@@ -65,12 +72,13 @@
         <activity
             android:name=".Main.Identify.Login"
             android:exported="false"
-            android:windowSoftInputMode="stateVisible|adjustResize"/>
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".Main.Initial.Welcome"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

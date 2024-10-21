@@ -71,7 +71,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/user_ap_time"
+                        android:id="@+id/user_like_class_classname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -120,7 +120,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/_allprice"
+                        android:id="@+id/user_like_class_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -136,7 +136,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/user_ap_class_name"
+                        android:id="@+id/user_like_class_coachname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -167,7 +167,7 @@
                     android:orientation="horizontal" />
 
                 <TextView
-                    android:id="@+id/_coachName"
+                    android:id="@+id/user_like_class_intro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="教練"
@@ -184,7 +184,6 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="center_vertical"
-                        android:onClick="modify"
                         android:padding="4dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/all_ic_null_image_account"
@@ -193,7 +192,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/user_ap_coach_name"
+                        android:id="@+id/user_like_class_people"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="3dp"
@@ -224,7 +223,7 @@
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/user_ap_note"
+                    android:id="@+id/user_like_coach_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
@@ -247,6 +246,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
+                    android:id="@+id/StatusArea"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#475766"

@@ -5,9 +5,22 @@
     android:layout_height="match_parent"
     tools:context=".User.Records.CoachCancelAppointment.CoachCancelAppointmentFragment">
 
-    <TextView
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/user_ap_coachcancel_recycleview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="2" />
+        tools:listitem="@layout/user_appointment_item" />
+    <TextView
+        android:id="@+id/user_ap_nodata"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="暫無資料"/>
 
 </FrameLayout>

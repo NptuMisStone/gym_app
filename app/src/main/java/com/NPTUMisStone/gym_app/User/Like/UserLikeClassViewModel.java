@@ -1,14 +1,14 @@
-package com.NPTUMisStone.gym_app.User.Records.NowAppointment;
+package com.NPTUMisStone.gym_app.User.Like;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NowAppointmentViewModel extends ViewModel {
+public class UserLikeClassViewModel extends ViewModel {
     private final MutableLiveData<String> mText;
-    public NowAppointmentViewModel() {
+    public UserLikeClassViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is NowAP fragment");
+        mText.setValue("This is LikeClass fragment");
     }
 
     public LiveData<String> getText() {

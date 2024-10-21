@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class User_AppointmentData {
     Date date;
-    int reservationID, timeLong, status, coachId;
+    int reservationID, timeLong, status;
     byte[] coachimage;
     String className, classPrice, coachName, note,week,time;
     static ArrayList<User_AppointmentData> appointments = new ArrayList<>();
@@ -59,6 +59,10 @@ public class User_AppointmentData {
 
     public String getCoachName() {
         return coachName;
+    }
+
+    public int getStatus() {
+        return status;
     }
 
     public String getNote() {

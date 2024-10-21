@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,15 +15,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User.Records.User_AppointmentData;
 import com.NPTUMisStone.gym_app.User.Records.User_Appointment_Adapter;
-import com.NPTUMisStone.gym_app.User.Search.Coach.CoachListAdapter;
-import com.NPTUMisStone.gym_app.User.Search.Coach.CoachListData;
+
 import com.NPTUMisStone.gym_app.databinding.UserFragmentCancelAppointmentBinding;
-import com.facebook.shimmer.ShimmerFrameLayout;
 
 
 import java.sql.Connection;
@@ -38,10 +37,10 @@ import java.util.concurrent.Executors;
 public class CancelAppointmentFragment extends Fragment {
 
     private UserFragmentCancelAppointmentBinding binding;
-//    private User_Appointment_Adapter adapter;
     private Connection MyConnection;
     ArrayList<User_AppointmentData> appointmentData = new ArrayList<>();
-
+    private ProgressBar progressBar;
+    TextView nodata;
     public static CancelAppointmentFragment newInstance() {
         return new CancelAppointmentFragment();
     }
@@ -54,14 +53,14 @@ public class CancelAppointmentFragment extends Fragment {
 
         binding = UserFragmentCancelAppointmentBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
-
-        ShimmerFrameLayout shimmerFrameLayout = binding.userApCancelSml;
-        shimmerFrameLayout.startShimmer();
-        fetchAppointments(shimmerFrameLayout);
+        nodata=binding.userApNodata;
+        nodata.setVisibility(View.GONE);
+        progressBar = binding.progressBar;
+        progressBar.setVisibility(View.VISIBLE);
+        fetchAppointments();
         return root;
     }
-
-    private void fetchAppointments(ShimmerFrameLayout shimmerFrameLayout) {
+    private void fetchAppointments() {
             Executors.newSingleThreadExecutor().execute(() -> {
                 try {
                     MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
@@ -85,23 +84,28 @@ public class CancelAppointmentFragment extends Fragment {
                                 rs.getInt("預約狀態"),
                                 rs.getString("備註")
                         ));
+                    rs.close();
+                    searchStatement.close();
                 } catch (SQLException e) {
                     Log.e("SQL", Objects.requireNonNull(e.getMessage()));
                 }
-                new Handler(Looper.getMainLooper()).post(() -> updateUI(shimmerFrameLayout));
+                new Handler(Looper.getMainLooper()).post(this::updateUI);
             });
 
     }
-    private void updateUI(ShimmerFrameLayout shimmerFrameLayout) {
+
+    private void updateUI() {
         if (getActivity() != null && isAdded()) {
             User_Appointment_Adapter userAppointmentAdapter = new User_Appointment_Adapter(getActivity(),appointmentData);
             RecyclerView cancelApRecyclerView = binding.userApCancelRecycleview;
             cancelApRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             cancelApRecyclerView.setAdapter(userAppointmentAdapter);
-            shimmerFrameLayout.stopShimmer();
-            shimmerFrameLayout.setVisibility(View.GONE);
-            Log.i("SQL", "獲得資料筆數：" + appointmentData.size());
-            Log.i("CancelAppointment", "更新 UI，資料筆數：" + appointmentData.size());
+            progressBar.setVisibility(View.GONE);
+            if (appointmentData.isEmpty()) {
+                nodata.setVisibility(View.VISIBLE);
+            } else {
+                nodata.setVisibility(View.GONE);
+            }
         }
     }
 
