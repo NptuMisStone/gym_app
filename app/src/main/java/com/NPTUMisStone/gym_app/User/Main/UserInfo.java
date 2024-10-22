@@ -60,7 +60,7 @@ public class UserInfo extends AppCompatActivity {
     }
 
     private void init() {
-        ((TextView) findViewById(R.id.UserInfo_idText)).setText(getString(R.string.User_UserInfo, Integer.toString(User.getInstance().getUserId())));
+        ((TextView) findViewById(R.id.UserInfo_idText)).setText(getString(R.string.All_idText, User.getInstance().getUserId()));
         findViewById(R.id.UserInfo_return).setOnClickListener(v -> finish());
         findViewById(R.id.UserInfo_logout).setOnClickListener(v -> logout());
         findViewById(R.id.UserInfo_upload).setOnClickListener(v -> changeImage());

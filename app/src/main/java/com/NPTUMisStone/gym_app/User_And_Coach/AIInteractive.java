@@ -3,18 +3,20 @@ package com.NPTUMisStone.gym_app.User_And_Coach;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.Main.Initial.SnackBarUtils;
 import com.NPTUMisStone.gym_app.R;
 
+import java.sql.Connection;
 import java.util.Objects;
 
 import okhttp3.MediaType;
@@ -33,6 +35,7 @@ public class AIInteractive extends AppCompatActivity {
     static String BASE_URL = "https://g1014308research-f6hvaugmd2cxg3as.eastus-01.azurewebsites.net/";
     private boolean hasShownSuccess = false;
     private ProgressBarHandler progressBarHandler;
+    Connection MyConnection;
 
     interface HealthCheckService {
         @GET("/health")
@@ -121,7 +124,13 @@ public class AIInteractive extends AppCompatActivity {
         if (response.isSuccessful()) {
             try {
                 String responseBody = Objects.requireNonNull(response.body()).string();
-                ((TextView) findViewById(R.id.AIInteractive_outputText)).setText(responseBody);
+                new AlertDialog.Builder(this).setTitle("AI回應").setMessage(responseBody)
+                        .setPositiveButton("紀錄歷史訊息", (dialog, which) -> {
+                            // TODO: 紀錄歷史訊息
+                            MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+                            //MyConnection.createStatement().executeUpdate("INSERT INTO AIInteractiveHistory (input, output) VALUES ('" + inputText + "', '" + responseBody + "')");
+                        })
+                        .setNegativeButton("確認", (dialog, which) -> dialog.dismiss()).show();
                 Log.d("Response", responseBody);
             } catch (Exception e) {
                 Log.e("Response", "Error parsing response", e);

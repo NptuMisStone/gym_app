@@ -176,7 +176,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/home_stroke_right_bottom_button"
                         android:onClick="onClick"
-                        android:text="@string/Home_coachButton6" />
+                        android:text="@string/AIInteractive_titleText" />
                 </LinearLayout>
 
             </LinearLayout>

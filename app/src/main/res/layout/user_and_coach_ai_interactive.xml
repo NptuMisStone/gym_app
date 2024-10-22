@@ -11,10 +11,11 @@
         android:id="@+id/AIInteractive_titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="28dp"
         android:text="@string/AIInteractive_titleText"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,36 +36,37 @@
         android:id="@+id/AIInteractive_inputEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:autofillHints="FitQuestion"
         android:ems="10"
         android:hint="@string/AIInteractive_inputHint"
         android:inputType="text"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/AIInteractive_submitButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AIInteractive_titleText" />
-
-    <TextView
-        android:id="@+id/AIInteractive_outputText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/AIInteractive_outputText"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/AIInteractive_submitButton"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AIInteractive_submitButton" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/AIInteractive_submitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/AIInteractive_submitText"
-        app:layout_constraintBottom_toTopOf="@+id/AIInteractive_outputText"
+        app:layout_constraintBottom_toBottomOf="@+id/AIInteractive_inputEdit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/AIInteractive_inputEdit"
+        app:layout_constraintTop_toTopOf="@+id/AIInteractive_inputEdit" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/AIInteractive_submitButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AIInteractive_inputEdit" />
+        app:layout_constraintTop_toBottomOf="@+id/AIInteractive_titleText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

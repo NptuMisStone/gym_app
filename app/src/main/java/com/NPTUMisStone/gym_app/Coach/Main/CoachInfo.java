@@ -58,7 +58,7 @@ public class CoachInfo extends AppCompatActivity {
     }
 
     private void init() {
-        ((TextView) findViewById(R.id.CoachInfo_idText)).setText(getString(R.string.Coach_CoachInfo, Integer.toString(Coach.getInstance().getCoachId())));
+        ((TextView) findViewById(R.id.CoachInfo_idText)).setText(getString(R.string.All_idText, Coach.getInstance().getCoachId()));
         findViewById(R.id.CoachInfo_return).setOnClickListener(v -> finish());
         findViewById(R.id.CoachInfo_logout).setOnClickListener(v -> logout());
         findViewById(R.id.CoachInfo_upload).setOnClickListener(v -> changeImage());
