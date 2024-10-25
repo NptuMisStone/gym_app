@@ -12,6 +12,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -20,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.Main.User;
+import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 
 import java.sql.Connection;
@@ -133,6 +135,9 @@ public class User_Comments extends AppCompatActivity {
                 preparedStatement.setTime(5, currentTime);
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
+                Intent it = new Intent(this,AppointmentAll.class);
+                it.putExtra("是否是評論",1);
+                startActivity(it);
                 finish();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -153,6 +158,9 @@ public class User_Comments extends AppCompatActivity {
 
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
+                Intent it = new Intent(this,AppointmentAll.class);
+                it.putExtra("是否是評論",1);
+                startActivity(it);
                 finish();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -162,6 +170,9 @@ public class User_Comments extends AppCompatActivity {
 
 
     public  void user_Comment_goback(View view){
+        Intent it = new Intent(this,AppointmentAll.class);
+        it.putExtra("是否是評論",1);
+        startActivity(it);
         finish();
     }
 }

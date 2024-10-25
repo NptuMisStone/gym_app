@@ -255,6 +255,7 @@ public class FinishAppointmentFragment extends Fragment {
                 Intent intent = new Intent(requireActivity(),User_Comments.class);
                 intent.putExtra("reservationID", item.getReservationID());
                 startActivity(intent);
+                requireActivity().finish();
             });
         }
 

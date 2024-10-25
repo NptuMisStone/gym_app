@@ -46,7 +46,15 @@ public class AppointmentAll extends AppCompatActivity {
         Gobackbtn=(ImageButton)findViewById(R.id.user_Appointment_back);
         frameLayout=(FrameLayout)findViewById(R.id.AppointmentFrameLayout);
         tabLayout=(TabLayout)findViewById(R.id.AppointmentTabLayout);
-        getSupportFragmentManager().beginTransaction().replace(R.id.AppointmentFrameLayout,new NowAppointmentFragment()).addToBackStack(null).commit();
+        int index =getIntent().getIntExtra("是否是評論",0);
+        if (index == 1) {
+            // 從評論回來
+            tabLayout.selectTab(tabLayout.getTabAt(1));
+            getSupportFragmentManager().beginTransaction().replace(R.id.AppointmentFrameLayout,new FinishAppointmentFragment()).addToBackStack(null).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.AppointmentFrameLayout,new NowAppointmentFragment()).addToBackStack(null).commit();
+        }
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
