@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Gym_app"
         tools:targetApi="31">
         <activity
+            android:name=".User.AllClass.User_All_Class"
+            android:exported="false" />
+        <activity
             android:name=".User.Like.User_Like"
             android:exported="false" />
         <activity
