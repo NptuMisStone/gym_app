@@ -1,6 +1,8 @@
 package com.NPTUMisStone.gym_app.User.AllClass;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -26,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User.AllClass.DetailClass.User_Class_Detail;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 
@@ -42,8 +46,8 @@ public class User_All_Class extends AppCompatActivity {
 
     Connection MyConnection;
     ArrayList<User_All_Class.User_All_Class_Data> class_data =new ArrayList<>();
-    private All_ClassAdapter classAdapter;
-
+    private ProgressBar progressBar;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +60,8 @@ public class User_All_Class extends AppCompatActivity {
         });
         fetchClass();
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+        progressBar = findViewById(R.id.progressBar_allclass);
+        progressBar.setVisibility(View.VISIBLE);
     }
     private void fetchClass() {
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -91,6 +97,7 @@ public class User_All_Class extends AppCompatActivity {
         RecyclerView classRecyclerView = findViewById(R.id.userClassRecycleview);
         classRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         classRecyclerView.setAdapter(ClassAdapter);
+        progressBar.setVisibility(View.GONE);
     }
 
     static class User_All_Class_Data {
@@ -154,7 +161,7 @@ public class User_All_Class extends AppCompatActivity {
         public static class ViewHolder extends RecyclerView.ViewHolder {
             ImageView class_image;
             TextView class_people_sign,class_name,class_price,coach_name,class_intro,class_people;
-            ImageButton like_class_btn;
+            ImageButton like_class_btn ,moreindo_btn;
             public ViewHolder(View itemView) {
                 super(itemView);
                 class_image=itemView.findViewById(R.id.user_all_class_img);
@@ -166,6 +173,7 @@ public class User_All_Class extends AppCompatActivity {
                 class_people=itemView.findViewById(R.id.user_all_class_people);
 
                 like_class_btn=itemView.findViewById(R.id.user_like_all_class_btn);
+                moreindo_btn=itemView.findViewById(R.id.user_all_class_info);
             }
         }
         @NonNull
@@ -188,6 +196,12 @@ public class User_All_Class extends AppCompatActivity {
             holder.coach_name.setText(item.getCoachName());
             holder.class_intro.setText(item.getClassIntro());
             holder.class_people.setText("人數："+item.getClassPeople()+"人");
+            holder.moreindo_btn.setOnClickListener(v -> {
+                Intent intent = new Intent(context,User_Class_Detail.class);
+                intent.putExtra("看更多課程ID", item.getClassID());
+                startActivity(intent);
+                finish();
+            });
             try {
                 MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
                 String sql = "SELECT COUNT(*) FROM 課程被收藏 WHERE 課程編號 = ? AND 使用者編號 = ?";
@@ -211,10 +225,10 @@ public class User_All_Class extends AppCompatActivity {
             holder.like_class_btn.setOnClickListener(v -> {
                 Drawable currentDrawable = holder.like_class_btn.getDrawable();
                 if (currentDrawable.getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.dislike2).getConstantState())) {
-                    // 如果当前是 dislike 状态，切换到 like
+                    // 如果當前是 dislike 狀態，切換到 like
                     holder.like_class_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.like1));
 
-                    // 更新数据库，将课程标记为被收藏
+                    // 更新資料庫
                     try {
                         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
                         String insertSql = "INSERT INTO 課程被收藏 (使用者編號, 課程編號) VALUES (?, ?)";
@@ -227,7 +241,7 @@ public class User_All_Class extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    // 如果当前是 like 状态，切换到 dislike
+                    // 如果當前是 like 狀態，切換到 dislike
                     holder.like_class_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dislike2));
                     try {
                         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
