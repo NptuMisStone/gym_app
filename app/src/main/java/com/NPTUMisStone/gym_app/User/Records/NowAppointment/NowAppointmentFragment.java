@@ -276,7 +276,6 @@ public class NowAppointmentFragment extends Fragment {
             });
         }
         private int SearchAPPeople(int scheduleID){
-            Executors.newSingleThreadExecutor().execute(() -> {
                 try {
                     MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
 
@@ -293,7 +292,6 @@ public class NowAppointmentFragment extends Fragment {
                 } catch (SQLException e) {
                     Log.e("SQL", Objects.requireNonNull(e.getMessage()));
                 }
-            });
             return  apPeople;
         }
 
