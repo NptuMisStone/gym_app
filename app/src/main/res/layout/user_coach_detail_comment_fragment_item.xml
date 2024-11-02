@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_coach_detail_comment_userimg"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/main_login_ic_user" />
+
+        <TextView
+            android:id="@+id/user_coach_detail_comment_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:text="你誰"
+            android:textColor="@color/black" />
+
+        <ImageButton
+            android:id="@+id/user_coach_detail_comment_edit"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right|center_vertical"
+            android:backgroundTint="@android:color/transparent"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/more" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <RatingBar
+            android:id="@+id/user_coach_detail_comment_RatingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="19dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:progressTint="#ffcc00"
+            android:rating="2.5"
+            android:stepSize="0.5" />
+
+        <TextView
+            android:id="@+id/user_coach_detail_comment_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="2024/12/09"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/user_coach_detail_comment_classname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:text="課程名稱： xxx"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/user_coach_detail_comment_usercomment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:text="喔是喔"
+        android:textColor="@color/black" />
+
+    <LinearLayout
+        android:id="@+id/user_coach_detail_comment_response"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="#114A670B"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="健身教練的回覆：" />
+
+        <TextView
+            android:id="@+id/user_coach_detail_comment_coachresponse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="是喔" />
+    </LinearLayout>
+
+</LinearLayout>

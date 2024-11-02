@@ -1,4 +1,6 @@
-package com.NPTUMisStone.gym_app.User.AllClass.DetailClass;
+package com.NPTUMisStone.gym_app.User.AllCoach.DetailCoach;
+
+import androidx.lifecycle.ViewModelProvider;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -7,14 +9,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.renderscript.ScriptGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
+import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
+import com.NPTUMisStone.gym_app.databinding.UserCoachDetailInfoFragmentBinding;
 import com.NPTUMisStone.gym_app.databinding.UserDetailClassFragmentBinding;
 
 import java.sql.Connection;
@@ -22,45 +27,33 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class User_Detail_Class_Fragment extends Fragment {
+public class User_Coach_Detail_Info_Fragment extends Fragment {
 
-    private UserDetailClassFragmentBinding binding;
-    private Connection MyConnection;
-    private int classID;
-    private TextView classname,classintro,classprice,classpeople,classtimelong,classplace,classitem,coachname,coachintro,coachgender,coachphone,coachemail;
-    private ImageView coachimg;
-
-    public static User_Detail_Class_Fragment newInstance() {
-        return new User_Detail_Class_Fragment();
+    private UserCoachDetailInfoFragmentBinding binding;
+    Connection MyConnection;
+    private int coachID;
+    TextView coachname,coachintro,coachgender,coachphone,coachmail,coachtype,storename,storeaddress,storephone,storemail;
+    LinearLayout storeview;
+    public static User_Coach_Detail_Info_Fragment newInstance() {
+        return new User_Coach_Detail_Info_Fragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding= UserDetailClassFragmentBinding.inflate(inflater,container,false);
+        binding= UserCoachDetailInfoFragmentBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
         if (getArguments() != null) {
-            classID = getArguments().getInt("classID");
+            coachID = getArguments().getInt("coachID");
         }
         bindID();
         try {
             MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
-            String query = "SELECT * FROM [健身教練課程-有排課的] WHERE 課程編號 = ? " ;
+            String query = "SELECT * FROM [健身教練審核合併] WHERE 健身教練編號 = ? " ;
             PreparedStatement Statement = MyConnection.prepareStatement(query);
-            Statement.setInt(1,classID);
+            Statement.setInt(1,coachID);
             ResultSet rs = Statement.executeQuery();
             while (rs.next()) {
-                classname.setText(rs.getString("課程名稱"));
-                classintro.setText(rs.getString("課程內容介紹"));
-                classprice.setText("$" + rs.getString("課程費用").split("\\.")[0] + "/堂");
-                classpeople.setText(rs.getString("上課人數")+"人");
-                classtimelong.setText(rs.getString("課程時間長度")+"分鐘");
-                classplace.setText(rs.getString("顯示地點名稱"));
-                classitem.setText(rs.getString("所需設備"));
-                if (rs.getBytes("健身教練圖片") != null) {
-                    Bitmap bitmap = ImageHandle.getBitmap(rs.getBytes("健身教練圖片"));
-                    coachimg.setImageBitmap(ImageHandle.resizeBitmap(bitmap));
-                }
                 coachname.setText(rs.getString("健身教練姓名"));
                 coachintro.setText(rs.getString("健身教練介紹"));
                 switch (rs.getString("健身教練性別")){
@@ -75,7 +68,15 @@ public class User_Detail_Class_Fragment extends Fragment {
                         break;
                 }
                 coachphone.setText(rs.getString("健身教練電話"));
-                coachemail.setText(rs.getString("健身教練郵件"));
+                coachmail.setText(rs.getString("健身教練郵件"));
+                coachtype.setText(rs.getString("註冊類型"));
+                if(rs.getString("註冊類型").equals("私人健身教練")){
+                    storeview.setVisibility(View.GONE);
+                }
+                storename.setText(rs.getString("服務地點名稱"));
+                storeaddress.setText(rs.getString("服務地點地址"));
+                storephone.setText(rs.getString("服務地點電話"));
+                storemail.setText(rs.getString("服務地點郵件"));
             }
             rs.close();
             Statement.close();
@@ -85,23 +86,18 @@ public class User_Detail_Class_Fragment extends Fragment {
         return root;
     }
     private void bindID(){
-        classname=binding.userDetailClassname;
-        classintro=binding.userDetailClassintro;
-        classprice=binding.userDetailClassprice;
-        classpeople=binding.userDetailClasspeople;
-        classtimelong=binding.userDetailClasstimelong;
-        classplace=binding.userDetailClassplace;
-        classitem=binding.userDetailClassitem;
-
-        coachimg=binding.userDetailCoachimg;
         coachname=binding.userDetailCoachname;
         coachintro=binding.userDetailCoachintro;
         coachgender=binding.userDetailCoachgender;
         coachphone=binding.userDetailCoachphone;
-        coachemail=binding.userDetailCoachemail;
+        coachmail=binding.userDetailCoachmail;
+        coachtype=binding.userDetailCoachtype;
+        storename=binding.userDetailCoachStoreName;
+        storeaddress=binding.userDetailCoachStoreAddress;
+        storephone=binding.userDetailCoachStorePhone;
+        storemail=binding.userDetailCoachStoreMail;
+        storeview=binding.userDetailCoachStoreView;
     }
-
-
 
 
 }

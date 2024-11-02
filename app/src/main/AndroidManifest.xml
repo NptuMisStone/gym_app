@@ -15,6 +15,12 @@
         android:theme="@style/Theme.Gym_app"
         tools:targetApi="31">
         <activity
+            android:name=".User.AllCoach.DetailCoach.User_Coach_Detail"
+            android:exported="false" />
+        <activity
+            android:name=".User.AllCoach.User_All_Coach"
+            android:exported="false" />
+        <activity
             android:name=".User.AllClass.User_Confirm_Appointment"
             android:exported="false" />
         <activity

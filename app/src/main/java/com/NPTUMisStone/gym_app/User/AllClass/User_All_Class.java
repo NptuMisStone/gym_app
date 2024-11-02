@@ -200,7 +200,6 @@ public class User_All_Class extends AppCompatActivity {
                 Intent intent = new Intent(context,User_Class_Detail.class);
                 intent.putExtra("看更多課程ID", item.getClassID());
                 startActivity(intent);
-                finish();
             });
             try {
                 MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
