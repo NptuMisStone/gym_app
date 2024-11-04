@@ -16,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
@@ -26,20 +24,17 @@ import com.NPTUMisStone.gym_app.User.AllCoach.User_All_Coach;
 import com.NPTUMisStone.gym_app.User.Like.User_Like;
 import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
 import com.NPTUMisStone.gym_app.User.Search.GymList;
-import com.NPTUMisStone.gym_app.User.Search.Search;
-import com.NPTUMisStone.gym_app.User_And_Coach.AIInteractive;
-import com.NPTUMisStone.gym_app.User_And_Coach.Advertisement;
+import com.NPTUMisStone.gym_app.User_And_Coach.AdHelper;
+import com.NPTUMisStone.gym_app.User_And_Coach.Contact;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class UserHome extends AppCompatActivity {
     Connection MyConnection;
-    List<Advertisement> adList = new ArrayList<>();
+    //List<Advertisement> adList = new ArrayList<>();
     ProgressBarHandler progressBarHandler;
 
     @Override
@@ -55,7 +50,9 @@ public class UserHome extends AppCompatActivity {
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
         progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
         init_userinfo();
-        init_banner();
+        //init_banner();
+        AdHelper.initializeAndLoadAd(this, R.id.UserHome_adView);
+
     }
 
     private void init_userinfo() {
@@ -83,11 +80,11 @@ public class UserHome extends AppCompatActivity {
             ((ImageView)findViewById(R.id.UserHome_photoImage)).setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
     }
 
-    private void init_banner() {
+    /*private void init_banner() {
         ViewPager2 user_viewPager = findViewById(R.id.UserHome_viewPager);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.UserHome_swipeRefreshLayout);
         Advertisement.init_banner(this, MyConnection, adList, user_viewPager, swipeRefreshLayout);
-    }
+    }*/
 
     public void onClick(View view) {
         if (progressBarHandler.isLoading()) return;
@@ -105,7 +102,7 @@ public class UserHome extends AppCompatActivity {
             else if (id == R.id.UserHome_gymButton)
                 startActivity(new Intent(this, GymList.class));
             else if (id == R.id.UserHome_contactButton)
-                startActivity(new Intent(this, AIInteractive.class));
+                startActivity(new Intent(this, Contact.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);
         }

@@ -12,6 +12,7 @@ extjunit = "1.2.1"
 fragment = "1.8.4"
 gradle = "8.6.0"
 junit = "4.13.2"
+lifecycleProcess = "2.8.7"
 material = "1.12.0"
 navigationFragment = "2.8.2"
 navigationUi = "2.8.2"
@@ -23,6 +24,8 @@ swiperefreshlayout = "1.2.0-alpha01"
 legacySupportV4 = "1.0.0"
 lifecycleLivedataKtx = "2.6.1"
 lifecycleViewmodelKtx = "2.6.1"
+playServicesMaps = "19.0.0"
+playServicesAds = "23.5.0"
 
 [libraries]
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
@@ -37,6 +40,7 @@ ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "extjun
 fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationFragment" }
 navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigationFragment" }
@@ -51,6 +55,8 @@ swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout"
 legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

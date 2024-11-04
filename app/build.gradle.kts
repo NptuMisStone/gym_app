@@ -51,7 +51,11 @@ dependencies {
     implementation(libs.navigation.dynamic.features.fragment)
     implementation(libs.legacy.support.v4)
     implementation(libs.lifecycle.livedata.ktx)
-    implementation(libs.lifecycle.viewmodel.ktx) // Feature module support for Fragments
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.ads) // Feature module support for Fragments
+    implementation(libs.lifecycle.process)
+
     androidTestImplementation(libs.navigation.testing)  // Testing Navigation
 
     // Networking Libraries

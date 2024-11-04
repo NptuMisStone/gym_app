@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Gym_app"
         tools:targetApi="31">
         <activity
+            android:name=".User_And_Coach.Contact"
+            android:exported="false" />
+        <activity
             android:name=".User.AllCoach.DetailCoach.User_Coach_Detail"
             android:exported="false" />
         <activity
@@ -101,6 +104,10 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5758857104652666~9915647995"/>
     </application>
 
 </manifest>

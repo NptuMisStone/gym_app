@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/all_background"
+    tools:context=".User_And_Coach.Contact">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/Contact_topConstraint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/red"
+        app:layout_constraintBottom_toTopOf="@+id/Contact_guideline1"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/Contact_backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="@string/goBack"
+            android:src="@drawable/all_ic_arrow_back2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <TextView
+            android:id="@+id/Contact_titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Contact_titleText"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <ImageView
+            android:id="@+id/Contact_questionButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:background="#1A000000"
+            android:contentDescription="@string/logOut"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/contact_ic_question" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/Contact_guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/Contact_mapView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/Contact_guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/Contact_guideline1" />
+
+    <ImageView
+        android:id="@+id/Contact_locationImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toStartOf="@+id/Contact_phoneImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/Contact_guideline2"
+        app:srcCompat="@drawable/contact_ic_location" />
+
+    <ImageView
+        android:id="@+id/Contact_phoneImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/Contact_locationImage"
+        app:layout_constraintEnd_toStartOf="@+id/Contact_emailImage"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/Contact_locationImage"
+        app:layout_constraintTop_toTopOf="@+id/Contact_locationImage"
+        app:srcCompat="@drawable/contact_ic_phone" />
+
+    <ImageView
+        android:id="@+id/Contact_emailImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/Contact_locationImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/Contact_phoneImage"
+        app:layout_constraintTop_toTopOf="@+id/Contact_locationImage"
+        app:srcCompat="@drawable/home_ic_contact" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/Contact_guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/Contact_locationTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="地點"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/Contact_locationImage"
+        app:layout_constraintStart_toStartOf="@+id/Contact_locationImage"
+        app:layout_constraintTop_toTopOf="@+id/Contact_guideline3" />
+
+    <TextView
+        android:id="@+id/Contact_phoneTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="電話"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/Contact_locationTitle"
+        app:layout_constraintEnd_toEndOf="@+id/Contact_phoneImage"
+        app:layout_constraintStart_toStartOf="@+id/Contact_phoneImage"
+        app:layout_constraintTop_toTopOf="@+id/Contact_locationTitle" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/Contact_guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.69" />
+
+    <TextView
+        android:id="@+id/Contact_emailTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="信箱"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/Contact_locationTitle"
+        app:layout_constraintEnd_toEndOf="@+id/Contact_emailImage"
+        app:layout_constraintStart_toStartOf="@+id/Contact_emailImage"
+        app:layout_constraintTop_toTopOf="@+id/Contact_locationTitle" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/Contact_guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.79" />
+
+    <TextView
+        android:id="@+id/Contact_locationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="屏東大學"
+        android:textColor="@color/yellow"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/Contact_locationImage"
+        app:layout_constraintStart_toStartOf="@+id/Contact_locationImage"
+        app:layout_constraintTop_toTopOf="@+id/Contact_guideline4" />
+
+    <TextView
+        android:id="@+id/Contact_phoneText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="08-7663800"
+        android:textColor="@color/yellow"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/Contact_locationText"
+        app:layout_constraintEnd_toEndOf="@+id/Contact_phoneImage"
+        app:layout_constraintStart_toStartOf="@+id/Contact_phoneImage"
+        app:layout_constraintTop_toTopOf="@+id/Contact_guideline4" />
+
+    <TextView
+        android:id="@+id/Contact_emailText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NptuMisStone\n@gmail.com"
+        android:textColor="@color/yellow"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/Contact_locationText"
+        app:layout_constraintEnd_toEndOf="@+id/Contact_emailImage"
+        app:layout_constraintStart_toStartOf="@+id/Contact_emailImage"
+        app:layout_constraintTop_toTopOf="@+id/Contact_guideline4" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
