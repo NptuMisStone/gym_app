@@ -75,7 +75,7 @@
         android:text="課程名稱： xxx"
         android:textSize="12sp" />
 
-    <TextView
+    <EditText
         android:id="@+id/user_coach_detail_comment_usercomment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -83,7 +83,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:text="喔是喔"
-        android:textColor="@color/black" />
+        android:textColor="@color/black"
+        android:textSize="14sp" />
 
     <LinearLayout
         android:id="@+id/user_coach_detail_comment_response"

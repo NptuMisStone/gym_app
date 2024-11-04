@@ -35,6 +35,7 @@ public class User_Comments extends AppCompatActivity {
     Intent intent;
     int reservationID;
     int myRating = 0;
+    String wherefrom;
     Connection MyConnection;
     Button submitbtn;
     ImageView coachimg;
@@ -63,7 +64,7 @@ public class User_Comments extends AppCompatActivity {
 
         intent = getIntent();
         reservationID = intent.getIntExtra("reservationID", 0);
-
+        wherefrom=intent.getStringExtra("從哪裡來");
         commentratingbar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean b) {
@@ -135,10 +136,16 @@ public class User_Comments extends AppCompatActivity {
                 preparedStatement.setTime(5, currentTime);
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
-                Intent it = new Intent(this,AppointmentAll.class);
-                it.putExtra("是否是評論",1);
-                startActivity(it);
-                finish();
+                if(wherefrom.equals("完成預約頁")){
+                    Intent it = new Intent(this,AppointmentAll.class);
+                    it.putExtra("是否是評論",1);
+                    startActivity(it);
+                    finish();
+                } else if (wherefrom.equals("教練詳細頁")) {
+                    setResult(RESULT_OK);
+                    finish();
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -158,10 +165,15 @@ public class User_Comments extends AppCompatActivity {
 
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
-                Intent it = new Intent(this,AppointmentAll.class);
-                it.putExtra("是否是評論",1);
-                startActivity(it);
-                finish();
+                if(wherefrom.equals("完成預約頁")){
+                    Intent it = new Intent(this,AppointmentAll.class);
+                    it.putExtra("是否是評論",1);
+                    startActivity(it);
+                    finish();
+                } else if (wherefrom.equals("教練詳細頁")) {
+                    setResult(RESULT_OK);
+                    finish();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -170,9 +182,14 @@ public class User_Comments extends AppCompatActivity {
 
 
     public  void user_Comment_goback(View view){
-        Intent it = new Intent(this,AppointmentAll.class);
-        it.putExtra("是否是評論",1);
-        startActivity(it);
-        finish();
+        if(wherefrom.equals("完成預約頁")){
+            Intent it = new Intent(this,AppointmentAll.class);
+            it.putExtra("是否是評論",1);
+            startActivity(it);
+            finish();
+        } else if (wherefrom.equals("教練詳細頁")) {
+            finish();
+        }
+
     }
 }

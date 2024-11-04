@@ -1,9 +1,14 @@
 package com.NPTUMisStone.gym_app.User.AllCoach.DetailCoach;
 
+import androidx.activity.result.ActivityResultCaller;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -20,20 +25,25 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.AllClass.DetailClass.User_Class_Detail;
 import com.NPTUMisStone.gym_app.User.AllClass.User_All_Class;
 import com.NPTUMisStone.gym_app.User.AllCoach.User_All_Coach;
+import com.NPTUMisStone.gym_app.User.Comments.User_Comments;
 import com.NPTUMisStone.gym_app.User.Like.User_Like;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
@@ -51,6 +61,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
+import android.app.Activity;
 
 public class User_Coach_Detail_Comment_Fragment extends Fragment {
     private UserCoachDetailCommentFragmentBinding binding;
@@ -62,7 +73,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
     public int User_Coach_Detail_commentID;
     boolean exists = false;
     ArrayList<User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data> commentData = new ArrayList<>();
-
+    private ActivityResultLauncher<Intent> commentLauncher;
     public static User_Coach_Detail_Comment_Fragment newInstance() {
         return new User_Coach_Detail_Comment_Fragment();
     }
@@ -70,6 +81,15 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        commentLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // 更新 RecyclerView
+                        updateCommentsRecyclerView();
+                    }
+                }
+        );
         binding= UserCoachDetailCommentFragmentBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
         if (getArguments() != null) {
@@ -139,6 +159,9 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
         mybtn.setOnClickListener(this::commentfilterclick);
         return root;
     }
+    private void updateCommentsRecyclerView() {
+        fetchComment();
+    }
     public void commentfilterclick(View view) {
         int id = view.getId();
         try {
@@ -191,6 +214,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
 
                     commentData.add(new User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data(
                             rs.getInt("使用者編號"),
+                            rs.getInt("預約編號"),
                             rs.getInt("評論編號"),
                             rs.getInt("評分"),
                             rs.getBytes("使用者圖片"),
@@ -221,6 +245,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
 
                     commentData.add(new User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data(
                             rs.getInt("使用者編號"),
+                            rs.getInt("預約編號"),
                             rs.getInt("評論編號"),
                             rs.getInt("評分"),
                             rs.getBytes("使用者圖片"),
@@ -251,6 +276,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
 
                     commentData.add(new User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data(
                             rs.getInt("使用者編號"),
+                            rs.getInt("預約編號"),
                             rs.getInt("評論編號"),
                             rs.getInt("評分"),
                             rs.getBytes("使用者圖片"),
@@ -282,6 +308,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
 
                     commentData.add(new User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data(
                             rs.getInt("使用者編號"),
+                            rs.getInt("預約編號"),
                             rs.getInt("評論編號"),
                             rs.getInt("評分"),
                             rs.getBytes("使用者圖片"),
@@ -323,15 +350,16 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
         mybtn=binding.myCommentBtn;
     }
     static class User_Coach_Detail_Comment_Data {
-        int userId,commentID,rating;
+        int userId,reservationID,commentID,rating;
         byte[] userimage;
         String userName,commentdate,comment,className,coach_response;
 
 
         static ArrayList<User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data> commentData = new ArrayList<>();
 
-        public User_Coach_Detail_Comment_Data(int userId,int commentID,int rating,byte[] userimage,String userName,String commentdate,String comment,String className,String coach_response) {
+        public User_Coach_Detail_Comment_Data(int userId,int reservationID,int commentID,int rating,byte[] userimage,String userName,String commentdate,String comment,String className,String coach_response) {
             this.userId=userId;
+            this.reservationID=reservationID;
             this.commentID=commentID;
             this.rating=rating;
             this.userimage=userimage;
@@ -350,6 +378,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
         }
 
         private int getUserId(){return userId;}
+        private int getReservationID(){return reservationID;}
         private int getCommentID(){return commentID;}
         private int getRating(){return rating;}
         private byte[] getUserimage(){return userimage;}
@@ -372,8 +401,9 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
             this.view=view;
         }
         public static class ViewHolder extends RecyclerView.ViewHolder {
-            ImageView user_image;
-            TextView userName,commentdate,comment,className,coach_response;
+            ImageView user_image,editcomment;
+            EditText comment;
+            TextView userName,commentdate,className,coach_response;
             RatingBar ratingBar;
             LinearLayout coachresponsearea;
             public ViewHolder(View itemView) {
@@ -386,6 +416,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
                 coach_response=itemView.findViewById(R.id.user_coach_detail_comment_coachresponse);
                 ratingBar=itemView.findViewById(R.id.user_coach_detail_comment_RatingBar);
                 coachresponsearea=itemView.findViewById(R.id.user_coach_detail_comment_response);
+                editcomment=itemView.findViewById(R.id.user_coach_detail_comment_edit);
 
             }
         }
@@ -407,9 +438,18 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
             holder.userName.setText(item.getUserName());
             holder.commentdate.setText(item.getCommentdate());
             holder.comment.setText(item.getComment());
+            holder.comment.setEnabled(false);
             holder.className.setText("課程名稱："+item.getClassName());
             holder.coach_response.setText(item.getCoach_response());
             holder.ratingBar.setRating(item.getRating());
+
+            if (item.getUserId() == User.getInstance().getUserId()) {
+                holder.editcomment.setVisibility(View.VISIBLE);
+            } else {
+                holder.editcomment.setVisibility(View.GONE);
+            }
+
+            holder.editcomment.setOnClickListener(v -> showPopupMenu(holder.editcomment ,item.getReservationID(),position));
             try {
                 MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
                 String SQL = "select 回覆 from 查看評論 where 評論編號= ?";
@@ -452,6 +492,60 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
                 e.printStackTrace();
             }
             return exists;
+        }
+        private void showPopupMenu(View view, int reservationID,int position) {
+            PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+            popupMenu.inflate(R.menu.comment_edit_menu);
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    int itemId = item.getItemId();
+                    if (itemId == R.id.edit_comment) {
+                        Intent intent = new Intent(view.getContext(), User_Comments.class);
+                        intent.putExtra("reservationID", reservationID);
+                        intent.putExtra("從哪裡來","教練詳細頁");
+                        commentLauncher.launch(intent);
+                        return true;
+                    } else if (itemId == R.id.delete_comment) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                        builder.setMessage("您確定要刪除嗎？");
+                        builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 用户点击确定，执行删除操作
+                                try {
+                                    MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
+                                    String sql = "DELETE FROM 完成預約評論表 WHERE 預約編號 = ?";
+                                    PreparedStatement preparedStatement = MyConnection.prepareStatement(sql);
+                                    preparedStatement.setInt(1, reservationID);
+                                    int rowsDeleted = preparedStatement.executeUpdate();
+                                    if (rowsDeleted > 0) {
+                                        // 删除成功
+                                        Toast.makeText(view.getContext(), "删除成功", Toast.LENGTH_SHORT).show();
+                                        comment_dataList.remove(position);
+                                        notifyDataSetChanged(); // 刷新 RecyclerView
+                                    } else {
+                                        Toast.makeText(view.getContext(), "很抱歉，系統出問題了...", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        });
+
+                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.show();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            popupMenu.show();
         }
         @Override
         public int getItemCount() {

@@ -254,6 +254,7 @@ public class FinishAppointmentFragment extends Fragment {
             holder.comment_btn.setOnClickListener(v -> {
                 Intent intent = new Intent(requireActivity(),User_Comments.class);
                 intent.putExtra("reservationID", item.getReservationID());
+                intent.putExtra("從哪裡來","完成預約頁");
                 startActivity(intent);
                 requireActivity().finish();
             });
