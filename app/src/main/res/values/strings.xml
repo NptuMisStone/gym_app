@@ -4,11 +4,11 @@
     <string name="All_idText">ID:%1$d</string>
     <string name="All_welcome">%1$s %2$s！</string>
     <string name="Home_imageDescription">ShowImage</string>
-    <string name="Home_userButton1">【課程查詢】</string>
-    <string name="Home_userButton2">【教練查詢】</string>
-    <string name="Home_userButton3">【收藏清單】</string>
-    <string name="Home_userButton4">【預約紀錄】</string>
-    <string name="Home_userButton5">【附近健身房】</string>
+    <string name="Home_userButton1">【課程】</string>
+    <string name="Home_userButton2">【教練】</string>
+    <string name="Home_userButton3">【收藏】</string>
+    <string name="Home_userButton4">【預約】</string>
+    <string name="Home_userButton5">【附近】</string>
     <string name="Home_coachButton1">【安排課程】</string>
     <string name="Home_coachButton2">【課表管理】</string>
     <string name="Home_coachButton3">【預約管理】</string>
@@ -41,7 +41,7 @@
     <string name="title_Info">個人資料</string>
     <string name="goBack">返回</string>
     <string name="logOut">登出</string>
-    <string name="AIInteractive_titleText">【操作說明】</string>
+    <string name="AIInteractive_titleText">【常見問題】</string>
     <string name="AIInteractive_inputHint">請輸入你想問的操作流程</string>
     <string name="AIInteractive_submitText">提問</string>
 </resources>
