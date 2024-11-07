@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">gym_app</string>
     <string name="main_welcome_content_description">welcome</string>
     <string name="All_idText">ID:%1$d</string>
@@ -45,5 +45,6 @@
     <string name="AIInteractive_inputHint">請輸入你想問的操作流程</string>
     <string name="AIInteractive_submitText">提問</string>
     <string name="Contact_titleText">【聯絡我們】</string>
-
+    <string name="mapbox_access_token" translatable="false" tools:ignore="UnusedResources">sk.eyJ1IjoiZzEwMTQzMDgiLCJhIjoiY20zNDVscWJtMW1rMzJqczczY25sbjd3ciJ9.9A-0xBz7PEseqVeIBG5z6g</string>
+    <string name="mapbox_style_url">mapbox://styles/g1014308/cm36yrww7013g01pw50192vmm</string>
 </resources>

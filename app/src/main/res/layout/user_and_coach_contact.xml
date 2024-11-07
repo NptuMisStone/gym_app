@@ -63,7 +63,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.1" />
 
-    <com.google.android.gms.maps.MapView
+    <com.mapbox.maps.MapView
         android:id="@+id/Contact_mapView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -77,6 +77,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/Contact_guideline1" />
 
+    <!--<com.mapbox.maps.MapView
+        android:id="@+id/Contact_mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/Contact_guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/Contact_guideline1" />-->
     <ImageView
         android:id="@+id/Contact_locationImage"
         android:layout_width="100dp"
@@ -197,6 +210,17 @@
         app:layout_constraintEnd_toEndOf="@+id/Contact_emailImage"
         app:layout_constraintStart_toStartOf="@+id/Contact_emailImage"
         app:layout_constraintTop_toTopOf="@+id/Contact_guideline4" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/Contact_floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/Contact_mapView"
+        app:layout_constraintEnd_toEndOf="@+id/Contact_mapView"
+        app:srcCompat="@drawable/baseline_my_location_24" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

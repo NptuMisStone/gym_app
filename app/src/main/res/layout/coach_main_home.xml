@@ -115,7 +115,7 @@
                         android:layout_width="125dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_love_button"
+                        android:background="@drawable/coach_home_stroke_add_button"
                         android:onClick="onClick"
                         android:text="@string/Home_coachButton1" />
 
@@ -124,7 +124,7 @@
                         android:layout_width="125dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_coach_button"
+                        android:background="@drawable/coach_home_stroke_check_button"
                         android:onClick="onClick"
                         android:text="@string/Home_coachButton2" />
                 </LinearLayout>
@@ -140,7 +140,7 @@
                         android:layout_width="125dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_love_button"
+                        android:background="@drawable/coach_home_stroke_decide_button"
                         android:onClick="onClick"
                         android:text="@string/Home_coachButton3" />
 
@@ -149,7 +149,7 @@
                         android:layout_width="125dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_coach_button"
+                        android:background="@drawable/coach_home_stroke_history_button"
                         android:onClick="onClick"
                         android:text="@string/Home_coachButton4" />
                 </LinearLayout>
@@ -165,7 +165,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_gym_button"
+                        android:background="@drawable/coach_home_stroke_work_button"
                         android:onClick="onClick"
                         android:text="@string/Home_coachButton5" />
 
@@ -174,7 +174,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_contact_button"
+                        android:background="@drawable/coach_home_stroke_contact_button"
                         android:onClick="onClick"
                         android:text="@string/AIInteractive_titleText" />
                 </LinearLayout>

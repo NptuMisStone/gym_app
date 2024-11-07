@@ -125,7 +125,7 @@
                         android:layout_width="125dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_class_button"
+                        android:background="@drawable/user_home_stroke_class_button"
                         android:onClick="onClick" />
 
                     <Button
@@ -133,7 +133,7 @@
                         android:layout_width="125dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_coach_button"
+                        android:background="@drawable/user_home_stroke_coach_button"
                         android:onClick="onClick" />
                 </LinearLayout>
 
@@ -148,7 +148,7 @@
                         android:layout_width="125dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_love_button"
+                        android:background="@drawable/user_home_stroke_love_button"
                         android:onClick="onClick" />
 
                     <Button
@@ -156,7 +156,7 @@
                         android:layout_width="125dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_history_button"
+                        android:background="@drawable/user_home_stroke_history_button"
                         android:onClick="onClick" />
                 </LinearLayout>
 
@@ -171,7 +171,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_gym_button"
+                        android:background="@drawable/user_home_stroke_gym_button"
                         android:onClick="onClick" />
 
                     <Button
@@ -179,7 +179,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/home_stroke_contact_button"
+                        android:background="@drawable/user_home_stroke_contact_button"
                         android:onClick="onClick" />
                 </LinearLayout>
 

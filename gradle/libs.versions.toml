@@ -1,29 +1,30 @@
 [versions]
-activity = "1.9.2"
-agp = "8.6.0"
+activity = "1.9.3"
+agp = "8.6.1"
+androidVersion = "11.7.1"
 appcompat = "1.7.0"
 calendarview = "v1.0.6"
 carUiLib = "2.6.0"
 circleimageview = "3.1.0"
-constraintlayout = "2.1.4"
-converterGson = "2.9.0"
+constraintlayout = "2.2.0"
+converterGson = "2.11.0"
 espresso = "3.6.1"
 extjunit = "1.2.1"
-fragment = "1.8.4"
-gradle = "8.6.0"
+fragment = "1.8.5"
+gradle = "8.6.1"
 junit = "4.13.2"
 lifecycleProcess = "2.8.7"
 material = "1.12.0"
-navigationFragment = "2.8.2"
-navigationUi = "2.8.2"
-okhttp = "4.9.1"
+navigationFragment = "2.8.3"
+navigationUi = "2.8.3"
+okhttp = "4.12.0"
 playServicesBase = "18.5.0"
-retrofit = "2.9.0"
+retrofit = "2.11.0"
 shimmer = "0.5.0"
 swiperefreshlayout = "1.2.0-alpha01"
 legacySupportV4 = "1.0.0"
-lifecycleLivedataKtx = "2.6.1"
-lifecycleViewmodelKtx = "2.6.1"
+lifecycleLivedataKtx = "2.8.7"
+lifecycleViewmodelKtx = "2.8.7"
 playServicesMaps = "19.0.0"
 playServicesAds = "23.5.0"
 
@@ -41,6 +42,7 @@ fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
+maps-android = { module = "com.mapbox.maps:android", version.ref = "androidVersion" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationFragment" }
 navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigationFragment" }
