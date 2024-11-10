@@ -12,10 +12,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -32,12 +39,14 @@ import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.AllClass.DetailClass.User_Class_Detail;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -47,7 +56,11 @@ public class User_All_Class extends AppCompatActivity {
     Connection MyConnection;
     ArrayList<User_All_Class.User_All_Class_Data> class_data =new ArrayList<>();
     private ProgressBar progressBar;
-    @SuppressLint("MissingInflatedId")
+    ImageView filterbtn;
+    ExpandableListView expandableListView;
+    List<String> parentList; // 父節點縣市
+    HashMap<String, List<String>> childMap; // 子節點：行政區
+    @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +75,9 @@ public class User_All_Class extends AppCompatActivity {
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
         progressBar = findViewById(R.id.progressBar_allclass);
         progressBar.setVisibility(View.VISIBLE);
+        filterbtn=findViewById(R.id.class_filter_btn);
+        filterbtn.setOnClickListener(view -> showFilterDialog());
+
     }
     private void fetchClass() {
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -288,4 +304,127 @@ public class User_All_Class extends AppCompatActivity {
     public void  user_All_Class_goback(View view){
         finish();
     }
+    // 数据模型
+    class City {
+        int cityId;
+        String cityName;
+        List<Area> areas = new ArrayList<>();
+
+        public City(int cityId, String cityName) {
+            this.cityId = cityId;
+            this.cityName = cityName;
+        }
+    }
+
+    class Area {
+        int areaId;
+        String areaName;
+
+        public Area(int areaId, String areaName) {
+            this.areaId = areaId;
+            this.areaName = areaName;
+        }
+    }
+    // 全域變數
+    private List<City> cityCache = null; // 縣市與行政區的快取資料
+
+    // 查询县市和行政区数据
+    private List<City> getCityAndAreaData() {
+        if (cityCache != null) {
+            // 如果已經載入資料，直接返回
+            return cityCache;
+        }
+
+        List<City> cities = new ArrayList<>();
+        try (Connection connection = new SQLConnection(findViewById(R.id.main)).IWantToConnection()) {
+            String citySql = "SELECT 縣市id, 縣市 FROM 縣市";
+            PreparedStatement cityStmt = connection.prepareStatement(citySql);
+            ResultSet cityRs = cityStmt.executeQuery();
+
+            while (cityRs.next()) {
+                int cityId = cityRs.getInt("縣市id");
+                String cityName = cityRs.getString("縣市");
+                City city = new City(cityId, cityName);
+
+                String areaSql = "SELECT 行政區id, 行政區 FROM 行政區 WHERE 縣市id = ?";
+                PreparedStatement areaStmt = connection.prepareStatement(areaSql);
+                areaStmt.setInt(1, cityId);
+                ResultSet areaRs = areaStmt.executeQuery();
+
+                while (areaRs.next()) {
+                    int areaId = areaRs.getInt("行政區id");
+                    String areaName = areaRs.getString("行政區");
+                    city.areas.add(new Area(areaId, areaName));
+                }
+                cities.add(city);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // 缓存数据
+        cityCache = cities;
+        return cities;
+    }
+
+    private void setupExpandableListView(List<City> cityList) {
+        parentList = new ArrayList<>();
+        childMap = new HashMap<>();
+
+        for (City city : cityList) {
+            parentList.add(city.cityName);
+            List<String> areas = new ArrayList<>();
+            for (Area area : city.areas) {
+                areas.add(area.areaName);
+            }
+            childMap.put(city.cityName, areas);
+        }
+
+        CityExpandableListAdapter adapter = new CityExpandableListAdapter(this, parentList, childMap);
+        expandableListView.setAdapter(adapter);
+
+        expandableListView.setOnChildClickListener((parent, v, groupPosition, childPosition, id) -> {
+            String selectedCity = parentList.get(groupPosition);
+            String selectedArea = childMap.get(selectedCity).get(childPosition);
+            Toast.makeText(this, "選擇: " + selectedCity + " - " + selectedArea, Toast.LENGTH_SHORT).show();
+            return true;
+        });
+    }
+
+    private void showFilterDialog() {
+        // 初始化 BottomSheetDialog
+        BottomSheetDialog filterDialog = new BottomSheetDialog(this);
+
+        // 加载自定义布局
+        View filterView = LayoutInflater.from(this).inflate(R.layout.user_class_filter_item, null);
+        filterDialog.setContentView(filterView);
+
+        // 查找 ExpandableListView
+        expandableListView = filterView.findViewById(R.id.filter_class_area);
+
+        // 如果缓存中已经有数据，直接设置 ExpandableListView
+        if (cityCache != null) {
+            setupExpandableListView(cityCache);
+        } else {
+            // 如果缓存为空，则从数据库加载数据
+            new Thread(() -> {
+                List<City> cities = getCityAndAreaData();
+                runOnUiThread(() -> setupExpandableListView(cities));
+            }).start();
+        }
+
+        // 初始化按钮
+        Button resetButton = filterView.findViewById(R.id.btn_reset);
+        Button applyButton = filterView.findViewById(R.id.btn_apply);
+
+        applyButton.setOnClickListener(v -> {
+            // TODO: 添加筛选逻辑
+            filterDialog.dismiss();
+        });
+
+        // 显示对话框
+        filterDialog.show();
+    }
+
+
+
 }
