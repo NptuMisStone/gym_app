@@ -65,7 +65,16 @@ dependencies {
     // Google Play Services
     implementation(libs.play.services.base)
     implementation(libs.play.services.maps)             // 地圖顯示與地圖導航
-    implementation(libs.maps.android)                   // 地圖顯示與地圖導航
+
+    // Mapbox-Maps：https://docs.mapbox.com/android/maps/guides/install/
+    implementation(libs.mapbox.maps.android)                   // 地圖顯示與地圖導航
+
+    // Mapbox-Navigation：https://docs.mapbox.com/android/navigation/guides/installation/
+    implementation (libs.mapbox.navigationcore.navigation)
+    implementation (libs.mapbox.navigationcore.uimaps)
+    implementation (libs.mapbox.navigationcore.voice)
+    implementation (libs.mapbox.navigationcore.android)
+    implementation (libs.mapbox.navigationcore.uicomponents)
 
     // Java Mail API
     implementation(files("libs/mail.jar"))              // 使用Java Mail API

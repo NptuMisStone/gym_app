@@ -78,7 +78,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-3940256099942544/9214589741"
+        app:adUnitId="ca-app-pub-5758857104652666/3110436616"
         app:layout_constraintBottom_toTopOf="@+id/guideline23"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

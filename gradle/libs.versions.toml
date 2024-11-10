@@ -1,7 +1,6 @@
 [versions]
 activity = "1.9.3"
 agp = "8.6.1"
-androidVersion = "11.7.1"
 appcompat = "1.7.0"
 calendarview = "v1.0.6"
 carUiLib = "2.6.0"
@@ -27,8 +26,16 @@ lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
 playServicesMaps = "19.0.0"
 playServicesAds = "23.5.0"
+mapbox-androidVersion = "11.7.1"
+mapbox-navigationcore = "3.5.0-rc.1"
 
 [libraries]
+mapbox-maps-android = { module = "com.mapbox.maps:android", version.ref = "mapbox-androidVersion" }
+mapbox-navigationcore-navigation = { module = "com.mapbox.navigationcore:navigation", version.ref = "mapbox-navigationcore" }
+mapbox-navigationcore-uimaps = { module = "com.mapbox.navigationcore:ui-maps", version.ref = "mapbox-navigationcore" }
+mapbox-navigationcore-voice = { module = "com.mapbox.navigationcore:voice", version.ref = "mapbox-navigationcore" }
+mapbox-navigationcore-android = { module = "com.mapbox.navigationcore:android", version.ref = "mapbox-navigationcore" }
+mapbox-navigationcore-uicomponents = { module = "com.mapbox.navigationcore:ui-components", version.ref = "mapbox-navigationcore" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 calendarview = { module = "com.github.hdev0225:CalendarView", version.ref = "calendarview" }
@@ -42,7 +49,6 @@ fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
-maps-android = { module = "com.mapbox.maps:android", version.ref = "androidVersion" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationFragment" }
 navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigationFragment" }
