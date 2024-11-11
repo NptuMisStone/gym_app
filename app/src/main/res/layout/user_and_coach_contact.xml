@@ -75,7 +75,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/Contact_guideline1" />
+        app:layout_constraintTop_toTopOf="@+id/Contact_guideline1" >
+
+    </com.mapbox.maps.MapView>
 
     <!--<com.mapbox.maps.MapView
         android:id="@+id/Contact_mapView"
@@ -90,6 +92,26 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/Contact_guideline1" />-->
+    <Button
+        android:id="@+id/Contact_leftButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/user_and_coach_contact_ic_left"
+        android:backgroundTint="@color/dark_black"
+        android:clickable="true"
+        app:layout_constraintStart_toStartOf="@+id/Contact_floatingActionButton"
+        app:layout_constraintTop_toTopOf="@+id/Contact_mapView" />
+
+    <Button
+        android:id="@+id/Contact_rightButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/user_and_coach_contact_ic_right"
+        android:backgroundTint="@color/dark_black"
+        android:clickable="true"
+        app:layout_constraintEnd_toEndOf="@+id/Contact_floatingActionButton"
+        app:layout_constraintTop_toTopOf="@+id/Contact_mapView" />
+
     <ImageView
         android:id="@+id/Contact_locationImage"
         android:layout_width="100dp"
@@ -218,6 +240,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
+        app:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/Contact_mapView"
         app:layout_constraintEnd_toEndOf="@+id/Contact_mapView"
         app:srcCompat="@drawable/baseline_my_location_24" />

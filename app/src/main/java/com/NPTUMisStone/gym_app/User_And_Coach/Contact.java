@@ -80,6 +80,8 @@ public class Contact extends AppCompatActivity {
     private void init_button(){
         findViewById(R.id.Contact_backButton).setOnClickListener(v -> finish());
         findViewById(R.id.Contact_questionButton).setOnClickListener(v -> startActivity(new Intent(this, AIInteractive.class)));
+        findViewById(R.id.Contact_leftButton).setOnClickListener(v -> mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(mapView.getMapboxMap().getCameraState().getZoom() - 1).build()));
+        findViewById(R.id.Contact_rightButton).setOnClickListener(v -> mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(mapView.getMapboxMap().getCameraState().getZoom() + 1).build()));
     }
     private void init_map(){
         mapView = findViewById(R.id.Contact_mapView);
