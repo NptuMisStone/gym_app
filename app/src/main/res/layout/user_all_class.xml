@@ -50,23 +50,33 @@
         android:id="@+id/linearLayout7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline26"
         app:layout_constraintTop_toTopOf="@+id/guideline22">
 
-        <SearchView
-            android:id="@+id/class_search_bar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+        <EditText
+            android:id="@+id/class_filter_searchtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:ems="10"
+            android:hint="請輸入想搜尋的課程..."
+            android:inputType="text" />
 
-        </SearchView>
+        <ImageView
+            android:id="@+id/class_search_btn"
+            android:layout_width="20dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/search" />
 
         <ImageView
             android:id="@+id/class_filter_btn"
-            android:layout_width="75dp"
+            android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/filter" />
 

@@ -192,12 +192,6 @@
             android:onClick="UserConfirmAP"
             android:text="確認預約" />
 
-        <TextView
-            android:id="@+id/textView38"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
