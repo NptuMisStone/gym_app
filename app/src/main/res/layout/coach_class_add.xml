@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/ClassAdd_nameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:text="名稱："
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/ClassAdd_nameEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:hint="Class Name"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_nameText"
+        app:layout_constraintStart_toEndOf="@+id/ClassAdd_nameText"
+        app:layout_constraintTop_toTopOf="@+id/ClassAdd_nameText" />
+
+    <TextView
+        android:id="@+id/ClassAdd_typeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="類型："
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_nameText" />
+
+    <EditText
+        android:id="@+id/ClassAdd_typeEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:hint="Class Type"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_typeText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassAdd_typeText" />
+
+    <TextView
+        android:id="@+id/ClassAdd_descriptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="介紹："
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_typeText" />
+
+    <EditText
+        android:id="@+id/ClassAdd_descriptionEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:hint="Class Description"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_descriptionText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassAdd_descriptionText" />
+
+    <TextView
+        android:id="@+id/ClassAdd_timeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="時間："
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_descriptionText" />
+
+    <EditText
+        android:id="@+id/ClassAdd_timeEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="Class Time"
+        android:inputType="number"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_timeText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassAdd_timeText" />
+
+    <TextView
+        android:id="@+id/ClassAdd_limitText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="人數："
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_timeText" />
+
+    <EditText
+        android:id="@+id/ClassAdd_limitEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="Class Limit"
+        android:inputType="number"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_limitText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassAdd_limitText" />
+
+    <TextView
+        android:id="@+id/ClassAdd_locationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="地點："
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_limitText" />
+
+    <EditText
+        android:id="@+id/ClassAdd_locationEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:hint="Class Location"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_locationText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassAdd_locationText" />
+
+    <TextView
+        android:id="@+id/ClassAdd_feeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="費用："
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_locationText" />
+
+    <EditText
+        android:id="@+id/ClassAdd_feeEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:hint="Class Fee"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_feeText"
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintTop_toTopOf="@+id/ClassAdd_feeText" />
+
+    <ImageView
+        android:id="@+id/ClassAdd_uploadImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="32dp"
+        android:contentDescription="Class Image"
+        app:layout_constraintEnd_toStartOf="@+id/ClassAdd_uploadButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
+        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_feeText"
+        app:srcCompat="@drawable/main_register_selector_thumb_background" />
+
+    <Button
+        android:id="@+id/ClassAdd_uploadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="上傳圖片"
+        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_uploadImage"
+        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ClassAdd_uploadImage"
+        app:layout_constraintTop_toTopOf="@+id/ClassAdd_uploadImage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

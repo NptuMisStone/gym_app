@@ -179,6 +179,29 @@
                         android:text="@string/AIInteractive_titleText" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/CoachHome_scheduledButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:onClick="onClick"
+                        android:text="安排課表" />
+
+                    <Button
+                        android:id="@+id/CoachHome_classButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:onClick="onClick"
+                        android:text="課程維護" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline

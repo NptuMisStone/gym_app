@@ -1,0 +1,209 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Coach.Scheduled.ScheduledMain">
+
+    <!-- 返回按鈕 -->
+    <ImageButton
+        android:id="@+id/ScheduledCheck_backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/all_effect_ripple"
+        android:contentDescription="goBack"
+        android:scaleType="centerCrop"
+        android:src="@drawable/all_ic_arrow_back1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 新增課表按鈕，放置在右上角 -->
+    <ImageButton
+        android:id="@+id/ScheduledAdd_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/all_effect_ripple"
+        android:contentDescription="Add new schedule"
+        android:src="@drawable/coach_scheduled_set_ic_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- 日期顯示 -->
+    <TextView
+        android:id="@+id/ScheduledMain_dateDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2024-11-04"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ScheduledCheck_backButton"
+        app:layout_constraintEnd_toStartOf="@+id/ScheduledMain_todayButton"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 回到今天按鈕 -->
+    <Button
+        android:id="@+id/ScheduledMain_todayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="回到今天"
+        app:layout_constraintBottom_toBottomOf="@+id/ScheduledCheck_backButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ScheduledMain_dateDisplay"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 星期標題 -->
+    <LinearLayout
+        android:id="@+id/ScheduledMain_weekHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ScheduledCheck_backButton">
+
+        <!-- 一到日的標題 -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="一"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="二"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="三"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="四"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="五"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="六"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="日"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- 星期日期選擇 -->
+    <LinearLayout
+        android:id="@+id/ScheduledMain_weekDays"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ScheduledMain_weekHeader">
+
+        <!-- 日期按鈕，一到日的按鈕 -->
+        <Button
+            android:id="@+id/day1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/day2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="2"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/day3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="3"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/day4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="4"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/day5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="5"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/day6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="6"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/day7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="7"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- 課程列表 (RecyclerView) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ScheduledCheck_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ScheduledMain_weekDays" />
+</androidx.constraintlayout.widget.ConstraintLayout>

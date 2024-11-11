@@ -19,8 +19,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.NPTUMisStone.gym_app.Coach.Class.ClassMain;
 import com.NPTUMisStone.gym_app.Coach.Records.BookingList;
 import com.NPTUMisStone.gym_app.Coach.Records.BookingDetail;
+import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledMain;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledSet;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledCheck;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
@@ -106,6 +108,10 @@ public class CoachHome extends AppCompatActivity {
                 startActivity(new Intent(this, Achievement.class));
             else if (id == R.id.CoachHome_contactButton)
                 startActivity(new Intent(this, AIInteractive.class));
+            else if (id == R.id.CoachHome_scheduledButton)
+                startActivity(new Intent(this, ScheduledMain.class));
+            else if (id == R.id.CoachHome_classButton)
+                startActivity(new Intent(this, ClassMain.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);
         }

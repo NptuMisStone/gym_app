@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Coach.Scheduled.ScheduledAdd">
+
+    <com.hdev.calendar.view.SingleCalendarView
+        android:id="@+id/ScheduledAdd_calendarView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="32dp"
+        app:day_font_size="16sp"
+        app:default_color="#000000"
+        app:default_dim_color="#AAAAAA"
+        app:header_view="com.hdev.calendar.view.DefaultHeaderView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:selected_bg_color="#0078D7"
+        app:selected_day_color="#EFEFEF"
+        app:week_title_color="@color/medium_gray"
+        app:week_title_font_size="20sp"
+        app:weekend_color="#F96A31" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
