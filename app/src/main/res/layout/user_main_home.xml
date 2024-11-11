@@ -79,19 +79,19 @@
         android:layout_height="0dp"
         app:adSize="BANNER"
         app:adUnitId="ca-app-pub-5758857104652666/3110436616"
-        app:layout_constraintBottom_toTopOf="@+id/guideline23"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline16"/>
+        app:layout_constraintTop_toBottomOf="@+id/UserHome_swipeRefreshLayout" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/UserHome_swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline23"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline23">
+        app:layout_constraintTop_toTopOf="@+id/guideline16">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/UserHome_constraintLayout"
@@ -102,87 +102,218 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.05" />
+
             <LinearLayout
-                android:id="@+id/linearLayout5"
+                android:id="@+id/UserHome_linearLayout1"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:alpha="0.90"
-                android:background="@drawable/main_register_shape_edittext"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/all_home_background_linearlayout"
                 android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@+id/guideline17"
-                app:layout_constraintEnd_toStartOf="@+id/guideline19"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline32"
+                app:layout_constraintEnd_toStartOf="@+id/guideline31"
                 app:layout_constraintStart_toStartOf="@+id/guideline20"
                 app:layout_constraintTop_toTopOf="@+id/guideline18">
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/UserHome_classButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:background="@drawable/user_home_stroke_class_button"
+                    android:onClick="onClick" />
 
-                    <Button
-                        android:id="@+id/UserHome_classButton"
-                        android:layout_width="125dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/user_home_stroke_class_button"
-                        android:onClick="onClick" />
+                <TextView
+                    android:id="@+id/UserHome_classText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="@string/Home_userButton1" />
+            </LinearLayout>
 
-                    <Button
-                        android:id="@+id/UserHome_coachButton"
-                        android:layout_width="125dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/user_home_stroke_coach_button"
-                        android:onClick="onClick" />
-                </LinearLayout>
+            <LinearLayout
+                android:id="@+id/UserHome_linearLayout2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/all_home_background_linearlayout"
+                android:orientation="vertical"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline32"
+                app:layout_constraintEnd_toStartOf="@+id/guideline19"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toTopOf="@+id/guideline18">
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/UserHome_coachButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:background="@drawable/user_home_stroke_coach_button"
+                    android:onClick="onClick" />
 
-                    <Button
-                        android:id="@+id/UserHome_loveButton"
-                        android:layout_width="125dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/user_home_stroke_love_button"
-                        android:onClick="onClick" />
+                <TextView
+                    android:id="@+id/UserHome_coachText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="@string/Home_userButton2" />
+            </LinearLayout>
 
-                    <Button
-                        android:id="@+id/UserHome_historyButton"
-                        android:layout_width="125dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/user_home_stroke_history_button"
-                        android:onClick="onClick" />
-                </LinearLayout>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline32"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.35" />
 
-                <LinearLayout
+            <LinearLayout
+                android:id="@+id/UserHome_linearLayout3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/all_home_background_linearlayout"
+                android:orientation="vertical"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline33"
+                app:layout_constraintEnd_toStartOf="@+id/guideline31"
+                app:layout_constraintStart_toStartOf="@+id/guideline20"
+                app:layout_constraintTop_toTopOf="@+id/guideline32">
+
+                <Button
+                    android:id="@+id/UserHome_loveButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:background="@drawable/user_home_stroke_love_button"
+                    android:onClick="onClick" />
 
-                    <Button
-                        android:id="@+id/UserHome_gymButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/user_home_stroke_gym_button"
-                        android:onClick="onClick" />
+                <TextView
+                    android:id="@+id/UserHome_loveText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="@string/Home_userButton3" />
 
-                    <Button
-                        android:id="@+id/UserHome_contactButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/user_home_stroke_contact_button"
-                        android:onClick="onClick" />
-                </LinearLayout>
+            </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/UserHome_linearLayout4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/all_home_background_linearlayout"
+                android:orientation="vertical"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline33"
+                app:layout_constraintEnd_toStartOf="@+id/guideline19"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toTopOf="@+id/guideline32">
+
+                <Button
+                    android:id="@+id/UserHome_historyButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/user_home_stroke_history_button"
+                    android:onClick="onClick" />
+
+                <TextView
+                    android:id="@+id/UserHome_historyText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="@string/Home_userButton4" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline33"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.65" />
+
+            <LinearLayout
+                android:id="@+id/UserHome_linearLayout5"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/all_home_background_linearlayout"
+                android:orientation="vertical"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline17"
+                app:layout_constraintEnd_toStartOf="@+id/guideline31"
+                app:layout_constraintStart_toStartOf="@+id/guideline20"
+                app:layout_constraintTop_toTopOf="@+id/guideline33">
+
+                <Button
+                    android:id="@+id/UserHome_gymButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/user_home_stroke_gym_button"
+                    android:onClick="onClick" />
+
+                <TextView
+                    android:id="@+id/UserHome_gymText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="@string/Home_userButton5" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/UserHome_linearLayout6"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/all_home_background_linearlayout"
+                android:orientation="vertical"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline17"
+                app:layout_constraintEnd_toStartOf="@+id/guideline19"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toTopOf="@+id/guideline33">
+
+                <Button
+                    android:id="@+id/UserHome_contactButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/user_home_stroke_contact_button"
+                    android:onClick="onClick" />
+
+                <TextView
+                    android:id="@+id/UserHome_contactText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="@string/Contact_titleText" />
             </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline
@@ -190,14 +321,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.9" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.08" />
+                app:layout_constraintGuide_percent="0.95" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline20"
@@ -212,6 +336,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.88" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline31"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -248,6 +379,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.28" />
+        app:layout_constraintGuide_percent="0.88" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,8 +9,8 @@ android { //rename package:https://stackoverflow.com/questions/16804093/rename-p
         applicationId = "com.NPTUMisStone.gym_app"
         minSdk = 30
         targetSdk = 34
-        versionCode = 60
-        versionName = "0.60"
+        versionCode = 68
+        versionName = "0.68"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -67,14 +67,15 @@ dependencies {
     implementation(libs.play.services.maps)             // 地圖顯示與地圖導航
 
     // Mapbox-Maps：https://docs.mapbox.com/android/maps/guides/install/
-    implementation(libs.mapbox.maps.android)                   // 地圖顯示與地圖導航
+    implementation(libs.mapbox.maps.android)                   // 地圖顯示與地圖
 
     // Mapbox-Navigation：https://docs.mapbox.com/android/navigation/guides/installation/
+    /*implementation (libs.mapbox.navigation.android)
     implementation (libs.mapbox.navigationcore.navigation)
     implementation (libs.mapbox.navigationcore.uimaps)
     implementation (libs.mapbox.navigationcore.voice)
     implementation (libs.mapbox.navigationcore.android)
-    implementation (libs.mapbox.navigationcore.uicomponents)
+    implementation (libs.mapbox.navigationcore.uicomponents)*/
 
     // Java Mail API
     implementation(files("libs/mail.jar"))              // 使用Java Mail API

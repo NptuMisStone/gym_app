@@ -26,11 +26,13 @@ lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
 playServicesMaps = "19.0.0"
 playServicesAds = "23.5.0"
-mapbox-androidVersion = "11.7.1"
-mapbox-navigationcore = "3.5.0-rc.1"
+mapbox-androidVersion = "11.7.2"
+mapbox-oldNavigationVersion = "2.15.2"
+mapbox-navigationcore = "3.4.2"
 
 [libraries]
 mapbox-maps-android = { module = "com.mapbox.maps:android", version.ref = "mapbox-androidVersion" }
+mapbox-navigation-android = { module = "com.mapbox.navigation:android", version.ref = "mapbox-oldNavigationVersion" }
 mapbox-navigationcore-navigation = { module = "com.mapbox.navigationcore:navigation", version.ref = "mapbox-navigationcore" }
 mapbox-navigationcore-uimaps = { module = "com.mapbox.navigationcore:ui-maps", version.ref = "mapbox-navigationcore" }
 mapbox-navigationcore-voice = { module = "com.mapbox.navigationcore:voice", version.ref = "mapbox-navigationcore" }
