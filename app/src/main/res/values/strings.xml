@@ -47,4 +47,5 @@
     <string name="Contact_titleText">【聯絡我們】</string>
     <string name="mapbox_access_token" translatable="false" tools:ignore="UnusedResources">sk.eyJ1IjoiZzEwMTQzMDgiLCJhIjoiY20zNDVscWJtMW1rMzJqczczY25sbjd3ciJ9.9A-0xBz7PEseqVeIBG5z6g</string>
     <string name="mapbox_style_url">mapbox://styles/g1014308/cm36yrww7013g01pw50192vmm</string>
+
 </resources>

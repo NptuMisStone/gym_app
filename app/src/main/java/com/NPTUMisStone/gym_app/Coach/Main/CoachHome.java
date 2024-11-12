@@ -56,7 +56,6 @@ public class CoachHome extends AppCompatActivity {
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
         progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
         init_coachInfo();
-        init_banner();
         //getString();
     }
 
@@ -85,33 +84,19 @@ public class CoachHome extends AppCompatActivity {
             ((ImageView) findViewById(R.id.CoachHome_photoImage)).setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
     }
 
-    private void init_banner() {
-        ViewPager2 user_viewPager = findViewById(R.id.CoachHome_viewPager);
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.CoachHome_swipeRefreshLayout);
-        Advertisement.init_banner(this, MyConnection, adList, user_viewPager, swipeRefreshLayout);
-    }
-
     public void onClick(View view) {
         if (progressBarHandler.isLoading()) return;
         progressBarHandler.showProgressBar();
         int id = view.getId();
         try {
-            if (id == R.id.CoachHome_addButton)
-                startActivity(new Intent(this, ScheduledSet.class));
-            else if (id == R.id.CoachHome_checkButton)
-                startActivity(new Intent(this, ScheduledCheck.class));
-            else if (id == R.id.CoachHome_decideButton)
+            if (id == R.id.CoachHome_viewAppointmentsCard)
                 startActivity(new Intent(this, BookingDetail.class));
-            else if (id == R.id.CoachHome_historyButton)
-                startActivity(new Intent(this, BookingList.class));
-            else if (id == R.id.CoachHome_workButton)
-                startActivity(new Intent(this, Achievement.class));
-            else if (id == R.id.CoachHome_contactButton)
-                startActivity(new Intent(this, AIInteractive.class));
-            else if (id == R.id.CoachHome_scheduledButton)
+            else if (id == R.id.CoachHome_viewScheduleCard)
                 startActivity(new Intent(this, ScheduledMain.class));
-            else if (id == R.id.CoachHome_classButton)
+            else if (id == R.id.CoachHome_classMaintenanceCard)
                 startActivity(new Intent(this, ClassMain.class));
+            else if (id == R.id.CoachHome_commentManagementCard)
+                startActivity(new Intent(this, AIInteractive.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);
         }

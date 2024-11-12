@@ -1,200 +1,346 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".Coach.Class.ClassAdd">
 
-    <TextView
-        android:id="@+id/ClassAdd_nameText"
+    <!-- 標頭部分 -->
+    <ImageButton
+        android:id="@+id/ClassMain_backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:text="名稱："
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/all_effect_ripple"
+        android:contentDescription="goBack"
+        android:scaleType="centerCrop"
+        android:src="@drawable/all_ic_arrow_back1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/ClassAdd_nameEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:hint="Class Name"
-        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_nameText"
-        app:layout_constraintStart_toEndOf="@+id/ClassAdd_nameText"
-        app:layout_constraintTop_toTopOf="@+id/ClassAdd_nameText" />
-
     <TextView
-        android:id="@+id/ClassAdd_typeText"
+        android:id="@+id/ClassMain_titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="類型："
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
-        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_nameText" />
+        android:layout_marginTop="16dp"
+        android:text="新增課程"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/ClassAdd_typeEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:hint="Class Type"
-        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_typeText"
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintTop_toTopOf="@+id/ClassAdd_typeText" />
+    <!-- ScrollView to allow vertical scrolling -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/ClassMain_titleText"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <TextView
-        android:id="@+id/ClassAdd_descriptionText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="介紹："
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
-        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_typeText" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-    <EditText
-        android:id="@+id/ClassAdd_descriptionEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:hint="Class Description"
-        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_descriptionText"
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintTop_toTopOf="@+id/ClassAdd_descriptionText" />
+            <!-- 課程名稱 -->
+            <TextView
+                android:id="@+id/ClassAdd_nameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="課程名稱："
+                android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/ClassAdd_timeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="時間："
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
-        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_descriptionText" />
+            <EditText
+                android:id="@+id/ClassAdd_nameEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="請輸入課程名稱"
+                android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/ClassAdd_timeEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="Class Time"
-        android:inputType="number"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_timeText"
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintTop_toTopOf="@+id/ClassAdd_timeText" />
+            <!-- 選擇課程類型 -->
+            <TextView
+                android:id="@+id/ClassAdd_typeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="選擇課程類型："
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_nameEdit" />
 
-    <TextView
-        android:id="@+id/ClassAdd_limitText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="人數："
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
-        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_timeText" />
+            <Spinner
+                android:id="@+id/ClassAdd_typeSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_typeText" />
 
-    <EditText
-        android:id="@+id/ClassAdd_limitEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="Class Limit"
-        android:inputType="number"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_limitText"
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintTop_toTopOf="@+id/ClassAdd_limitText" />
+            <!-- 選擇課程時長 -->
+            <TextView
+                android:id="@+id/ClassAdd_durationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="選擇課程時長："
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_typeSpinner" />
 
-    <TextView
-        android:id="@+id/ClassAdd_locationText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="地點："
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
-        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_limitText" />
+            <Spinner
+                android:id="@+id/ClassAdd_durationSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_durationText" />
 
-    <EditText
-        android:id="@+id/ClassAdd_locationEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:hint="Class Location"
-        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_locationText"
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintTop_toTopOf="@+id/ClassAdd_locationText" />
+            <!-- 課程介紹 -->
+            <TextView
+                android:id="@+id/ClassAdd_descriptionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="課程介紹："
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_durationSpinner" />
 
-    <TextView
-        android:id="@+id/ClassAdd_feeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="費用："
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameText"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
-        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_locationText" />
+            <EditText
+                android:id="@+id/ClassAdd_descriptionEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="請輸入課程介紹"
+                android:inputType="textMultiLine"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_descriptionText" />
 
-    <EditText
-        android:id="@+id/ClassAdd_feeEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:inputType="number"
-        android:minHeight="48dp"
-        android:hint="Class Fee"
-        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_feeText"
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintTop_toTopOf="@+id/ClassAdd_feeText" />
+            <!-- 所需設備 -->
+            <TextView
+                android:id="@+id/ClassAdd_equipmentText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="所需設備："
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_descriptionEdit" />
 
-    <ImageView
-        android:id="@+id/ClassAdd_uploadImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
-        android:contentDescription="Class Image"
-        app:layout_constraintEnd_toStartOf="@+id/ClassAdd_uploadButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/ClassAdd_nameText"
-        app:layout_constraintTop_toBottomOf="@+id/ClassAdd_feeText"
-        app:srcCompat="@drawable/main_register_selector_thumb_background" />
+            <EditText
+                android:id="@+id/ClassAdd_equipmentEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="請輸入所需設備"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_equipmentText" />
 
-    <Button
-        android:id="@+id/ClassAdd_uploadButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:text="上傳圖片"
-        app:layout_constraintBottom_toBottomOf="@+id/ClassAdd_uploadImage"
-        app:layout_constraintEnd_toEndOf="@+id/ClassAdd_nameEdit"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/ClassAdd_uploadImage"
-        app:layout_constraintTop_toTopOf="@+id/ClassAdd_uploadImage" />
+            <!-- 課程費用 -->
+            <TextView
+                android:id="@+id/ClassAdd_feeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="課程費用："
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_equipmentEdit" />
+
+            <EditText
+                android:id="@+id/ClassAdd_feeEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="請輸入課程費用"
+                android:inputType="numberDecimal"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_feeText" />
+
+            <!-- 上課人數 -->
+            <TextView
+                android:id="@+id/ClassAdd_classSizeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="上課人數："
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_feeEdit" />
+
+            <RadioGroup
+                android:id="@+id/ClassAdd_classSizeRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_classSizeText">
+
+                <RadioButton
+                    android:id="@+id/ClassAdd_oneToOneRadio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="一對一課程" />
+
+                <RadioButton
+                    android:id="@+id/ClassAdd_groupRadio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="團體課程" />
+
+                <EditText
+                    android:id="@+id/ClassAdd_groupSizeEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:hint="請輸入團體課程人數"
+                    android:inputType="number"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ClassAdd_classSizeRadioGroup" />
+
+            </RadioGroup>
+
+            <!-- 上課地點 -->
+            <TextView
+                android:id="@+id/ClassAdd_locationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="上課地點："
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_classSizeRadioGroup" />
+
+            <RadioGroup
+                android:id="@+id/ClassAdd_locationRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_locationText">
+
+                <RadioButton
+                    android:id="@+id/ClassAdd_trainerStoreRadio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="教練的店家"
+                    android:visibility="gone" />
+
+                <RadioButton
+                    android:id="@+id/ClassAdd_clientLocationRadio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="到府(客戶指定地點)" />
+
+                <RadioButton
+                    android:id="@+id/ClassAdd_otherLocationRadio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="其他(教練指定地點)" />
+            </RadioGroup>
+
+            <!-- 地點名稱輸入框 -->
+            <EditText
+                android:id="@+id/ClassAdd_locationNameEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="請輸入地點名稱"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_locationRadioGroup"
+                android:layout_marginTop="8dp" />
+
+            <!-- 縣市與地區選擇 -->
+            <Spinner
+                android:id="@+id/ClassAdd_citySpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_locationNameEdit"
+                android:layout_marginTop="8dp" />
+
+            <Spinner
+                android:id="@+id/ClassAdd_areaSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_citySpinner"
+                android:layout_marginTop="8dp" />
+
+            <!-- 詳細地址輸入框 -->
+            <EditText
+                android:id="@+id/ClassAdd_addressEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="請輸入詳細地址（不須輸入縣市行政區）"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_areaSpinner"
+                android:layout_marginTop="8dp" />
+
+
+
+            <!-- 課程圖片上傳 -->
+            <ImageView
+                android:id="@+id/ClassAdd_uploadImage"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:contentDescription="課程圖片"
+                android:src="@drawable/main_register_selector_thumb_background"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ClassAdd_addressEdit" />
+
+            <Button
+                android:id="@+id/ClassAdd_uploadButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="48dp"
+                android:text="上傳圖片"
+                app:layout_constraintStart_toEndOf="@+id/ClassAdd_uploadImage"
+                app:layout_constraintTop_toTopOf="@+id/ClassAdd_uploadImage" />
+
+            <!-- 增加保存按鈕 -->
+            <Button
+                android:id="@+id/ClassAdd_saveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:text="儲存課程" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
