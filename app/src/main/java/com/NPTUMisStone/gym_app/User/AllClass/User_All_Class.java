@@ -90,8 +90,7 @@ public class User_All_Class extends AppCompatActivity {
         filterbtn.setOnClickListener(view -> showFilterDialog());
         searchtext=findViewById(R.id.class_filter_searchtext);
         searchbtn=findViewById(R.id.class_search_btn);
-        minmoney=findViewById(R.id.filter_class_price_min);
-        maxmoney=findViewById(R.id.filter_class_price_max);
+
     }
 
     private void fetchClass() {
@@ -503,6 +502,8 @@ public class User_All_Class extends AppCompatActivity {
             selectedCities = cityadapter.getSelectedCities();
             selectedAreas = cityadapter.getSelectedAreas();
             searchtxt=searchtext.getText().toString();
+            minmoney=filterView.findViewById(R.id.filter_class_price_min);
+            maxmoney=filterView.findViewById(R.id.filter_class_price_max);
             fetchfilter();
 
             filterDialog.dismiss();
@@ -571,8 +572,11 @@ public class User_All_Class extends AppCompatActivity {
                 gendercheck = (gendercheck .equals("0")) ? "%" : gendercheck;
                 peoplecheck = (peoplecheck == null || peoplecheck.trim().isEmpty()) ? "0" : peoplecheck;
 
-                String minMoneyText = (minmoney != null && minmoney.getText() != null && !minmoney.getText().toString().isEmpty()) ? minmoney.getText().toString() : "0";
-                String maxMoneyText = (maxmoney != null && maxmoney.getText() != null && !maxmoney.getText().toString().isEmpty()) ? maxmoney.getText().toString() : "9999";
+                // 獲取最大和最小費用
+                String minMoneyText = (minmoney != null && minmoney.getText() != null && !minmoney.getText().toString().isEmpty())
+                        ? minmoney.getText().toString() : "0";
+                String maxMoneyText = (maxmoney != null && maxmoney.getText() != null && !maxmoney.getText().toString().isEmpty())
+                        ? maxmoney.getText().toString() : "9999";
 
                 int minMoney = Integer.parseInt(minMoneyText);
                 int maxMoney = Integer.parseInt(maxMoneyText);
@@ -635,6 +639,7 @@ public class User_All_Class extends AppCompatActivity {
                 } else {
                     statement.setString(index++, "%");
                 }
+
                 ResultSet rs = statement.executeQuery();
                 class_data.clear();
                 while (rs.next()) {
