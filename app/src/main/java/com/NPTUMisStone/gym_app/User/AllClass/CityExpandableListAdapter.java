@@ -173,7 +173,11 @@ public class CityExpandableListAdapter extends BaseExpandableListAdapter {
 
         return convertView;
     }
-
+    public void clearSelection() {
+        // 清空選中的縣市和行政區
+        selectedCities.clear();
+        selectedAreas.clear();
+    }
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;

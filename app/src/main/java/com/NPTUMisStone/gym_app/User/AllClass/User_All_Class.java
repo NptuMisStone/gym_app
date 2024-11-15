@@ -90,6 +90,23 @@ public class User_All_Class extends AppCompatActivity {
         filterbtn.setOnClickListener(view -> showFilterDialog());
         searchtext=findViewById(R.id.class_filter_searchtext);
         searchbtn=findViewById(R.id.class_search_btn);
+        searchbtn.setOnClickListener(view -> {
+            // 顯示進度條
+            progressBar.setVisibility(View.VISIBLE);
+
+            // 將所有過濾條件初始化
+            selectedCities = cityadapter != null ? cityadapter.getSelectedCities() : new ArrayList<>();
+            selectedAreas = cityadapter != null ? cityadapter.getSelectedAreas() : new ArrayList<>();
+            searchtxt = searchtext.getText().toString();
+            gendercheck = ""; // 根據你的需求預設為空或某一值
+            peoplecheck = "0"; // 預設為 0 表示全部人數
+            minmoney = findViewById(R.id.filter_class_price_min);
+            maxmoney = findViewById(R.id.filter_class_price_max);
+
+            // 呼叫篩選方法
+            fetchfilter();
+        });
+
 
     }
 
@@ -464,7 +481,30 @@ public class User_All_Class extends AppCompatActivity {
 
         RadioGroup gendergroup =filterView.findViewById(R.id.filter_class_coachgender_radiobuttongroup);
         RadioGroup peoplegroup =filterView.findViewById(R.id.filter_class_people_radiobuttongroup);
+        Button resetButton=filterView.findViewById(R.id.btn_reset);
+        resetButton.setOnClickListener(v -> {
+            // 重置篩選條件
+            gendergroup.check(R.id.filter_class_coachgender_all);
+            peoplegroup.check(R.id.filter_class_people_all);
 
+            // 重置價格範圍
+            if (minmoney != null) minmoney.setText("");
+            if (maxmoney != null) maxmoney.setText("");
+
+            // 重置城市和區域選擇
+            if (cityadapter != null) {
+                cityadapter.clearSelection();
+                cityadapter.notifyDataSetChanged();
+            }
+
+            // 重置分類
+            if (typeSpinner != null && typeSpinner.getAdapter() != null) {
+                typeSpinner.setSelection(0);
+            }
+
+            // 顯示提示
+            Toast.makeText(this, "篩選條件已重置", Toast.LENGTH_SHORT).show();
+        });
         Button applyButton = filterView.findViewById(R.id.btn_apply);
         applyButton.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
