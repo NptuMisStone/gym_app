@@ -30,6 +30,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
@@ -49,100 +50,156 @@ import java.util.concurrent.Executors;
 
 public class ClassMain extends AppCompatActivity {
 
-    Connection MyConnection;
+    private Connection MyConnection;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private CustomAdapter adapter;
+    private RecyclerView recyclerView;
+    private boolean isLoadingData = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.coach_class_main);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+        swipeRefreshLayout = findViewById(R.id.ClassMain_swipeRefreshLayout);
+
         findViewById(R.id.ClassMain_backButton).setOnClickListener(v -> finish());
         findViewById(R.id.ClassMain_addButton).setOnClickListener(v -> {
             Intent intent = new Intent(ClassMain.this, ClassAdd.class);
             startActivity(intent);
         });
+
         setRecyclerView();
+
+        // 下拉刷新邏輯
+        swipeRefreshLayout.setOnRefreshListener(this::reloadData);
     }
+
     private void setRecyclerView() {
-        CustomAdapter adapter = new CustomAdapter(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        RecyclerView recyclerView = findViewById(R.id.ClassMain_classRecycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        adapter = new CustomAdapter(
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>()
+        );
+        recyclerView = findViewById(R.id.ClassMain_classRecycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
+        reloadData(); // 初始載入資料
+    }
+
+
+    private void reloadData() {
+        if (isLoadingData) return; // 防止重複加載
+        isLoadingData = true;
+
+        swipeRefreshLayout.setRefreshing(true);
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 List<Integer> idList = new ArrayList<>();
                 List<byte[]> imageList = new ArrayList<>();
                 List<String> nameList = new ArrayList<>();
-                fetchClassData(idList, imageList, nameList);
+                List<String> descriptionList = new ArrayList<>();
+                List<Integer> durationList = new ArrayList<>();
+                List<Integer> sizeList = new ArrayList<>();
+                List<Double> feeList = new ArrayList<>();
+
+                // 加載數據
+                fetchClassData(idList, imageList, nameList, descriptionList, durationList, sizeList, feeList);
 
                 // 更新 UI 和資料
                 new Handler(Looper.getMainLooper()).post(() -> {
                     adapter.idList = idList;
                     adapter.imageList = imageList;
                     adapter.nameList = nameList;
+                    adapter.descriptionList = descriptionList;
+                    adapter.durationList = durationList;
+                    adapter.sizeList = sizeList;
+                    adapter.feeList = feeList;
+                    adapter.notifyDataSetChanged();
 
-                    // 通知 RecyclerView 資料已變更
-                    adapter.notifyDataSetChanged();  // 這裡非常重要
-                    Log.d("RecyclerView", "RecyclerView set successfully");
+                    if (idList.isEmpty()) {
+                        Toast.makeText(this, "目前無課程資料", Toast.LENGTH_SHORT).show();
+                    }
                 });
             } catch (Exception e) {
-                Log.e("SQL", "Error in search SQL", e);
+                Log.e("SQL", "Error loading data", e);
                 new Handler(Looper.getMainLooper()).post(() ->
-                        Toast.makeText(this, "更新課程列表失敗", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "加載課程列表失敗，請稍後再試", Toast.LENGTH_SHORT).show()
                 );
+            } finally {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    isLoadingData = false;
+                    swipeRefreshLayout.setRefreshing(false);
+                });
             }
         });
     }
 
-    private void fetchClassData(List<Integer> idList, List<byte[]> imageList, List<String> nameList) {
-        String searchQuery = "SELECT * FROM [健身教練課程] WHERE [健身教練編號] = ?";
-        int resultCount = 3; //避免過快失敗
-        while (resultCount-- > 0) {
-            try {
-                PreparedStatement statement = MyConnection.prepareStatement(searchQuery);
-                statement.setInt(1, Coach.getInstance().getCoachId());
-                ResultSet resultSet = statement.executeQuery();
 
-                // 檢查是否有資料返回
-                if (!resultSet.isBeforeFirst()) {
-                    Log.e("SQL", "No data found");
-                }
 
-                while (resultSet.next()) {
-                    idList.add(resultSet.getInt("課程編號"));
-                    imageList.add(resultSet.getBytes("課程圖片"));
-                    nameList.add(resultSet.getString("課程名稱"));
+    private void fetchClassData(List<Integer> idList, List<byte[]> imageList, List<String> nameList,
+                                List<String> descriptionList, List<Integer> durationList,
+                                List<Integer> sizeList, List<Double> feeList) {
+        String query = "SELECT [課程編號], [課程名稱], [課程內容介紹], [課程費用], " +
+                "[上課人數], [課程時間長度], [課程圖片] " +
+                "FROM [健身教練課程] WHERE [健身教練編號] = ?";
 
-                    // 日誌輸出以確認資料
-                    Log.d("SQL", "課程名稱: " + resultSet.getString("課程名稱"));
-                }
-                break;
-            } catch (SQLException e) {
-                Log.e("SQL", "Error in search SQL" + resultCount, e);
-                if (resultCount == 0) throw new RuntimeException(e);
+        try (PreparedStatement statement = MyConnection.prepareStatement(query)) {
+            statement.setInt(1, Coach.getInstance().getCoachId());
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                idList.add(resultSet.getInt("課程編號"));
+                nameList.add(resultSet.getString("課程名稱"));
+                descriptionList.add(resultSet.getString("課程內容介紹"));
+                feeList.add(resultSet.getDouble("課程費用"));
+                sizeList.add(resultSet.getInt("上課人數"));
+                durationList.add(resultSet.getInt("課程時間長度"));
+                imageList.add(resultSet.getBytes("課程圖片"));
             }
+        } catch (SQLException e) {
+            Log.e("SQL", "Error fetching class data", e);
+            throw new RuntimeException(e);
         }
     }
 
-    // 保留 CustomAdapter 以顯示資料
+
+
+
+
+    // 保留 CustomAdapter 顯示資料
     static class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ItemViewHolder> {
         List<Integer> idList;
         List<byte[]> imageList;
         List<String> nameList;
-        boolean isLoading = false;
-        int selectedPosition = RecyclerView.NO_POSITION;
+        List<String> descriptionList;
+        List<Integer> durationList;
+        List<Integer> sizeList;
+        List<Double> feeList;
 
-        CustomAdapter(List<Integer> ids, List<byte[]> images, List<String> names) {
+        CustomAdapter(List<Integer> ids, List<byte[]> images, List<String> names,
+                      List<String> descriptions, List<Integer> durations,
+                      List<Integer> sizes, List<Double> fees) {
             idList = ids;
             imageList = images;
             nameList = names;
+            descriptionList = descriptions;
+            durationList = durations;
+            sizeList = sizes;
+            feeList = fees;
         }
 
         @NonNull
@@ -155,43 +212,41 @@ public class ClassMain extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-            if (isLoading) {
-                holder.imageView.setImageResource(R.drawable.loading);
-                holder.textView.setVisibility(View.GONE);
+            byte[] imageData = imageList.get(position);
+            if (imageData != null && imageData.length > 0) {
+                holder.imageView.setImageBitmap(ImageHandle.getBitmap(imageData));
             } else {
-                holder.imageView.setVisibility(View.VISIBLE);
-                holder.textView.setVisibility(View.VISIBLE);
-                holder.imageView.setImageBitmap(ImageHandle.getBitmap(imageList.get(position)));
-                holder.textView.setText(nameList.get(position));
-
-                holder.selectButton.setOnClickListener(v -> {
-                    int previousSelectedPosition = selectedPosition;
-                    selectedPosition = holder.getBindingAdapterPosition();
-                    notifyItemChanged(previousSelectedPosition);
-                    notifyItemChanged(selectedPosition);
-                });
-
-                holder.selectButton.setBackgroundColor(selectedPosition == position ?
-                        ContextCompat.getColor(holder.selectButton.getContext(), R.color.light_gray) :
-                        ContextCompat.getColor(holder.selectButton.getContext(), R.color.transparent));
+                holder.imageView.setImageResource(R.drawable.null_class);
             }
+
+            holder.nameTextView.setText(nameList.get(position));
+            holder.descriptionTextView.setText(descriptionList.get(position));
+            holder.priceTextView.setText("費用: $" + feeList.get(position));
+            holder.sizeTextView.setText("人數: " + sizeList.get(position) + " 人");
+            holder.timeTextView.setText("時長: " + durationList.get(position) + " 分鐘");
         }
 
         @Override
         public int getItemCount() {
-            return isLoading ? 5 : nameList.size();
+            return nameList.size();
         }
 
         static class ItemViewHolder extends RecyclerView.ViewHolder {
             ImageView imageView;
-            TextView textView;
-            ConstraintLayout selectButton;
+            TextView nameTextView;
+            TextView descriptionTextView;
+            TextView priceTextView;
+            TextView sizeTextView;
+            TextView timeTextView;
 
             ItemViewHolder(View view) {
                 super(view);
                 imageView = view.findViewById(R.id.Class_Item_imageView);
-                textView = view.findViewById(R.id.Class_Item_nameText);
-                selectButton = view.findViewById(R.id.SetItem_allLayout);
+                nameTextView = view.findViewById(R.id.Class_Item_nameText);
+                descriptionTextView = view.findViewById(R.id.Class_Item_descriptionText);
+                priceTextView = view.findViewById(R.id.Class_Item_price);
+                sizeTextView = view.findViewById(R.id.Class_Item_size);
+                timeTextView = view.findViewById(R.id.Class_Item_time);
             }
         }
     }
