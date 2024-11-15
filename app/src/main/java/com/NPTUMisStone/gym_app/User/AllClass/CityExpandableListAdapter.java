@@ -173,11 +173,30 @@ public class CityExpandableListAdapter extends BaseExpandableListAdapter {
 
         return convertView;
     }
-    public void clearSelection() {
-        // 清空選中的縣市和行政區
+    public void resetCheckStates() {
+        // 重置父節點的勾選狀態
+        for (String group : groupCheckState.keySet()) {
+            groupCheckState.put(group, false);
+        }
+
+        // 重置子節點的勾選狀態
+        for (String group : childCheckState.keySet()) {
+            HashMap<String, Boolean> childStates = childCheckState.get(group);
+            if (childStates != null) {
+                for (String child : childStates.keySet()) {
+                    childStates.put(child, false);
+                }
+            }
+        }
+
+        // 清空已選擇的城市和行政區
         selectedCities.clear();
         selectedAreas.clear();
+
+        // 通知數據已改變，更新 UI
+        notifyDataSetChanged();
     }
+
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;

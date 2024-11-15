@@ -493,7 +493,7 @@ public class User_All_Class extends AppCompatActivity {
 
             // 重置城市和區域選擇
             if (cityadapter != null) {
-                cityadapter.clearSelection();
+                cityadapter.resetCheckStates();
                 cityadapter.notifyDataSetChanged();
             }
 
