@@ -36,7 +36,7 @@
             android:exported="false" />
         <activity
             android:name=".User.AllClass.DetailClass.User_Class_Detail"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".User.AllClass.User_All_Class"
             android:exported="false" />

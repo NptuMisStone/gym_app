@@ -1,10 +1,6 @@
 package com.NPTUMisStone.gym_app.Coach.Class;
 
-import static com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle.convertImageToBytes;
-
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,19 +8,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -35,11 +25,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.ErrorHints;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.hdev.calendar.bean.DateInfo;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,7 +40,6 @@ public class ClassMain extends AppCompatActivity {
     private Connection MyConnection;
     private SwipeRefreshLayout swipeRefreshLayout;
     private CustomAdapter adapter;
-    private RecyclerView recyclerView;
     private boolean isLoadingData = false;
 
     @Override
@@ -93,7 +79,7 @@ public class ClassMain extends AppCompatActivity {
                 new ArrayList<>(),
                 new ArrayList<>()
         );
-        recyclerView = findViewById(R.id.ClassMain_classRecycler);
+        RecyclerView recyclerView = findViewById(R.id.ClassMain_classRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -128,7 +114,7 @@ public class ClassMain extends AppCompatActivity {
                     adapter.durationList = durationList;
                     adapter.sizeList = sizeList;
                     adapter.feeList = feeList;
-                    adapter.notifyDataSetChanged();
+                    adapter.notifyItemRangeChanged(0, idList.size());
 
                     if (idList.isEmpty()) {
                         Toast.makeText(this, "目前無課程資料", Toast.LENGTH_SHORT).show();
@@ -181,7 +167,7 @@ public class ClassMain extends AppCompatActivity {
 
 
     // 保留 CustomAdapter 顯示資料
-    static class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ItemViewHolder> {
+    class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ItemViewHolder> {
         List<Integer> idList;
         List<byte[]> imageList;
         List<String> nameList;
@@ -216,14 +202,14 @@ public class ClassMain extends AppCompatActivity {
             if (imageData != null && imageData.length > 0) {
                 holder.imageView.setImageBitmap(ImageHandle.getBitmap(imageData));
             } else {
-                holder.imageView.setImageResource(R.drawable.null_class);
+                holder.imageView.setImageResource(R.drawable.course_ic_null_class);
             }
 
             holder.nameTextView.setText(nameList.get(position));
             holder.descriptionTextView.setText(descriptionList.get(position));
-            holder.priceTextView.setText("費用: $" + feeList.get(position));
-            holder.sizeTextView.setText("人數: " + sizeList.get(position) + " 人");
-            holder.timeTextView.setText("時長: " + durationList.get(position) + " 分鐘");
+            holder.priceTextView.setText(getString(R.string.Class_feeText, feeList.get(position)));
+            holder.sizeTextView.setText(getString(R.string.Class_numberText, sizeList.get(position)));
+            holder.timeTextView.setText(getString(R.string.Class_timeText, durationList.get(position)));
         }
 
         @Override

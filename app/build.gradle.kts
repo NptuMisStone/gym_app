@@ -9,8 +9,8 @@ android { //rename package:https://stackoverflow.com/questions/16804093/rename-p
         applicationId = "com.NPTUMisStone.gym_app"
         minSdk = 28
         targetSdk = 34
-        versionCode = 69
-        versionName = "0.69"
+        versionCode = 80
+        versionName = "0.80"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -34,37 +34,37 @@ android { //rename package:https://stackoverflow.com/questions/16804093/rename-p
 dependencies {
     // UI Libraries
     implementation(libs.car.ui.lib)
-    implementation(libs.shimmer)                        // 等待效果
-    implementation(libs.activity)
-    implementation(libs.material)
-    implementation(libs.appcompat)
-    implementation(libs.calendarview)                   // 自定義日曆元件
-    implementation(libs.circleimageview)                // CircleImageView
-    implementation(libs.constraintlayout)
-    implementation(libs.swiperefreshlayout)             // 下拉式更新
-    implementation(libs.fragment)                       // 分頁效果
+    implementation(libs.facebook.shimmer)                        // 等待效果
+    implementation(libs.androidx.activity)
+    implementation(libs.android.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.hdev0225.calendarview)                   // 自定義日曆元件
+    implementation(libs.hdodenhof.circleimageview)                // CircleImageView
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.swiperefreshlayout)             // 下拉式更新
+    implementation(libs.androidx.fragment)                       // 分頁效果
 
     // Navigation Libraries
-    implementation(libs.navigation.compose)             // Jetpack Compose integration
-    implementation(libs.navigation.fragment)            // Views/Fragments integration
-    implementation(libs.navigation.ui)
-    implementation(libs.navigation.dynamic.features.fragment)
-    implementation(libs.legacy.support.v4)
-    implementation(libs.lifecycle.livedata.ktx)
-    implementation(libs.lifecycle.viewmodel.ktx)
-    implementation(libs.play.services.ads)              // Feature module support for Fragments
-    implementation(libs.lifecycle.process)
+    implementation(libs.androidx.navigation.compose)             // Jetpack Compose integration
+    implementation(libs.androidx.navigation.fragment)            // Views/Fragments integration
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.navigation.dynamic.features.fragment)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.android.play.services.ads)              // Feature module support for Fragments
+    implementation(libs.androidx.lifecycle.process)
 
-    androidTestImplementation(libs.navigation.testing)  // Testing Navigation
+    androidTestImplementation(libs.androidx.navigation.testing)  // Testing Navigation
 
     // Networking Libraries
     implementation(libs.okhttp)
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    implementation(libs.retrofit2.retrofit)
+    implementation(libs.retrofit2.converter.gson)
 
     // Google Play Services
-    implementation(libs.play.services.base)
-    implementation(libs.play.services.maps)             // 地圖顯示與地圖導航
+    implementation(libs.android.play.services.base)
+    implementation(libs.android.play.services.maps)             // 地圖顯示與地圖導航
 
     // Mapbox-Maps：https://docs.mapbox.com/android/maps/guides/install/
     //implementation(libs.mapbox.navigation.ui)                     // 地圖顯示與地圖
@@ -95,6 +95,6 @@ dependencies {
 
     // Testing Libraries
     testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.ext.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

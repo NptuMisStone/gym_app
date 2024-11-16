@@ -1,6 +1,5 @@
 package com.NPTUMisStone.gym_app.User.AllCoach;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -30,10 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.AllClass.DetailClass.User_Class_Detail;
-import com.NPTUMisStone.gym_app.User.AllClass.User_All_Class;
 import com.NPTUMisStone.gym_app.User.AllCoach.DetailCoach.User_Coach_Detail;
-import com.NPTUMisStone.gym_app.User.Like.User_LikeCoachFragment;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 
@@ -188,9 +183,9 @@ public class User_All_Coach extends AppCompatActivity {
                 if (rs.next()) {
                     int count = rs.getInt(1);
                     if (count > 0) {
-                        holder.like_coach_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.like1));
+                        holder.like_coach_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.user_like_ic_love));
                     } else {
-                        holder.like_coach_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dislike2));
+                        holder.like_coach_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.user_like_ic_not_love));
                     }
                 }
                 rs.close();
@@ -201,9 +196,9 @@ public class User_All_Coach extends AppCompatActivity {
 
             holder.like_coach_btn.setOnClickListener(v -> {
                 Drawable currentDrawable = holder.like_coach_btn.getDrawable();
-                if (currentDrawable.getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.dislike2).getConstantState())) {
+                if (currentDrawable.getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.user_like_ic_not_love).getConstantState())) {
                     // 如果當前是 dislike 狀態，切換到 like
-                    holder.like_coach_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.like1));
+                    holder.like_coach_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.user_like_ic_love));
 
                     // 更新資料庫
                     try {
@@ -219,7 +214,7 @@ public class User_All_Coach extends AppCompatActivity {
                     }
                 } else {
                     // 如果當前是 like 狀態，切換到 dislike
-                    holder.like_coach_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dislike2));
+                    holder.like_coach_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.user_like_ic_not_love));
                     try {
                         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
                         String deleteSql = "DELETE FROM 教練被收藏 WHERE 健身教練編號 = ? AND 使用者編號 = ?";

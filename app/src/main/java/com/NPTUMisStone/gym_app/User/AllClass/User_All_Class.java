@@ -1,7 +1,6 @@
 package com.NPTUMisStone.gym_app.User.AllClass;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,13 +16,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
-import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +34,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.webkit.internal.ApiFeature;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
@@ -63,14 +59,15 @@ public class User_All_Class extends AppCompatActivity {
     Connection MyConnection;
     ArrayList<User_All_Class.User_All_Class_Data> class_data = new ArrayList<>();
     private ProgressBar progressBar;
-    ImageView filterbtn,searchbtn;
+    ImageView filterbtn, searchbtn;
     TextView searchtext;
     ExpandableListView expandableListView;
     List<String> parentList; // 父節點縣市
     HashMap<String, List<String>> childMap; // 子節點：行政區
-    EditText minmoney,maxmoney;
-    ArrayList<String> selectedCities,selectedAreas;
+    EditText minmoney, maxmoney;
+    ArrayList<String> selectedCities, selectedAreas;
     String searchtxt;
+
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +85,8 @@ public class User_All_Class extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         filterbtn = findViewById(R.id.class_filter_btn);
         filterbtn.setOnClickListener(view -> showFilterDialog());
-        searchtext=findViewById(R.id.class_filter_searchtext);
-        searchbtn=findViewById(R.id.class_search_btn);
+        searchtext = findViewById(R.id.class_filter_searchtext);
+        searchbtn = findViewById(R.id.class_search_btn);
         searchbtn.setOnClickListener(view -> {
             // 顯示進度條
             progressBar.setVisibility(View.VISIBLE);
@@ -242,6 +239,7 @@ public class User_All_Class extends AppCompatActivity {
             return new User_All_Class.All_ClassAdapter.ViewHolder(view);
         }
 
+        @SuppressLint("StringFormatMatches")
         @Override
         public void onBindViewHolder(@NonNull User_All_Class.All_ClassAdapter.ViewHolder holder, int position) {
             User_All_Class.User_All_Class_Data item = class_dataList.get(position);
@@ -254,7 +252,7 @@ public class User_All_Class extends AppCompatActivity {
             holder.class_price.setText("$" + item.getClassPrice().split("\\.")[0] + "/堂");
             holder.coach_name.setText(item.getCoachName());
             holder.class_intro.setText(item.getClassIntro());
-            holder.class_people.setText("人數：" + item.getClassPeople() + "人");
+            holder.class_people.setText(getString(R.string.Class_numberText, item.getClassPeople()));
             holder.moreindo_btn.setOnClickListener(v -> {
                 Intent intent = new Intent(context, User_Class_Detail.class);
                 intent.putExtra("看更多課程ID", item.getClassID());
@@ -270,21 +268,21 @@ public class User_All_Class extends AppCompatActivity {
                 if (rs.next()) {
                     int count = rs.getInt(1);
                     if (count > 0) {
-                        holder.like_class_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.like1));
+                        holder.like_class_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.user_like_ic_love));
                     } else {
-                        holder.like_class_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dislike2));
+                        holder.like_class_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.user_like_ic_not_love));
                     }
                 }
                 rs.close();
                 Statement.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                Log.e("SQL", "Error checking like status", e);
             }
             holder.like_class_btn.setOnClickListener(v -> {
                 Drawable currentDrawable = holder.like_class_btn.getDrawable();
-                if (currentDrawable.getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.dislike2).getConstantState())) {
+                if (Objects.equals(currentDrawable.getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.user_like_ic_not_love)).getConstantState())) {
                     // 如果當前是 dislike 狀態，切換到 like
-                    holder.like_class_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.like1));
+                    holder.like_class_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.user_like_ic_love));
 
                     // 更新資料庫
                     try {
@@ -296,11 +294,11 @@ public class User_All_Class extends AppCompatActivity {
                         insertStatement.executeUpdate();
                         insertStatement.close();
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        Log.e("SQL", "Error inserting like status", e);
                     }
                 } else {
                     // 如果當前是 like 狀態，切換到 dislike
-                    holder.like_class_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dislike2));
+                    holder.like_class_btn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.user_like_ic_not_love));
                     try {
                         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
                         String deleteSql = "DELETE FROM 課程被收藏 WHERE 課程編號 = ? AND 使用者編號 = ?";
@@ -310,7 +308,7 @@ public class User_All_Class extends AppCompatActivity {
                         deleteStatement.executeUpdate();
                         deleteStatement.close();
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        Log.e("SQL", "Error deleting like status", e);
                     }
                 }
 
@@ -331,7 +329,7 @@ public class User_All_Class extends AppCompatActivity {
                 rs.close();
                 Statement.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                Log.e("SQL", "Error checking like status", e);
             }
 
         }
@@ -348,7 +346,7 @@ public class User_All_Class extends AppCompatActivity {
     }
 
     // 数据模型
-    class City { //縣市
+    static class City { //縣市
         int cityId;
         String cityName;
         List<Area> areas = new ArrayList<>();
@@ -359,7 +357,7 @@ public class User_All_Class extends AppCompatActivity {
         }
     }
 
-    class Area { //行政區
+    static class Area { //行政區
         int areaId;
         String areaName;
 
@@ -369,7 +367,7 @@ public class User_All_Class extends AppCompatActivity {
         }
     }
 
-    class ClassType {
+    static class ClassType {
         int classTypeId; // 分类编号
         String classTypeName; // 分类名称
 
@@ -398,7 +396,7 @@ public class User_All_Class extends AppCompatActivity {
             resultSet.close();
             statement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e("SQL", "Error fetching class type data", e);
         }
         return classTypes;
     }
@@ -428,7 +426,7 @@ public class User_All_Class extends AppCompatActivity {
                 cities.add(city);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e("SQL", "Error fetching city and area data", e);
         }
         // 缓存数据
         return cities;
@@ -451,7 +449,9 @@ public class User_All_Class extends AppCompatActivity {
 
 
     }
-    String gendercheck,peoplecheck;
+
+    String gendercheck, peoplecheck;
+
     private void showFilterDialog() {
         if (isFinishing() || isDestroyed()) {
             return; // 避免 Activity 已销毁时尝试显示
@@ -476,12 +476,12 @@ public class User_All_Class extends AppCompatActivity {
         Spinner typeSpinner = filterView.findViewById(R.id.filter_class_type_spinner);
 
         // 分別加載數據
-        loadCityAndAreaData(expandableListView);
+        loadCityAndAreaData();
         loadClassTypeData(typeSpinner);
 
-        RadioGroup gendergroup =filterView.findViewById(R.id.filter_class_coachgender_radiobuttongroup);
-        RadioGroup peoplegroup =filterView.findViewById(R.id.filter_class_people_radiobuttongroup);
-        Button resetButton=filterView.findViewById(R.id.btn_reset);
+        RadioGroup gendergroup = filterView.findViewById(R.id.filter_class_coachgender_radiobuttongroup);
+        RadioGroup peoplegroup = filterView.findViewById(R.id.filter_class_people_radiobuttongroup);
+        Button resetButton = filterView.findViewById(R.id.btn_reset);
         resetButton.setOnClickListener(v -> {
             // 重置篩選條件
             gendergroup.check(R.id.filter_class_coachgender_all);
@@ -514,16 +514,15 @@ public class User_All_Class extends AppCompatActivity {
             // 判斷選中的 RadioButton
             if (selectedGenderId == R.id.filter_class_coachgender_boy) {
                 // 男性被選中
-               gendercheck="1";
+                gendercheck = "1";
             } else if (selectedGenderId == R.id.filter_class_coachgender_girl) {
                 // 女性被選中
-                gendercheck="2";
+                gendercheck = "2";
             } else if (selectedGenderId == R.id.filter_class_coachgender_nogender) {
                 // 全部被選中
-                gendercheck="3";
-            }
-            else {
-                gendercheck="";
+                gendercheck = "3";
+            } else {
+                gendercheck = "";
             }
             // 取得選中的 RadioButton ID
             int selectedPeopleId = peoplegroup.getCheckedRadioButtonId();
@@ -531,19 +530,19 @@ public class User_All_Class extends AppCompatActivity {
             // 判斷選中的 RadioButton
             if (selectedPeopleId == R.id.filter_class_people_all) {
                 // 全部人數
-                peoplecheck="0";
+                peoplecheck = "0";
             } else if (selectedPeopleId == R.id.filter_class_people_one) {
                 // 1對1
-                peoplecheck="1";
+                peoplecheck = "1";
             } else if (selectedPeopleId == R.id.filter_class_people_many) {
                 // 團體
-                peoplecheck="2";
+                peoplecheck = "2";
             }
             selectedCities = cityadapter.getSelectedCities();
             selectedAreas = cityadapter.getSelectedAreas();
-            searchtxt=searchtext.getText().toString();
-            minmoney=filterView.findViewById(R.id.filter_class_price_min);
-            maxmoney=filterView.findViewById(R.id.filter_class_price_max);
+            searchtxt = searchtext.getText().toString();
+            minmoney = filterView.findViewById(R.id.filter_class_price_min);
+            maxmoney = filterView.findViewById(R.id.filter_class_price_max);
             fetchfilter();
 
             filterDialog.dismiss();
@@ -553,12 +552,10 @@ public class User_All_Class extends AppCompatActivity {
     }
 
     // 加載縣市和行政區的數據
-    private void loadCityAndAreaData(ExpandableListView listView) {
+    private void loadCityAndAreaData() {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<City> cities = getCityAndAreaData();
-            new Handler(Looper.getMainLooper()).post(() -> {
-                setupExpandableListView(cities);
-            });
+            new Handler(Looper.getMainLooper()).post(() -> setupExpandableListView(cities));
         });
     }
 
@@ -566,13 +563,12 @@ public class User_All_Class extends AppCompatActivity {
     private void loadClassTypeData(Spinner spinner) {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<ClassType> classTypes = getClassTypeData();
-            new Handler(Looper.getMainLooper()).post(() -> {
-                setupTypeSpinner(spinner, classTypes);
-            });
+            new Handler(Looper.getMainLooper()).post(() -> setupTypeSpinner(spinner, classTypes));
         });
     }
 
-   String selectedTypeID;
+    String selectedTypeID;
+
     // 设置 Spinner 数据
     private void setupTypeSpinner(Spinner spinner, List<ClassType> classTypes) {
         List<String> typeNames = new ArrayList<>();
@@ -600,6 +596,7 @@ public class User_All_Class extends AppCompatActivity {
             }
         });
     }
+
     private void fetchfilter() {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -607,9 +604,9 @@ public class User_All_Class extends AppCompatActivity {
 
                 searchtxt = (searchtxt == null || searchtxt.trim().isEmpty()) ? "%" : "%" + searchtxt + "%";
                 selectedTypeID = (selectedTypeID == null || selectedTypeID.trim().isEmpty()) ? "%" : selectedTypeID;
-                selectedTypeID = (selectedTypeID .equals("0")) ? "%" : selectedTypeID;
+                selectedTypeID = (selectedTypeID.equals("0")) ? "%" : selectedTypeID;
                 gendercheck = (gendercheck == null || gendercheck.trim().isEmpty()) ? "%" : gendercheck;
-                gendercheck = (gendercheck .equals("0")) ? "%" : gendercheck;
+                gendercheck = (gendercheck.equals("0")) ? "%" : gendercheck;
                 peoplecheck = (peoplecheck == null || peoplecheck.trim().isEmpty()) ? "0" : peoplecheck;
 
                 // 獲取最大和最小費用
@@ -696,7 +693,7 @@ public class User_All_Class extends AppCompatActivity {
                 rs.close();
                 statement.close();
             } catch (SQLException e) {
-                Log.e("SQL Error", e.getMessage());
+                Log.e("SQL Error", Objects.requireNonNull(e.getMessage()));
             }
 
 

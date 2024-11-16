@@ -43,7 +43,7 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline23"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/dislike2" />
+        app:srcCompat="@drawable/user_like_ic_not_love" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline23"

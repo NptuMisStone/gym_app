@@ -8,7 +8,7 @@ buildscript {
         mavenCentral() // Ensure Maven Central is included
     }
     dependencies {
-        classpath(libs.gradle)
+        classpath(libs.android.gradle)
         // Note: Do not place your application dependencies here; they belong in the individual module build.gradle.kts files
     }
 }

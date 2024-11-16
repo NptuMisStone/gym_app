@@ -22,7 +22,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.AllClass.User_All_Class;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.google.android.material.tabs.TabLayout;
@@ -134,9 +133,9 @@ public class User_Class_Detail extends AppCompatActivity {
             if (rs.next()) {
                 int count = rs.getInt(1);
                 if (count > 0) {
-                    likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.like1));
+                    likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_love));
                 } else {
-                    likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.dislike2));
+                    likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_not_love));
                 }
             }
             rs.close();
@@ -146,9 +145,9 @@ public class User_Class_Detail extends AppCompatActivity {
         }
         likebtn.setOnClickListener(v -> {
             Drawable currentDrawable = likebtn.getDrawable();
-            if (currentDrawable.getConstantState().equals(ContextCompat.getDrawable(this, R.drawable.dislike2).getConstantState())) {
+            if (currentDrawable.getConstantState().equals(ContextCompat.getDrawable(this, R.drawable.user_like_ic_not_love).getConstantState())) {
                 // 如果當前是 dislike 狀態，切換到 like
-                likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.like1));
+                likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_love));
 
                 // 更新資料庫
                 try {
@@ -164,7 +163,7 @@ public class User_Class_Detail extends AppCompatActivity {
                 }
             } else {
                 // 如果當前是 like 狀態，切換到 dislike
-                likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.dislike2));
+                likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_not_love));
                 try {
                     MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
                     String deleteSql = "DELETE FROM 課程被收藏 WHERE 課程編號 = ? AND 使用者編號 = ?";

@@ -96,7 +96,7 @@
                         android:layout_height="30dp"
                         android:background="@android:color/transparent"
                         android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/like1" />
+                        app:srcCompat="@drawable/user_like_ic_love" />
                 </LinearLayout>
 
             </LinearLayout>

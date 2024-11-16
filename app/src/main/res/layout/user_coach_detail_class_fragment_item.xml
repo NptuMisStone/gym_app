@@ -2,7 +2,6 @@
 <!-- item_reservation.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -30,7 +29,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/null_class" />
+                app:srcCompat="@drawable/course_ic_null_class" />
 
             <TextView
                 android:id="@+id/user_detail_coach_class_people_sign"
@@ -54,75 +53,64 @@
                 android:orientation="vertical" />
 
             <LinearLayout
-                android:id="@+id/linearLayout3"
-                android:layout_width="250dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:orientation="horizontal"
+                android:orientation="vertical"
+                android:padding="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
-                    android:layout_width="230dp"
+                <TextView
+                    android:id="@+id/user_detail_coach_class_classname"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="20dp"
-                    android:orientation="vertical">
+                    android:text="課程名稱"
+                    android:textSize="12sp" />
 
-                    <TextView
-                        android:id="@+id/user_detail_coach_class_classname"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="課程名稱"
-                        android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/user_detail_coach_class_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="金額"
+                    android:textColor="#FF0000"
+                    android:textSize="12sp" />
 
-                    <TextView
-                        android:id="@+id/user_detail_coach_class_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="金額"
-                        android:textColor="#FF0000"
-                        android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/user_detail_coach_class_intro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="介紹"
+                    android:textSize="12sp" />
 
-                    <TextView
-                        android:id="@+id/user_detail_coach_class_intro"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="介紹"
-                        android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/user_detail_coach_class_people"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="上課人數"
+                    android:textSize="12sp" />
 
-                    <TextView
-                        android:id="@+id/user_detail_coach_class_people"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="上課人數"
-                        android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/user_detail_coach_class_timelong"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="時間總長"
+                    android:textSize="12sp" />
 
-                    <TextView
-                        android:id="@+id/user_detail_coach_class_timelong"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="時間總長"
-                        android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/user_detail_coach_class_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="地點"
+                    android:textSize="12sp" />
 
-                    <TextView
-                        android:id="@+id/user_detail_coach_class_place"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="地點"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/user_detail_coach_class_item"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="所需設備"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/user_detail_coach_class_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="所需設備"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 

@@ -20,7 +20,7 @@
 
 ## 規劃方向：
 
-參考:https://play.google.com/store/apps/details?id=com.jb.gms.admin&hl=zh_TW)
+[參考](https://play.google.com/store/apps/details?id=com.jb.gms.admin&hl=zh_TW)
 
 ## 專案開發日誌：
 
@@ -184,6 +184,8 @@ v0.78：教練評價管理完成，準備做教練預約管理(煒楷)
 
 v0.79：簡單處理coach_class_item跑版(侑宸)
 
+v0.80：模組部分整合完成，可查看課程詳情、部分版面微調(侑宸)
+
 ## 補充：
 
 ### 圖片：
@@ -195,7 +197,7 @@ R.drawable.main_login_ic_account：預設使用者圖片
 1. 快速排版程式碼：Code/Reformat Code
 2. 解決部分編譯錯誤：Build/Clean Project->Build/Rebuild Project File/Invalid Caches/Restart
 3. 更改sdk環境：Gradle Scripts/local.properties sdk.dir
-4. 更改專案版本：Gradle Scripts/build.gradle 
+4. 更改專案版本號：Gradle Scripts/build.gradle 
 5. 更改引入套件：Gradle Scripts/build.gradle 
 6. 更改套件版本：Gradle Scripts/libs.versions.toml
 7. 快速查詢：Ctrl+F/Ctrl+Shift+F

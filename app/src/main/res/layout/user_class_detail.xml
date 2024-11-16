@@ -41,7 +41,7 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="@+id/toolbar"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/dislike2" />
+        app:srcCompat="@drawable/user_like_ic_not_love" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -120,7 +120,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:srcCompat="@drawable/null_class" />
+        app:srcCompat="@drawable/course_ic_null_class" />
 
     <View
         android:id="@+id/line"

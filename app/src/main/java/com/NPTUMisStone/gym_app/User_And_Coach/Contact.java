@@ -9,60 +9,26 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.NPTUMisStone.gym_app.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.mapbox.android.gestures.MoveGestureDetector;
+import com.mapbox.geojson.Point;
 import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.ImageHolder;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.plugin.LocationPuck2D;
-import com.mapbox.maps.plugin.gestures.OnMoveListener;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin;
-import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener;
-import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener;
 
 public class Contact extends AppCompatActivity {
     MapView mapView;
     FloatingActionButton floatingActionButton;
-    ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-        if (isGranted) Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-        else Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
-    });
-    OnIndicatorBearingChangedListener onIndicatorBearingChangedListener = accuracyRadius -> mapView.getMapboxMap().setCamera(new CameraOptions.Builder().bearing(accuracyRadius).build());
-    OnIndicatorPositionChangedListener onIndicatorPositionChangedListener = position -> {
-        mapView.getMapboxMap().setCamera(new CameraOptions.Builder().center(position).zoom(17.0).build());
-        getGestures(mapView).setFocalPoint(mapView.getMapboxMap().pixelForCoordinate(position));
-    };
-    OnMoveListener onMoveListener = new OnMoveListener() {
-        @Override
-        public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
-            getLocationComponent(mapView).removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
-            getLocationComponent(mapView).removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener);
-            getGestures(mapView).removeOnMoveListener(onMoveListener);
-            floatingActionButton.show();
-        }
-
-        @Override
-        public boolean onMove(@NonNull MoveGestureDetector moveGestureDetector) {
-            return false;
-        }
-
-        @Override
-        public void onMoveEnd(@NonNull MoveGestureDetector moveGestureDetector) {}
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +51,7 @@ public class Contact extends AppCompatActivity {
     private void init_map(){
         mapView = findViewById(R.id.Contact_mapView);
         floatingActionButton = findViewById(R.id.Contact_floatingActionButton);
-        floatingActionButton.hide();
+        /*floatingActionButton.hide();
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != android.content.pm.PackageManager.PERMISSION_GRANTED)
             requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION);
         mapView.getMapboxMap().loadStyle(getString(R.string.mapbox_style_url), style -> {
@@ -109,6 +75,20 @@ public class Contact extends AppCompatActivity {
                 getGestures(mapView).addOnMoveListener(onMoveListener);
                 floatingActionButton.hide();
             });
+        });*/
+        mapView.getMapboxMap().loadStyle(getString(R.string.mapbox_style_url), style -> {
+            mapView.getMapboxMap().setCamera(new CameraOptions.Builder()
+                    .center(Point.  fromLngLat(120.5112317, 22.6573704))
+                    .zoom(17.0).build());
+            LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
+            locationComponentPlugin.setEnabled(true);
+            LocationPuck2D locationPuck2D = new LocationPuck2D();
+
+            Drawable drawable = AppCompatResources.getDrawable(this, R.drawable.baseline_location_on_24);
+            Bitmap bitmap = drawableToBitmap(drawable);
+            locationPuck2D.setBearingImage(ImageHolder.from(bitmap));
+            locationComponentPlugin.setLocationPuck(locationPuck2D);
+            getGestures(mapView).setFocalPoint(mapView.getMapboxMap().pixelForCoordinate(Point.fromLngLat(120.5112317, 22.6573704)));
         });
     }
     private Bitmap drawableToBitmap(Drawable drawable) {

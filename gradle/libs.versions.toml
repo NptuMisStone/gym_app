@@ -30,8 +30,6 @@ mapbox-androidVersion = "11.8.0"
 mapbox-oldNavigationVersion = "2.15.2"
 mapbox-android-navigation-ui = "0.42.0"
 mapbox-navigationcore = "3.5.1"
-mapsAnnotationVersion = "11.8.0"
-base = "11.8.0"
 [libraries]
 mapbox-maps-android = { module = "com.mapbox.maps:android", version.ref = "mapbox-androidVersion" }
 mapbox-navigation-ui = { module = "com.mapbox.mapboxsdk:mapbox-android-navigation-ui", version.ref = "mapbox-android-navigation-ui" }
@@ -41,37 +39,35 @@ mapbox-navigationcore-uicomponents = { module = "com.mapbox.navigationcore:ui-co
 mapbox-navigationcore-uimaps = { module = "com.mapbox.navigationcore:ui-maps", version.ref = "mapbox-navigationcore" }
 mapbox-navigationcore-voice = { module = "com.mapbox.navigationcore:voice", version.ref = "mapbox-navigationcore" }
 mapbox-navigationcore-android = { module = "com.mapbox.navigationcore:android", version.ref = "mapbox-navigationcore" }
-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-calendarview = { module = "com.github.hdev0225:CalendarView", version.ref = "calendarview" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+hdev0225-calendarview = { module = "com.github.hdev0225:CalendarView", version.ref = "calendarview" }
 car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
-circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "extjunit" }
-fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+hdodenhof-circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+androidx-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "extjunit" }
+androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
+android-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationFragment" }
-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigationFragment" }
-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigationFragment" }
-navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
+android-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationFragment" }
+androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigationFragment" }
+androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
+androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigationFragment" }
+androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
-play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "playServicesBase" }
-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
-shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
-play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
-play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
-plugin-maps-annotation = { group = "com.mapbox.plugin", name = "maps-annotation", version.ref = "mapsAnnotationVersion" }
-base = { group = "com.mapbox.maps", name = "base", version.ref = "base" }
+android-play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "playServicesBase" }
+retrofit2-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+facebook-shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
+androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+android-play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+android-play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

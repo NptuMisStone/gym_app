@@ -11,8 +11,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -20,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User.AllClass.DetailClass.User_Class_Detail;
 import com.NPTUMisStone.gym_app.User.AllClass.User_All_Class;
 import com.NPTUMisStone.gym_app.User.AllCoach.User_All_Coach;
 import com.NPTUMisStone.gym_app.User.Like.User_Like;
@@ -30,7 +34,12 @@ import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class UserHome extends AppCompatActivity {
     Connection MyConnection;
@@ -102,12 +111,51 @@ public class UserHome extends AppCompatActivity {
             else if (id == R.id.UserHome_historyButton)
                 startActivity(new Intent(this, AppointmentAll.class));
             else if (id == R.id.UserHome_gymButton)
-                startActivity(new Intent().setComponent(new ComponentName("com.example.mapboxnavigation", "com.example.mapboxnavigation.Navigation")));
+                startNavigationActivity();
             else if (id == R.id.UserHome_contactButton)
                 startActivity(new Intent(this, Contact.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);
         }
+    }
+    private void startNavigationActivity() {
+        // 查詢資料庫
+        List<String[]> addresses = getAddressesFromDatabase();
+        // 將資料轉換為陣列
+        String[][] addressArray = new String[addresses.size()][2];
+        for (int i = 0; i < addresses.size(); i++) addressArray[i] = addresses.get(i);
+        // 創建 Intent 並傳遞資料
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName("com.example.mapboxnavigation", "com.example.mapboxnavigation.Navigation"));
+        intent.putExtra("addresses", addressArray);
+        createTask.launch(intent);
+    }
+    ActivityResultLauncher<Intent> createTask = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+        if(result.getResultCode() == RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null) {
+                int resultString = data.getIntExtra("看更多課程ID", -1);
+                Intent intent = new Intent(this, User_Class_Detail.class);
+                intent.putExtra("看更多課程ID", resultString);
+                startActivity(intent);
+            }
+        }
+        else Toast.makeText(this, "未選擇任何課程", Toast.LENGTH_SHORT).show();
+    });
+    private List<String[]> getAddressesFromDatabase() {
+        List<String[]> addresses = new ArrayList<>();
+        // 假設你有一個 SQLConnection 類來處理資料庫連接
+        MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+        String query = "SELECT 課程編號,縣市,行政區,顯示地點地址, 顯示地點名稱 FROM [健身教練課程-有排課的]";
+        try (Statement statement = MyConnection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            while (resultSet.next())
+                addresses.add(new String[]{ resultSet.getString("縣市")+resultSet.getString("行政區")+resultSet.getString("顯示地點地址"), resultSet.getString("顯示地點名稱"), resultSet.getString("課程編號") });
+        } catch (SQLException e) {
+            Log.e("Database", "Error querying database", e);
+        }
+        return addresses;
     }
     //為了要在登出時關閉Home頁面，註冊廣播器
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
