@@ -120,7 +120,7 @@ public class FinishAppointmentFragment extends Fragment {
         int reservationID, timeLong, status;
         byte[] coachimage;
         String className, classPrice, coachName, note,week,time;
-        static ArrayList<com.NPTUMisStone.gym_app.User.Records.User_AppointmentData> appointments = new ArrayList<>();
+        static ArrayList<User_Finish_AppointmentData> appointments = new ArrayList<>();
 
         public User_Finish_AppointmentData(int reservationID, Date date, String week, String time, int timeLong, String className, String classPrice, byte[] coachimage, String coachName, int status, String note) {
             this.reservationID = reservationID;
@@ -136,7 +136,7 @@ public class FinishAppointmentFragment extends Fragment {
             this.note = note;
 
         }
-        public static ArrayList<com.NPTUMisStone.gym_app.User.Records.User_AppointmentData> getAppointments() {
+        public static ArrayList<User_Finish_AppointmentData> getAppointments() {
             if (appointments == null) {
                 return null;
             }

@@ -20,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.NPTUMisStone.gym_app.Coach.Class.ClassMain;
+import com.NPTUMisStone.gym_app.Coach.Comments.Coach_Comments;
 import com.NPTUMisStone.gym_app.Coach.Records.BookingList;
 import com.NPTUMisStone.gym_app.Coach.Records.BookingDetail;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledMain;
@@ -96,7 +97,7 @@ public class CoachHome extends AppCompatActivity {
             else if (id == R.id.CoachHome_classMaintenanceCard)
                 startActivity(new Intent(this, ClassMain.class));
             else if (id == R.id.CoachHome_commentManagementCard)
-                startActivity(new Intent(this, AIInteractive.class));
+                startActivity(new Intent(this, Coach_Comments.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);
         }
