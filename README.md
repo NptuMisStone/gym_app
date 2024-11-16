@@ -10,9 +10,7 @@
     + [圖片：](#圖片)
     + [Android Studio 部分](#android-studio-部分)
     + [Github 部分](#github-部分)
-
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
+    + [補充參考資料](#補充參考資料)
 
 ！已知問題！：
 
@@ -217,3 +215,6 @@ R.drawable.main_login_ic_account：預設使用者圖片
 ### Github 部分
 
 1. 準備上傳至Github時，先點擊左上角「main」->「Update Project」，避免覆蓋掉他人部分
+
+### 補充參考資料
+[GitHub Markdown Tutorial](https://github.com/shengcaishizhan/GitHub_Markdown_Tutorial?tab=readme-ov-file#Markdown-%E6%96%87%E6%A1%A3%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C%E7%9B%AE%E5%BD%95)
