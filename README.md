@@ -1,16 +1,18 @@
 # gym_app
+
 健身房系統建置:提升營運效率與客戶體驗之研究
 ---
 
 - [gym_app](#gym_app)
-  * [健身房系統建置:提升營運效率與客戶體驗之研究](#健身房系統建置提升營運效率與客戶體驗之研究)
-  * [規劃方向：](#規劃方向)
-  * [專案開發日誌：](#專案開發日誌)
-  * [補充：](#補充)
-    + [圖片：](#圖片)
-    + [Android Studio 部分](#android-studio-部分)
-    + [Github 部分](#github-部分)
-    + [補充參考資料](#補充參考資料)
+    * [健身房系統建置:提升營運效率與客戶體驗之研究](#健身房系統建置提升營運效率與客戶體驗之研究)
+    * [規劃方向：](#規劃方向)
+    * [專案開發日誌：](#專案開發日誌)
+    * [補充：](#補充)
+        + [圖片：](#圖片)
+        + [Android Studio 操作](#android-studio-操作)
+        + [Android Studio 程式](#android-studio-程式)
+        + [Github 部分](#github-部分)
+        + [補充參考資料](#補充參考資料)
 
 ！已知問題！：
 
@@ -18,11 +20,7 @@
 
 ## 規劃方向：
 
-短期:健身教練審核狀態顯示、個人資訊完善
-
-中期:(參考:https://play.google.com/store/apps/details?id=com.jb.gms.admin&hl=zh_TW)
-
-長期:串接Google Ads API, Google Authentication, Google Map, Google Calendar, 多國語言設定
+參考:https://play.google.com/store/apps/details?id=com.jb.gms.admin&hl=zh_TW)
 
 ## 專案開發日誌：
 
@@ -31,7 +29,6 @@ v0.1：連接SQL Server(侑宸)
 v0.2：加入開啟程式動畫(侑宸)
 
 v0.3：精簡「SQLConnection.class」準備結合啟動動畫、專案Gradle升級至8.6(侑宸)
-
 (程式版本為「Android Studio Koala | 2024.1.1 June 13, 2024」)(侑宸)
 
 v0.4：更改登入介面(侑宸)
@@ -80,7 +77,8 @@ v0.25：完成忘記帳號彈窗及發送郵件重設密碼功能(侑宸)
 
 v0.26：完成教練與使用者廣告輪播與web同步，Advertisement.java為新增class(宇哲)
 
-v0.27：使用SnackBar效果代替初始介面Toast提示、補充發送郵件失敗提示、準備處理重設密碼彈窗與驗證碼顯示效果(侑宸)
+v0.27：使用SnackBar效果代替初始介面Toast提示、補充發送郵件失敗提示、
+準備處理重設密碼彈窗與驗證碼顯示效果(侑宸)
 
 v0.28：新增多選日曆、時間選擇器安排課表、新增信箱登入方式、使用者首頁與健身教練首頁排版(侑宸)
 
@@ -184,25 +182,44 @@ v0.77：補充README.md、嘗試初步構建店家列表及導航功能，並放
 
 v0.78：教練評價管理完成，準備做教練預約管理(煒楷)
 
+v0.79：簡單處理coach_class_item跑版(侑宸)
+
 ## 補充：
 
 ### 圖片：
+
 R.drawable.main_login_ic_account：預設使用者圖片
-### Android Studio 部分
+
+### Android Studio 操作
+
+1. 快速排版程式碼：Code/Reformat Code
+2. 解決部分編譯錯誤：Build/Clean Project->Build/Rebuild Project File/Invalid Caches/Restart
+3. 更改sdk環境：Gradle Scripts/local.properties sdk.dir
+4. 更改專案版本：Gradle Scripts/build.gradle 
+5. 更改引入套件：Gradle Scripts/build.gradle 
+6. 更改套件版本：Gradle Scripts/libs.versions.toml
+7. 快速查詢：Ctrl+F/Ctrl+Shift+F
+
+### Android Studio 程式
+
 1. extends AsyncTask<Void, Void, Void>為已棄用方法，請改用
-【Executors.newSingleThreadExecutor().execute(() -> {
-    //Background work here
-    new Handler(Looper.getMainLooper()).post(() -> {
-        //UI Thread work here
-    });
-});】方法
+   【Executors.newSingleThreadExecutor().execute(() -> {
+   //Background work here
+   new Handler(Looper.getMainLooper()).post(() -> {
+   //UI Thread work here
+   }); });】方法
 
-2. 各個Activity中的ID請注意分別取不同名字，避免互相干擾，建議取名方式為「layout名稱_+元件功能+元件類型」，例：「forget_accountEdit」
-當確認帳密無誤時可發送驗證碼，並將enable關掉，並隱藏帳密欄位顯示重設欄位
+2. 各個Activity中的ID請注意分別取不同名字，避免互相干擾，建議取名方式為「layout名稱_
+   +元件功能+元件類型」，例：「forget_accountEdit」
+   當確認帳密無誤時可發送驗證碼，並將enable關掉，並隱藏帳密欄位顯示重設欄位
 
-3. 要使用google提供的javamail-android發送電子郵件首先需要Google帳戶啟用兩步驟驗證->取得應用程式密碼->使用此密碼登入JavaMailAPI
+3. 要使用google提供的javamail-android發送電子郵件首先需要Google帳戶啟用兩步驟驗證->
+   取得應用程式密碼->使用此密碼登入JavaMailAPI
 
-4. 當遇到「It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort.」問題，請將目前使用的RecycleView更新方法從notifyDataSetChanged()方法改成使用notifyItemRangeChanged(0, adList.size())
+4. 當遇到「It will always be more efficient to use more specific change events if you can. Rely on
+   notifyDataSetChanged as a last resort.」問題
+   請將目前使用的RecycleView更新方法從notifyDataSetChanged()方法，改成使用notifyItemRangeChanged(0,
+   adList.size())
 
 5. 如果出現「SQL Connection: Network error IOException: Socket closed」，可試試看延長逾期時間
 
@@ -210,7 +227,8 @@ R.drawable.main_login_ic_account：預設使用者圖片
 
 7. 如果遇到AGP版本問題，請將專案的AGP版本與Android Studio可支援AGP版本調整至對應
 
-8. 當遇到「'getAdapterPosition()' is deprecated」，把getAdapterPosition()改成getBindingAdapterPosition()
+8. 當遇到「'getAdapterPosition()' is deprecated」，把getAdapterPosition()
+   改成getBindingAdapterPosition()
 
 9. 使用Fragment套件時，ID取名不可用中文
 
@@ -219,4 +237,5 @@ R.drawable.main_login_ic_account：預設使用者圖片
 1. 準備上傳至Github時，先點擊左上角「main」->「Update Project」，避免覆蓋掉他人部分
 
 ### 補充參考資料
+
 [GitHub Markdown Tutorial](https://github.com/shengcaishizhan/GitHub_Markdown_Tutorial?tab=readme-ov-file#Markdown-%E6%96%87%E6%A1%A3%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C%E7%9B%AE%E5%BD%95)
