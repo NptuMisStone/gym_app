@@ -2,6 +2,7 @@ package com.NPTUMisStone.gym_app.Coach.Comments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,13 +30,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
+import com.NPTUMisStone.gym_app.Coach.Main.CoachHome;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.Main.User;
+import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
 import com.NPTUMisStone.gym_app.User.Records.NowAppointment.NowAppointmentFragment;
 import com.NPTUMisStone.gym_app.User.Records.User_AppointmentData;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -120,7 +123,7 @@ public class Coach_Comments extends AppCompatActivity {
             }
             return coach_comments_data;
         }
-        private int getCommentID(){return commentID;}
+        public int getCommentID(){return commentID;}
         private Date getDate(){return date;}
         private byte[] getUserimage(){return userimage;}
         private String getUserName(){return userName;}
@@ -146,18 +149,22 @@ public class Coach_Comments extends AppCompatActivity {
             RatingBar comment_rating;
             LinearLayout replyArea,edit_replyArea;
             EditText newReply;
+            Button cancelBtn,updateBtn;
             public ViewHolder(View itemView) {
                 super(itemView);
-               user_image=itemView.findViewById(R.id.coach_comments_user_img);
-               comment_date=itemView.findViewById(R.id.coach_comments_date);
-               user_name=itemView.findViewById(R.id.coach_comments_username);
-               class_name=itemView.findViewById(R.id.coach_comments_classname);
-               user_comment_info=itemView.findViewById(R.id.coach_comments_info);
-               coach_reply=itemView.findViewById(R.id.coach_comments_coachReply);
-               comment_rating=itemView.findViewById(R.id.coach_comments_userRating);
-               replyArea=itemView.findViewById(R.id.reply_area);
-               edit_replyArea=itemView.findViewById(R.id.edit_reply_area);
-               newReply=itemView.findViewById(R.id.coach_comments_replyText);
+                user_image=itemView.findViewById(R.id.coach_comments_user_img);
+                comment_date=itemView.findViewById(R.id.coach_comments_date);
+                user_name=itemView.findViewById(R.id.coach_comments_username);
+                class_name=itemView.findViewById(R.id.coach_comments_classname);
+                user_comment_info=itemView.findViewById(R.id.coach_comments_info);
+                coach_reply=itemView.findViewById(R.id.coach_comments_coachReply);
+                comment_rating=itemView.findViewById(R.id.coach_comments_userRating);
+                replyArea=itemView.findViewById(R.id.reply_area);
+                edit_replyArea=itemView.findViewById(R.id.edit_reply_area);
+                newReply=itemView.findViewById(R.id.coach_comments_replyText);
+                edit_replyBtn=itemView.findViewById(R.id.coach_comments_showEditPanel);
+                cancelBtn=itemView.findViewById(R.id.coach_comments_cancelreplyButton);
+                updateBtn=itemView.findViewById(R.id.coach_comments_comfirmreplyButton);
             }
         }
 
@@ -189,10 +196,13 @@ public class Coach_Comments extends AppCompatActivity {
                 if (rs.next()) {
                     if (item.getCoachReply() != null && !item.getCoachReply().trim().isEmpty()) {
                         holder.newReply.setText(item.getCoachReply());
+                        holder.updateBtn.setText("修改");
                         holder.edit_replyArea.setVisibility(View.GONE);
                         holder.coach_reply.setText(item.getCoachReply());
                     } else {
+                        holder.updateBtn.setText("回覆");
                         holder.replyArea.setVisibility(View.GONE);
+                        holder.cancelBtn.setVisibility(View.GONE);
                     }
                 }
                 rs.close();
@@ -200,10 +210,47 @@ public class Coach_Comments extends AppCompatActivity {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            holder.edit_replyBtn.setOnClickListener(v -> {
+                holder.edit_replyArea.setVisibility(View.VISIBLE);
+            });
+            holder.cancelBtn.setOnClickListener(v -> {
+                holder.edit_replyArea.setVisibility(View.GONE);
+                holder.newReply.setText(item.getCoachReply());
+            });
+            holder.updateBtn.setOnClickListener(v -> {
+                updateReply(holder.newReply.getText().toString().trim(),item.getCommentID(), position);
+            });
+        }
+        private void updateReply(String reply, int comment_ID,int position) {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                try {
+                    MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+                    String SQL = "UPDATE [完成預約評論表] SET [回覆] = ? WHERE [評論編號] = ?";
+                    PreparedStatement Statement = MyConnection.prepareStatement(SQL);
+                    Statement.setString(1, reply);
+                    Statement.setInt(2, comment_ID);
+                    int rowsAffected = Statement.executeUpdate();
+                    if (rowsAffected > 0) {
+                        coach_comments_data.remove(position);
+                        new Handler(Looper.getMainLooper()).post(this::notifyDataSetChanged);
+                        new Handler(Looper.getMainLooper()).post(() ->
+                                Toast.makeText(context, "回覆已更新", Toast.LENGTH_SHORT).show());
+                        fetchComments();
+                    }
+                    Statement.close();
+                } catch (SQLException e) {
+                    Log.e("SQL", Objects.requireNonNull(e.getMessage()));
+                    new Handler(Looper.getMainLooper()).post(() ->
+                            Toast.makeText(context, "取消失敗", Toast.LENGTH_SHORT).show());
+                }
+            });
         }
         @Override
         public int getItemCount() {
             return coach_comments_data.size();
         }
+    }
+    public void Coach_comments_goback(View view){
+        finish();
     }
 }

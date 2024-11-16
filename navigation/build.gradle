@@ -1,7 +1,7 @@
 plugins {
-    id 'com.android.application'
+    //id 'com.android.application'
     //遇见BUG之 “Dependent features configured but no package ID was set”：https://blog.csdn.net/u014235093/article/details/109116602
-    //id 'com.android.library'
+    id 'com.android.library'
 }
 
 android {
