@@ -1,0 +1,49 @@
+plugins {
+    id 'com.android.application'
+    //遇见BUG之 “Dependent features configured but no package ID was set”：https://blog.csdn.net/u014235093/article/details/109116602
+    //id 'com.android.library'
+}
+
+android {
+    namespace "com.example.mapboxnavigation"
+    compileSdk 34
+
+    defaultConfig {
+        //applicationId "com.example.mapboxnavigation"
+        //minSdk 24
+        minSdk 28
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation ("androidx.appcompat:appcompat:1.7.0")
+    implementation ("com.google.android.material:material:1.12.0")
+    implementation ("androidx.constraintlayout:constraintlayout:2.2.0")
+    //implementation libs.base
+    testImplementation ("junit:junit:4.13.2")
+    androidTestImplementation ("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.6.1")
+    //【Android Docs - 新增建置依賴項】：https://developer.android.com/build/dependencies#resolution_errors
+    //【Android Docs - 管理清單文件】：https://developer.android.com/build/manage-manifests
+    implementation ("com.mapbox.navigation:android:2.15.2") /*{
+        exclude group: "com.mapbox.common", module: "okhttp"
+    }*/
+
+}

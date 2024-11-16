@@ -14,8 +14,8 @@ gradle = "8.6.1"
 junit = "4.13.2"
 lifecycleProcess = "2.8.7"
 material = "1.12.0"
-navigationFragment = "2.8.3"
-navigationUi = "2.8.3"
+navigationFragment = "2.8.4"
+navigationUi = "2.8.4"
 okhttp = "4.12.0"
 playServicesBase = "18.5.0"
 retrofit = "2.11.0"
@@ -26,18 +26,21 @@ lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
 playServicesMaps = "19.0.0"
 playServicesAds = "23.5.0"
-mapbox-androidVersion = "11.7.2"
+mapbox-androidVersion = "11.8.0"
 mapbox-oldNavigationVersion = "2.15.2"
-mapbox-navigationcore = "3.4.2"
-
+mapbox-android-navigation-ui = "0.42.0"
+mapbox-navigationcore = "3.5.1"
+mapsAnnotationVersion = "11.8.0"
+base = "11.8.0"
 [libraries]
 mapbox-maps-android = { module = "com.mapbox.maps:android", version.ref = "mapbox-androidVersion" }
+mapbox-navigation-ui = { module = "com.mapbox.mapboxsdk:mapbox-android-navigation-ui", version.ref = "mapbox-android-navigation-ui" }
 mapbox-navigation-android = { module = "com.mapbox.navigation:android", version.ref = "mapbox-oldNavigationVersion" }
 mapbox-navigationcore-navigation = { module = "com.mapbox.navigationcore:navigation", version.ref = "mapbox-navigationcore" }
+mapbox-navigationcore-uicomponents = { module = "com.mapbox.navigationcore:ui-components", version.ref = "mapbox-navigationcore" }
 mapbox-navigationcore-uimaps = { module = "com.mapbox.navigationcore:ui-maps", version.ref = "mapbox-navigationcore" }
 mapbox-navigationcore-voice = { module = "com.mapbox.navigationcore:voice", version.ref = "mapbox-navigationcore" }
 mapbox-navigationcore-android = { module = "com.mapbox.navigationcore:android", version.ref = "mapbox-navigationcore" }
-mapbox-navigationcore-uicomponents = { module = "com.mapbox.navigationcore:ui-components", version.ref = "mapbox-navigationcore" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 calendarview = { module = "com.github.hdev0225:CalendarView", version.ref = "calendarview" }
@@ -67,6 +70,8 @@ lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-lived
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
+plugin-maps-annotation = { group = "com.mapbox.plugin", name = "maps-annotation", version.ref = "mapsAnnotationVersion" }
+base = { group = "com.mapbox.maps", name = "base", version.ref = "base" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -7,7 +7,7 @@ android { //rename package:https://stackoverflow.com/questions/16804093/rename-p
     compileSdk = 34
     defaultConfig {
         applicationId = "com.NPTUMisStone.gym_app"
-        minSdk = 30
+        minSdk = 28
         targetSdk = 34
         versionCode = 69
         versionName = "0.69"
@@ -67,15 +67,23 @@ dependencies {
     implementation(libs.play.services.maps)             // 地圖顯示與地圖導航
 
     // Mapbox-Maps：https://docs.mapbox.com/android/maps/guides/install/
-    implementation(libs.mapbox.maps.android)                   // 地圖顯示與地圖
-
+    //implementation(libs.mapbox.navigation.ui)                     // 地圖顯示與地圖
+    // implementation(libs.mapbox.maps.android)                   地圖顯示與地圖
+    implementation(libs.mapbox.maps.android)
     // Mapbox-Navigation：https://docs.mapbox.com/android/navigation/guides/installation/
-    /*implementation (libs.mapbox.navigation.android)
-    implementation (libs.mapbox.navigationcore.navigation)
-    implementation (libs.mapbox.navigationcore.uimaps)
-    implementation (libs.mapbox.navigationcore.voice)
-    implementation (libs.mapbox.navigationcore.android)
-    implementation (libs.mapbox.navigationcore.uicomponents)*/
+    //implementation (libs.mapbox.navigation.android)
+    //implementation (libs.mapbox.navigationcore.navigation)
+    //implementation (libs.mapbox.navigationcore.uicomponents)
+    //implementation (libs.mapbox.navigationcore.uimaps)
+    /*implementation (libs.mapbox.navigationcore.voice)
+    implementation (libs.mapbox.navigationcore.android)*/
+    //(可參考)遇见BUG之 “Dependent features configured but no package ID was set”
+    // ：https://blog.csdn.net/u014235093/article/details/109116602
+    //(可參考)Android Studio 一个module引用另一个模块module的方法
+    // ：https://blog.csdn.net/sinat_35958166/article/details/89468978
+    //(可參考)Android Studio入门（8）— Module之间相互引用
+    //：https://blog.csdn.net/synola/article/details/117474728
+    compileOnly (project(":navigation"))
 
     // Java Mail API
     implementation(files("libs/mail.jar"))              // 使用Java Mail API

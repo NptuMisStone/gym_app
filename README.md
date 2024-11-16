@@ -2,18 +2,22 @@
 健身房系統建置:提升營運效率與客戶體驗之研究
 ---
 
+[TOC]
+
 ！已知問題！：
 
 (待處理)當沒有課程時，點擊物件ScheduledSet中的RecyclerView會閃退!
 
-規劃方向：
+## 規劃方向：
+
 短期:健身教練審核狀態顯示、個人資訊完善
 
 中期:(參考:https://play.google.com/store/apps/details?id=com.jb.gms.admin&hl=zh_TW)
 
 長期:串接Google Ads API, Google Authentication, Google Map, Google Calendar, 多國語言設定
 
-專案開發日誌：
+## 專案開發日誌：
+
 v0.1：連接SQL Server(侑宸)
 
 v0.2：加入開啟程式動畫(侑宸)
@@ -168,11 +172,14 @@ v0.75：修復重置沒有重置縣市、行政區的checkbox功能，即將前�
 
 v0.76：暫放(煒楷)
 
-圖片：
-R.drawable.main_login_ic_account：預設使用者圖片
+v0.77：補充README.md、嘗試初步構建店家列表及導航功能，並放在地圖模組中、初步嘗試整合兩個模組(侑宸)
 
-補充：
-1.extends AsyncTask<Void, Void, Void>為已棄用方法，請改用
+## 補充：
+
+### 圖片：
+R.drawable.main_login_ic_account：預設使用者圖片
+### Android Studio 部分
+1. extends AsyncTask<Void, Void, Void>為已棄用方法，請改用
 【Executors.newSingleThreadExecutor().execute(() -> {
     //Background work here
     new Handler(Looper.getMainLooper()).post(() -> {
@@ -180,17 +187,23 @@ R.drawable.main_login_ic_account：預設使用者圖片
     });
 });】方法
 
-2.各個Activity中的ID請注意分別取不同名字，避免互相干擾，建議取名方式為「layout名稱_+元件功能+元件類型」，例：「forget_accountEdit」
+2. 各個Activity中的ID請注意分別取不同名字，避免互相干擾，建議取名方式為「layout名稱_+元件功能+元件類型」，例：「forget_accountEdit」
 當確認帳密無誤時可發送驗證碼，並將enable關掉，並隱藏帳密欄位顯示重設欄位
 
-3.要使用google提供的javamail-android發送電子郵件首先需要Google帳戶啟用兩步驟驗證->取得應用程式密碼->使用此密碼登入JavaMailAPI
+3. 要使用google提供的javamail-android發送電子郵件首先需要Google帳戶啟用兩步驟驗證->取得應用程式密碼->使用此密碼登入JavaMailAPI
 
-4.當遇到「It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort.」問題，請將目前使用的RecycleView更新方法從notifyDataSetChanged()方法改成使用notifyItemRangeChanged(0, adList.size())
+4. 當遇到「It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort.」問題，請將目前使用的RecycleView更新方法從notifyDataSetChanged()方法改成使用notifyItemRangeChanged(0, adList.size())
 
-5.如果出現「SQL Connection: Network error IOException: Socket closed」，可試試看延長逾期時間
+5. 如果出現「SQL Connection: Network error IOException: Socket closed」，可試試看延長逾期時間
 
-6.當愈到「The emulator process for AVD Pixel_4_API_30 has terminated.」問題，可嘗試更新NVIDIA驅動程式
+6. 當愈到「The emulator process for AVD Pixel_4_API_30 has terminated.」問題，可嘗試更新NVIDIA驅動程式
 
-7.如果遇到AGP版本問題，請將專案的AGP版本與Android Studio可支援AGP版本調整至對應
+7. 如果遇到AGP版本問題，請將專案的AGP版本與Android Studio可支援AGP版本調整至對應
 
-8.當遇到「'getAdapterPosition()' is deprecated」，把getAdapterPosition()改成getBindingAdapterPosition()
+8. 當遇到「'getAdapterPosition()' is deprecated」，把getAdapterPosition()改成getBindingAdapterPosition()
+
+9. 使用Fragment套件時，ID取名不可用中文
+
+### Github 部分
+
+1. 準備上傳至Github時，先點擊左上角「main」->「Update Project」，避免覆蓋掉他人部分

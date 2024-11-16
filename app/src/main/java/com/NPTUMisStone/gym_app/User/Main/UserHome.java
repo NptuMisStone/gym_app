@@ -1,6 +1,7 @@
 package com.NPTUMisStone.gym_app.User.Main;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -23,7 +24,6 @@ import com.NPTUMisStone.gym_app.User.AllClass.User_All_Class;
 import com.NPTUMisStone.gym_app.User.AllCoach.User_All_Coach;
 import com.NPTUMisStone.gym_app.User.Like.User_Like;
 import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
-import com.NPTUMisStone.gym_app.User.Search.GymList;
 import com.NPTUMisStone.gym_app.User_And_Coach.AdHelper;
 import com.NPTUMisStone.gym_app.User_And_Coach.Contact;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
@@ -85,7 +85,9 @@ public class UserHome extends AppCompatActivity {
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.UserHome_swipeRefreshLayout);
         Advertisement.init_banner(this, MyConnection, adList, user_viewPager, swipeRefreshLayout);
     }*/
-
+    //【《Android》『呼叫外部 App』- 透過 startActivity 執行外部 App 的基本方法】：
+    // https://xnfood.com.tw/android-call-app-startactivity/
+    //(可參考)：Android—组件化的搭建：https://www.cnblogs.com/wang66a/p/17769227.html
     public void onClick(View view) {
         if (progressBarHandler.isLoading()) return;
         progressBarHandler.showProgressBar();
@@ -100,14 +102,13 @@ public class UserHome extends AppCompatActivity {
             else if (id == R.id.UserHome_historyButton)
                 startActivity(new Intent(this, AppointmentAll.class));
             else if (id == R.id.UserHome_gymButton)
-                startActivity(new Intent(this, GymList.class));
+                startActivity(new Intent().setComponent(new ComponentName("com.example.mapboxnavigation", "com.example.mapboxnavigation.Navigation")));
             else if (id == R.id.UserHome_contactButton)
                 startActivity(new Intent(this, Contact.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);
         }
     }
-
     //為了要在登出時關閉Home頁面，註冊廣播器
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override

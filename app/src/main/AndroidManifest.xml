@@ -23,9 +23,6 @@
             android:name=".Coach.Class.ClassAdd"
             android:exported="false" />
         <activity
-            android:name=".User_And_Coach.Navigation"
-            android:exported="false" />
-        <activity
             android:name=".User_And_Coach.Contact"
             android:exported="false" />
         <activity
