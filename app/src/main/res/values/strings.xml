@@ -3,6 +3,12 @@
     <string name="main_welcome_content_description">welcome</string>
     <string name="All_idText">ID:%1$d</string>
     <string name="All_welcome">%1$s %2$s！</string>
+    <string name="Class_titleText">課程資訊</string>
+    <string name="Class_timeTitleText">課程時段</string>
+    <string name="Class_feeTitleText">課程費用</string>
+    <string name="Class_imageDescription">課程圖片</string>
+    <string name="Class_loveImageDescription">收藏圖片</string>
+    <string name="Class_addTitleText">新增課程</string>
     <string name="Class_feeText">費用: $%1$d</string>
     <string name="Class_numberText">人數: %1$d人</string>
     <string name="Class_timeText">時長: %1$d分鐘</string>
