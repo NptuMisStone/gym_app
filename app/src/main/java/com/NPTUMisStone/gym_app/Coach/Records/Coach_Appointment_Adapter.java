@@ -1,5 +1,6 @@
 package com.NPTUMisStone.gym_app.Coach.Records;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,8 +16,10 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
+import com.NPTUMisStone.gym_app.Coach.Records.CoachTodayAppointment.CoachTodayAppointment;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User.Comments.User_Comments;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 
@@ -90,6 +93,11 @@ public class Coach_Appointment_Adapter extends RecyclerView.Adapter<Coach_Appoin
             } catch (SQLException e) {
                 Log.e("SQL", "類型", e);
             }
+        });
+        holder.detailBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(context, Coach_Appointment_Detail.class);
+            intent.putExtra("看預約名單ID", item.getScheduleID());
+            context.startActivity(intent);
         });
     }
     @Override
