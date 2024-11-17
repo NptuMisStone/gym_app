@@ -26,6 +26,7 @@
         android:layout_marginStart="20dp"
         android:background="@drawable/all_effect_ripple"
         android:contentDescription="@string/goBack"
+        android:onClick="user_detail_class_goback"
         android:scaleType="centerCrop"
         android:src="@drawable/all_ic_arrow_back1"
         app:layout_constraintBottom_toTopOf="@+id/guideline"

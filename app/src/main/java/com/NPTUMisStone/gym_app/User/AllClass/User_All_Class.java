@@ -252,7 +252,7 @@ public class User_All_Class extends AppCompatActivity {
             holder.class_price.setText("$" + item.getClassPrice().split("\\.")[0] + "/堂");
             holder.coach_name.setText(item.getCoachName());
             holder.class_intro.setText(item.getClassIntro());
-            holder.class_people.setText(getString(R.string.Class_numberText, item.getClassPeople()));
+            holder.class_people.setText("人數：" + item.getClassPeople() + "人");
             holder.moreindo_btn.setOnClickListener(v -> {
                 Intent intent = new Intent(context, User_Class_Detail.class);
                 intent.putExtra("看更多課程ID", item.getClassID());

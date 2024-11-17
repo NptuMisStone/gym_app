@@ -21,8 +21,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.NPTUMisStone.gym_app.Coach.Class.ClassMain;
 import com.NPTUMisStone.gym_app.Coach.Comments.Coach_Comments;
-import com.NPTUMisStone.gym_app.Coach.Records.BookingList;
-import com.NPTUMisStone.gym_app.Coach.Records.BookingDetail;
+
+import com.NPTUMisStone.gym_app.Coach.Records.Coach_AppointmentsAll;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledMain;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledSet;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledCheck;
@@ -91,7 +91,7 @@ public class CoachHome extends AppCompatActivity {
         int id = view.getId();
         try {
             if (id == R.id.CoachHome_viewAppointmentsCard)
-                startActivity(new Intent(this, BookingDetail.class));
+                startActivity(new Intent(this, Coach_AppointmentsAll.class));
             else if (id == R.id.CoachHome_viewScheduleCard)
                 startActivity(new Intent(this, ScheduledMain.class));
             else if (id == R.id.CoachHome_classMaintenanceCard)

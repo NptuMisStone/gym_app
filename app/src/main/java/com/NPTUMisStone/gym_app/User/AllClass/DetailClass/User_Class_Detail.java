@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -51,8 +52,10 @@ public class User_Class_Detail extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putInt("classID", classID);
         detailFragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().addToBackStack(null)
-                .replace(R.id.DetailClassFrameLayout, detailFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.DetailClassFrameLayout, detailFragment)
+                .addToBackStack(null)
+                .commit();
         ((TabLayout)findViewById(R.id.DetailClassTabLayout)).addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -148,5 +151,8 @@ public class User_Class_Detail extends AppCompatActivity {
             }
 
         });
+    }
+    public  void user_detail_class_goback(View view){
+        finish();
     }
 }
