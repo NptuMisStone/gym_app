@@ -11,11 +11,11 @@ plugins {
 }
 
 android {
-    namespace "com.example.mapboxnavigation"
+    namespace "com.NPTUMisStone.mapview"
     compileSdk 34
 
     defaultConfig {
-        //applicationId "com.example.mapboxnavigation"
+        //applicationId "com.NPTUMisStone.mapview"
         //minSdk 24
         minSdk 28
         targetSdk 33

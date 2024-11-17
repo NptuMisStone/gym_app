@@ -102,18 +102,12 @@ public class UserHome extends AppCompatActivity {
         progressBarHandler.showProgressBar();
         int id = view.getId();
         try {
-            if (id == R.id.UserHome_classButton)
-                startActivity(new Intent(this, User_All_Class.class));
-            else if (id == R.id.UserHome_coachButton)
-                startActivity(new Intent(this, User_All_Coach.class));
-            else if (id == R.id.UserHome_loveButton)
-                startActivity(new Intent(this, User_Like.class));
-            else if (id == R.id.UserHome_historyButton)
-                startActivity(new Intent(this, AppointmentAll.class));
-            else if (id == R.id.UserHome_gymButton)
-                startNavigationActivity();
-            else if (id == R.id.UserHome_contactButton)
-                startActivity(new Intent(this, Contact.class));
+            if (id == R.id.UserHome_classButton) startActivity(new Intent(this, User_All_Class.class));
+            else if (id == R.id.UserHome_coachButton) startActivity(new Intent(this, User_All_Coach.class));
+            else if (id == R.id.UserHome_loveButton) startActivity(new Intent(this, User_Like.class));
+            else if (id == R.id.UserHome_historyButton) startActivity(new Intent(this, AppointmentAll.class));
+            else if (id == R.id.UserHome_gymButton) startNavigationActivity();
+            else if (id == R.id.UserHome_contactButton) startActivity(new Intent(this, Contact.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);
         }
@@ -126,6 +120,7 @@ public class UserHome extends AppCompatActivity {
         for (int i = 0; i < addresses.size(); i++) addressArray[i] = addresses.get(i);
         // 創建 Intent 並傳遞資料
         Intent intent = new Intent();
+        //intent.setComponent(new ComponentName("com.NptuMisStone.mapview", "com.NptuMisStone.mapview.ClassMap"));
         intent.setComponent(new ComponentName("com.example.mapboxnavigation", "com.example.mapboxnavigation.Navigation"));
         intent.putExtra("addresses", addressArray);
         createTask.launch(intent);

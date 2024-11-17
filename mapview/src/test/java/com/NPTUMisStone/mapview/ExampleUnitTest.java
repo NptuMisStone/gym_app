@@ -1,4 +1,4 @@
-package com.example.mapboxnavigation;
+package com.NPTUMisStone.mapview;
 
 import org.junit.Test;
 

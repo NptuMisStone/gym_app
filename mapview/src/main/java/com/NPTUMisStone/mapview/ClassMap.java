@@ -1,4 +1,4 @@
-package com.example.mapboxnavigation;
+package com.NPTUMisStone.mapview;
 
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.getGestures;
 import static com.mapbox.maps.plugin.locationcomponent.LocationComponentUtils.getLocationComponent;
@@ -58,7 +58,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public class Navigation extends AppCompatActivity {
+public class ClassMap extends AppCompatActivity {
     private MapView mapView;
 
     FloatingActionButton floatingActionButton;
@@ -111,7 +111,7 @@ public class Navigation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.user_and_coach_navigation);
+        setContentView(R.layout.user_and_coach_class_map);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -122,11 +122,8 @@ public class Navigation extends AppCompatActivity {
         mapView.getMapboxMap().setCamera(new CameraOptions.Builder()
                 .center(Point.fromLngLat(121, 23))
                 .zoom(10.0).build());*/
-        //TODO: 接收課程及地址資料
-        retrofitInstance = new Retrofit.Builder()
-                .baseUrl("https://api.mapbox.com/search/geocode/v6/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        retrofitInstance = new Retrofit.Builder().baseUrl("https://api.mapbox.com/search/geocode/v6/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
         init_button();
         init_map((String[][]) getIntent().getSerializableExtra("addresses"));
     }//.withIconImage("marker-15")
@@ -136,6 +133,7 @@ public class Navigation extends AppCompatActivity {
         findViewById(R.id.Navigation_leftButton).setOnClickListener(v -> mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(mapView.getMapboxMap().getCameraState().getZoom() - 1).build()));
         findViewById(R.id.Navigation_rightButton).setOnClickListener(v -> mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(mapView.getMapboxMap().getCameraState().getZoom() + 1).build()));
     }
+
     private LocationEngine locationEngine;
 
     private void init_map(String[][] addresses) {
@@ -144,44 +142,44 @@ public class Navigation extends AppCompatActivity {
         floatingActionButton.hide();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != android.content.pm.PackageManager.PERMISSION_GRANTED)
             requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION);
-        else {
-            mapView.getMapboxMap().loadStyleUri(getString(R.string.mapbox_style_url), style -> {
-                addMarkers(addresses);
-                mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(15.0).build());
-                LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
-                locationComponentPlugin.setEnabled(true);
+        mapView.getMapboxMap().loadStyleUri(getString(R.string.mapbox_style_url), style -> {
+            if (addresses != null) addMarkers(addresses);
+            else new AlertDialog.Builder(ClassMap.this).setTitle("沒有任何課程，請確認是否由主程式進入").setPositiveButton("確定", (dialog, which) -> finish()).create().show();
+            mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(15.0).build());
+            LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
+            locationComponentPlugin.setEnabled(true);
+            getGestures(mapView).addOnMoveListener(onMoveListener);
+            floatingActionButton.setOnClickListener(v -> {
+                locationComponentPlugin.addOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener);
+                locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
                 getGestures(mapView).addOnMoveListener(onMoveListener);
-                floatingActionButton.setOnClickListener(v -> {
-                    locationComponentPlugin.addOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener);
-                    locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
-                    getGestures(mapView).addOnMoveListener(onMoveListener);
-                    floatingActionButton.hide();
-                });
+                floatingActionButton.hide();
+            });
 
-                // Initialize LocationEngine
-                locationEngine = LocationEngineProvider.getBestLocationEngine(this);
-                locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
-                    @Override
-                    public void onSuccess(LocationEngineResult result) {
-                        if (result.getLastLocation() != null) {
-                            // Use the last known location
-                            Point lastKnownLocation = Point.fromLngLat(result.getLastLocation().getLongitude(), result.getLastLocation().getLatitude());
-                            mapView.getMapboxMap().setCamera(new CameraOptions.Builder().center(lastKnownLocation).zoom(17.0).build());
-                        } else {
-                            // If location is not available, query Minsheng Dormitory location
-                            queryMinshengDormitoryLocation();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Log.e("LocationEngine", "Error getting last location", exception);
+            // Initialize LocationEngine
+            locationEngine = LocationEngineProvider.getBestLocationEngine(this);
+            locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
+                @Override
+                public void onSuccess(LocationEngineResult result) {
+                    if (result.getLastLocation() != null) {
+                        // Use the last known location
+                        Point lastKnownLocation = Point.fromLngLat(result.getLastLocation().getLongitude(), result.getLastLocation().getLatitude());
+                        mapView.getMapboxMap().setCamera(new CameraOptions.Builder().center(lastKnownLocation).zoom(17.0).build());
+                    } else {
                         // If location is not available, query Minsheng Dormitory location
                         queryMinshengDormitoryLocation();
                     }
-                });
+                }
+
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.e("LocationEngine", "Error getting last location", exception);
+                    // If location is not available, query Minsheng Dormitory location
+                    queryMinshengDormitoryLocation();
+                }
             });
-        }
+        });
+
     }
 
     private void queryMinshengDormitoryLocation() {
@@ -248,7 +246,7 @@ public class Navigation extends AppCompatActivity {
     }
 
     private void addPointAnnotation(Point point, String ClassName, PointAnnotationManager pointAnnotationManager, int classID) {
-        Drawable drawable = AppCompatResources.getDrawable(Navigation.this, R.drawable.baseline_location_on_24);
+        Drawable drawable = AppCompatResources.getDrawable(ClassMap.this, R.drawable.baseline_location_on_24);
         Bitmap bitmap = drawableToBitmap(drawable);
         PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                 .withPoint(point).withIconImage(bitmap).withTextAnchor(TextAnchor.LEFT)
@@ -256,15 +254,15 @@ public class Navigation extends AppCompatActivity {
         PointAnnotation pointAnnotation = pointAnnotationManager.create(pointAnnotationOptions);
         pointAnnotationManager.addClickListener(annotation -> {
             if (annotation.getId() == pointAnnotation.getId()) {
-                AlertDialog builder = new AlertDialog.Builder(Navigation.this)
+                AlertDialog builder = new AlertDialog.Builder(ClassMap.this)
                         .setTitle("課程地址")
                         .setView(R.layout.coach_class_item)
                         .setPositiveButton("查看更多資訊", (dialog, which) -> {
                             if (classID != -1) {
                                 setResult(RESULT_OK, getIntent().putExtra("看更多課程ID", classID));
                                 finish();
-                            }
-                            else Toast.makeText(Navigation.this, "無法取得課程ID", Toast.LENGTH_SHORT).show();
+                            } else
+                                Toast.makeText(ClassMap.this, "無法取得課程ID", Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton("導航", (dialog, which) -> {
 

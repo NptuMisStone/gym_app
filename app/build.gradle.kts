@@ -70,6 +70,7 @@ dependencies {
     //implementation(libs.mapbox.navigation.ui)                     // 地圖顯示與地圖
     // implementation(libs.mapbox.maps.android)                   地圖顯示與地圖
     implementation(libs.mapbox.maps.android)
+    compileOnly(project(":mapview"))
     // Mapbox-Navigation：https://docs.mapbox.com/android/navigation/guides/installation/
     //implementation (libs.mapbox.navigation.android)
     //implementation (libs.mapbox.navigationcore.navigation)
@@ -83,7 +84,6 @@ dependencies {
     // ：https://blog.csdn.net/sinat_35958166/article/details/89468978
     //(可參考)Android Studio入门（8）— Module之间相互引用
     //：https://blog.csdn.net/synola/article/details/117474728
-    compileOnly (project(":navigation"))
 
     // Java Mail API
     implementation(files("libs/mail.jar"))              // 使用Java Mail API

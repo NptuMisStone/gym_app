@@ -1,4 +1,4 @@
-package com.example.mapboxnavigation;
+package com.NPTUMisStone.mapview;
 
 import static com.mapbox.maps.plugin.animation.CameraAnimationsUtils.getCamera;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.addOnMapClickListener;
@@ -82,7 +82,7 @@ import java.util.Objects;
 
 import kotlin.Unit;
 
-public class MainActivity extends AppCompatActivity {
+public class Navigation extends AppCompatActivity {
     MapView mapView;
     MaterialButton setRoute;
     FloatingActionButton focusLocationBtn;
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     };
     private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), result -> {
         if (result) {
-            Toast.makeText(MainActivity.this, "Permission granted! Restart this app", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Navigation.this, "Permission granted! Restart this app", Toast.LENGTH_SHORT).show();
         }
     });
 
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.user_and_coach_navigation);
 
         mapView = findViewById(R.id.mapView);
         focusLocationBtn = findViewById(R.id.focusLocation);
@@ -208,8 +208,8 @@ public class MainActivity extends AppCompatActivity {
         routeLineView = new MapboxRouteLineView(options);
         routeLineApi = new MapboxRouteLineApi(options);
 
-        speechApi = new MapboxSpeechApi(MainActivity.this, getString(R.string.mapbox_access_token), Locale.US.toLanguageTag());
-        mapboxVoiceInstructionsPlayer = new MapboxVoiceInstructionsPlayer(MainActivity.this, Locale.US.toLanguageTag());
+        speechApi = new MapboxSpeechApi(Navigation.this, getString(R.string.mapbox_access_token), Locale.US.toLanguageTag());
+        mapboxVoiceInstructionsPlayer = new MapboxVoiceInstructionsPlayer(Navigation.this, Locale.US.toLanguageTag());
 
         NavigationOptions navigationOptions = new NavigationOptions.Builder(this).accessToken(getString(R.string.mapbox_access_token)).build();
 
@@ -234,13 +234,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(Navigation.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 activityResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
         }
 
-        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(Navigation.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(Navigation.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             activityResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
             activityResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION);
         } else {
@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
         getGestures(mapView).addOnMoveListener(onMoveListener);
 
-        setRoute.setOnClickListener(view -> Toast.makeText(MainActivity.this, "Please select a location in map", Toast.LENGTH_SHORT).show());
+        setRoute.setOnClickListener(view -> Toast.makeText(Navigation.this, "Please select a location in map", Toast.LENGTH_SHORT).show());
 
         mapView.getMapboxMap().loadStyleUri(getString(R.string.mapbox_style_url), style -> {
             mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(20.0).build());
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     private void fetchRoute(Point point) {
-        LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(MainActivity.this);
+        LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(Navigation.this);
         locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
             @Override
             public void onSuccess(LocationEngineResult result) {
@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onFailure(@NonNull List<RouterFailure> list, @NonNull RouteOptions routeOptions) {
                         setRoute.setEnabled(true);
                         setRoute.setText("Set route");
-                        Toast.makeText(MainActivity.this, "Route request failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Navigation.this, "Route request failed", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

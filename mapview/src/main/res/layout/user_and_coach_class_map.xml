@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mapboxnavigation.Navigation">
+    tools:context="com.NPTUMisStone.mapview.ClassMap">
 
     <ImageButton
         android:id="@+id/Navigation_backButton"
@@ -14,7 +14,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/all_effect_ripple"
-        android:contentDescription="goBack"
+        android:contentDescription="@string/goBack"
         android:scaleType="centerCrop"
         android:src="@drawable/all_ic_arrow_back1"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,14 +59,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/baseline_my_location_24" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:text="設定路線"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
