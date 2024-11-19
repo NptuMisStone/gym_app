@@ -14,43 +14,62 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.0875513" />
 
-    <ImageButton
-        android:id="@+id/ClassMain_backButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/all_effect_ripple"
-        android:contentDescription="goBack"
-        android:scaleType="centerCrop"
-        android:src="@drawable/all_ic_arrow_back1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/ClassMain_titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="我的所有課程"
-        android:textSize="24sp"
+    <!-- 標頭 -->
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
-        android:id="@+id/ClassMain_addButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/all_effect_ripple"
-        android:contentDescription="addClass"
-        android:scaleType="centerCrop"
-        android:src="@drawable/coach_scheduled_set_ic_add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <!-- 返回按鈕 -->
+        <ImageButton
+            android:id="@+id/ClassMain_backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="返回上一頁"
+            android:scaleType="centerInside"
+            android:src="@drawable/back" />
+
+        <!-- 標頭標題 -->
+        <TextView
+            android:id="@+id/ClassMain_titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="我的所有課程"
+            android:textColor="#808080"
+            android:textSize="20sp" />
+
+        <!-- 新增課程按鈕 -->
+        <ImageButton
+            android:id="@+id/ClassMain_addButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="新增課程"
+            android:scaleType="centerInside"
+            android:src="@drawable/plus" />
+
+        <!-- 底部細底線 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#d3d3d3" />
+    </RelativeLayout>
+
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/ClassMain_swipeRefreshLayout"

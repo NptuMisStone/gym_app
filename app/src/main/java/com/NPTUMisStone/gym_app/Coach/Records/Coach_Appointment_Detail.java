@@ -63,6 +63,8 @@ public class Coach_Appointment_Detail extends AppCompatActivity {
             return insets;
         });
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+        // 返回按鈕
+        findViewById(R.id.coach_Appointment_detail_back).setOnClickListener(v -> finish());
         scheduleID = getIntent().getIntExtra("看預約名單ID", 0);
         nodata=findViewById(R.id.nodata_coach_ap_detail);
         nodata.setVisibility(View.GONE);

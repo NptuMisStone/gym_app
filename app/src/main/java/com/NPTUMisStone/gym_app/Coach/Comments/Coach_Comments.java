@@ -62,6 +62,8 @@ public class Coach_Comments extends AppCompatActivity {
             return insets;
         });
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+        // 返回按鈕
+        findViewById(R.id.coach_comments_back).setOnClickListener(v -> finish());
         fetchComments();
     }
     private void fetchComments() {
@@ -249,8 +251,5 @@ public class Coach_Comments extends AppCompatActivity {
         public int getItemCount() {
             return coach_comments_data.size();
         }
-    }
-    public void Coach_comments_goback(View view){
-        finish();
     }
 }

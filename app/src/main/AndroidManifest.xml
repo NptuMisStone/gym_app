@@ -65,16 +65,13 @@
             android:name=".Coach.Main.Achievement"
             android:exported="false" />
         <activity
-            android:name=".Coach.Records.BookingList"
-            android:exported="false" />
-        <activity
-            android:name=".Coach.Records.BookingDetail"
-            android:exported="false" />
-        <activity
             android:name=".Coach.Scheduled.ScheduledCheck"
             android:exported="false" />
         <activity
             android:name=".Coach.Class.ClassMain"
+            android:exported="false" />
+        <activity
+            android:name=".Coach.Class.ClassEdit"
             android:exported="false" />
         <activity
             android:name=".Coach.Scheduled.ScheduledMain"

@@ -196,6 +196,8 @@ v0.84：教練預約管理完成(煒楷)
 
 v0.85：嘗試解決「java.sql.SQLException: Invalid state, the Connection object is closed.」錯誤(侑宸)
 
+v0.86：教練課程完成&各頁面標頭調整&班表還需要調整(宇哲)
+
 ## 補充：
 
 ### 圖片：

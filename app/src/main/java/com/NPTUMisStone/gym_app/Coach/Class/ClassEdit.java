@@ -1,8 +1,13 @@
 package com.NPTUMisStone.gym_app.Coach.Class;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,34 +42,29 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassAdd extends AppCompatActivity {
+public class ClassEdit extends AppCompatActivity {
 
     // 圖片相關控件
     private ImageView showImage; // 用於顯示上傳的圖片
     private Uri uri;             // 圖片的 URI
+    private byte[] currentImageBytes; // 用來保存加載的初始圖片
+    private byte[] updatedImageBytes; // 用來保存用戶更新的圖片
+    private Connection MyConnection;
+    private int classId;
 
-    // 資料庫連接
-    private Connection MyConnection; // SQL 資料庫連接
-
-    // 課程相關控件
-    private Spinner classTypeSpinner;     // 課程類型 Spinner
-    private Spinner classDurationSpinner; // 課程時長 Spinner
-
-    // 上課地點選擇相關控件
-    private RadioGroup locationRadioGroup;   // 上課地點選擇的 RadioGroup
-    private RadioButton trainerStoreRadio;   // 教練的店家選項
-    private RadioButton clientLocationRadio; // 到府（客戶指定地點）選項
-    private RadioButton otherLocationRadio;  // 其他（教練指定地點）選項
-    private EditText locationNameEdit;       // 地點名稱輸入框
-    private Spinner citySpinner;             // 縣市選擇 Spinner
-    private Spinner areaSpinner;             // 地區選擇 Spinner
-    private EditText addressEdit;            // 詳細地址輸入框
+    // 上課地點相關控件
+    private RadioGroup locationRadioGroup;
+    private RadioButton trainerStoreRadio, clientLocationRadio, otherLocationRadio;
+    private EditText locationNameEdit, addressEdit;
+    private Spinner citySpinner, areaSpinner;
 
     // 上課人數相關控件
-    private RadioGroup classSizeRadioGroup; // 上課人數選擇的 RadioGroup
-    private RadioButton oneToOneRadio;      // 一對一課程選項
-    private RadioButton groupRadio;         // 團體課程選項
-    private EditText groupSizeEdit;         // 團體課程人數輸入框
+    private RadioGroup classSizeRadioGroup;
+    private RadioButton oneToOneRadio, groupRadio;
+    private EditText groupSizeEdit;
+
+    // 其他控件
+    private Spinner classTypeSpinner, classDurationSpinner;
 
     // 表示縣市的類
     public class City {
@@ -112,17 +112,25 @@ public class ClassAdd extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.coach_class_add);
+        setContentView(R.layout.coach_class_edit);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // 接收課程 ID
+        classId = getIntent().getIntExtra("classId", -1);
+        if (classId == -1) {
+            Toast.makeText(this, "課程資料載入失敗", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         // 初始化控件
         initializeControls();
 
@@ -134,6 +142,10 @@ public class ClassAdd extends AppCompatActivity {
 
         // 設置初始選項
         initializeDefaultSelections();
+
+
+        // 加載課程資料
+        loadClassData();
     }
 
     /**
@@ -141,34 +153,36 @@ public class ClassAdd extends AppCompatActivity {
      */
     private void initializeControls() {
         // 上課地點選擇相關控件
-        locationRadioGroup = findViewById(R.id.ClassAdd_locationRadioGroup);
-        trainerStoreRadio = findViewById(R.id.ClassAdd_trainerStoreRadio);
-        clientLocationRadio = findViewById(R.id.ClassAdd_clientLocationRadio);
-        otherLocationRadio = findViewById(R.id.ClassAdd_otherLocationRadio);
-        locationNameEdit = findViewById(R.id.ClassAdd_locationNameEdit);
-        citySpinner = findViewById(R.id.ClassAdd_citySpinner);
-        areaSpinner = findViewById(R.id.ClassAdd_areaSpinner);
-        addressEdit = findViewById(R.id.ClassAdd_addressEdit);
+        locationRadioGroup = findViewById(R.id.ClassEdit_locationRadioGroup);
+        trainerStoreRadio = findViewById(R.id.ClassEdit_trainerStoreRadio);
+        clientLocationRadio = findViewById(R.id.ClassEdit_clientLocationRadio);
+        otherLocationRadio = findViewById(R.id.ClassEdit_otherLocationRadio);
+        locationNameEdit = findViewById(R.id.ClassEdit_locationNameEdit);
+        citySpinner = findViewById(R.id.ClassEdit_citySpinner);
+        areaSpinner = findViewById(R.id.ClassEdit_areaSpinner);
+        addressEdit = findViewById(R.id.ClassEdit_addressEdit);
 
         // 上課人數選擇相關控件
-        classSizeRadioGroup = findViewById(R.id.ClassAdd_classSizeRadioGroup);
-        oneToOneRadio = findViewById(R.id.ClassAdd_oneToOneRadio);
-        groupRadio = findViewById(R.id.ClassAdd_groupRadio);
-        groupSizeEdit = findViewById(R.id.ClassAdd_groupSizeEdit);
+        classSizeRadioGroup = findViewById(R.id.ClassEdit_classSizeRadioGroup);
+        oneToOneRadio = findViewById(R.id.ClassEdit_oneToOneRadio);
+        groupRadio = findViewById(R.id.ClassEdit_groupRadio);
+        groupSizeEdit = findViewById(R.id.ClassEdit_groupSizeEdit);
 
         // 其他控件
-        classTypeSpinner = findViewById(R.id.ClassAdd_typeSpinner);
-        classDurationSpinner = findViewById(R.id.ClassAdd_durationSpinner);
-        showImage = findViewById(R.id.ClassAdd_uploadImage);
-        Button uploadButton = findViewById(R.id.ClassAdd_uploadButton);
+        classTypeSpinner = findViewById(R.id.ClassEdit_typeSpinner);
+        classDurationSpinner = findViewById(R.id.ClassEdit_durationSpinner);
+        showImage = findViewById(R.id.ClassEdit_uploadImage);
+
+        // 圖片上傳按鈕
+        Button uploadButton = findViewById(R.id.ClassEdit_uploadButton);
         uploadButton.setOnClickListener(v -> changeImage());
 
         // 返回按鈕
         findViewById(R.id.ClassMain_backButton).setOnClickListener(v -> finish());
 
-        findViewById(R.id.ClassAdd_saveButton).setOnClickListener(v -> saveCourse());
+        // 保存按鈕
+        findViewById(R.id.ClassEdit_saveButton).setOnClickListener(v -> saveCourse());
     }
-
     /**
      * 加載初始數據
      */
@@ -180,19 +194,17 @@ public class ClassAdd extends AppCompatActivity {
         bindLocationRadioButtons();
         updateLocationInputs(); // 確保數據加載後更新顯示邏輯
     }
-
     /**
      * 設置初始選項
      */
     private void initializeDefaultSelections() {
         locationRadioGroup.check(trainerStoreRadio.getVisibility() == View.VISIBLE
-                ? R.id.ClassAdd_trainerStoreRadio
-                : R.id.ClassAdd_clientLocationRadio);
-        classSizeRadioGroup.check(R.id.ClassAdd_oneToOneRadio);
+                ? R.id.ClassEdit_trainerStoreRadio
+                : R.id.ClassEdit_clientLocationRadio);
+        classSizeRadioGroup.check(R.id.ClassEdit_oneToOneRadio);
         groupSizeEdit.setVisibility(View.GONE);
         updateLocationInputs();
     }
-
     /**
      * 設置監聽器
      */
@@ -202,18 +214,17 @@ public class ClassAdd extends AppCompatActivity {
         });
 
         classSizeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            groupSizeEdit.setVisibility(checkedId == R.id.ClassAdd_groupRadio ? View.VISIBLE : View.GONE);
-            clientLocationRadio.setEnabled(checkedId != R.id.ClassAdd_groupRadio);
+            groupSizeEdit.setVisibility(checkedId == R.id.ClassEdit_groupRadio ? View.VISIBLE : View.GONE);
+            clientLocationRadio.setEnabled(checkedId != R.id.ClassEdit_groupRadio);
 
             // 如果是團體課程且當前地點為 "到府"，自動切換為 "其他地點"
-            if (checkedId == R.id.ClassAdd_groupRadio &&
-                    locationRadioGroup.getCheckedRadioButtonId() == R.id.ClassAdd_clientLocationRadio) {
-                locationRadioGroup.check(R.id.ClassAdd_otherLocationRadio);
+            if (checkedId == R.id.ClassEdit_groupRadio &&
+                    locationRadioGroup.getCheckedRadioButtonId() == R.id.ClassEdit_clientLocationRadio) {
+                locationRadioGroup.check(R.id.ClassEdit_otherLocationRadio);
             }
             updateLocationInputs();
         });
     }
-
     /**
      * 更新地點相關的顯示邏輯
      */
@@ -221,13 +232,13 @@ public class ClassAdd extends AppCompatActivity {
         int selectedLocationId = locationRadioGroup.getCheckedRadioButtonId();
 
         // 顯示邏輯
-        if (selectedLocationId == R.id.ClassAdd_trainerStoreRadio) {
+        if (selectedLocationId == R.id.ClassEdit_trainerStoreRadio) {
             showLocationInputs(false);
             showCityAreaInputs(false);
-        } else if (selectedLocationId == R.id.ClassAdd_clientLocationRadio) {
+        } else if (selectedLocationId == R.id.ClassEdit_clientLocationRadio) {
             showCityAreaInputs(true);
             showLocationInputs(false);
-        } else if (selectedLocationId == R.id.ClassAdd_otherLocationRadio) {
+        } else if (selectedLocationId == R.id.ClassEdit_otherLocationRadio) {
             showCityAreaInputs(true);
             showLocationInputs(true);
         }
@@ -245,7 +256,6 @@ public class ClassAdd extends AppCompatActivity {
             addressEdit.setText("");
         }
     }
-
     /**
      * 顯示或隱藏縣市和地區
      */
@@ -253,6 +263,7 @@ public class ClassAdd extends AppCompatActivity {
         citySpinner.setVisibility(show ? View.VISIBLE : View.GONE);
         areaSpinner.setVisibility(show ? View.VISIBLE : View.GONE);
     }
+
     private void loadDurationData() {
         List<String> durationOptions = new ArrayList<>();
         durationOptions.add("請選擇課程時長"); // 添加提示選項
@@ -427,7 +438,9 @@ public class ClassAdd extends AppCompatActivity {
         areaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         areaSpinner.setAdapter(areaAdapter);
     }
-
+    /**
+     * 改變圖片
+     */
     private void changeImage() {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -435,7 +448,6 @@ public class ClassAdd extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         uploadImage_ActivityResult.launch(intent);
     }
-
     ActivityResultLauncher<Intent> uploadImage_ActivityResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK) {
@@ -443,6 +455,9 @@ public class ClassAdd extends AppCompatActivity {
                     if (data != null) {
                         uri = data.getData();
                         showImage.setImageURI(uri);
+
+                        // 將新圖片轉為 byte[] 並保存到 updatedImageBytes
+                        updatedImageBytes = getBytesFromUri(uri);
                     }
                 } else if (result.getResultCode() == RESULT_CANCELED) {
                     Toast.makeText(this, "取消圖片上傳", Toast.LENGTH_SHORT).show();
@@ -450,100 +465,276 @@ public class ClassAdd extends AppCompatActivity {
             }
     );
 
-    private void saveCourse() {
-        // 檢查欄位
-        if (!validateFields()) {
-            return; // 檢查失敗時直接返回
-        }
 
-        // 表單提交邏輯
-        String courseName = ((EditText) findViewById(R.id.ClassAdd_nameEdit)).getText().toString().trim();
-        int courseType = ((ClassType) classTypeSpinner.getSelectedItem()).classTypeId;
-        String courseDescription = ((EditText) findViewById(R.id.ClassAdd_descriptionEdit)).getText().toString().trim();
-        int courseDuration = Integer.parseInt(classDurationSpinner.getSelectedItem().toString().replace(" 分鐘", ""));
-        double courseFee = Double.parseDouble(((EditText) findViewById(R.id.ClassAdd_feeEdit)).getText().toString());
-        int classSize = classSizeRadioGroup.getCheckedRadioButtonId() == R.id.ClassAdd_oneToOneRadio ? 1 : Integer.parseInt(groupSizeEdit.getText().toString());
-        String requiredEquipment = ((EditText) findViewById(R.id.ClassAdd_equipmentEdit)).getText().toString().trim();
-        int locationType = locationRadioGroup.getCheckedRadioButtonId() == R.id.ClassAdd_trainerStoreRadio ? 1
-                : locationRadioGroup.getCheckedRadioButtonId() == R.id.ClassAdd_clientLocationRadio ? 2 : 3;
+    /**
+     * 加載課程資料
+     */
+    private void loadClassData() {
+        String query = "SELECT * FROM [健身教練課程] WHERE [課程編號] = ?";
+        try (PreparedStatement statement = MyConnection.prepareStatement(query)) {
+            statement.setInt(1, classId);
+            ResultSet resultSet = statement.executeQuery();
 
-        String locationName = null;
-        String locationAddress = null;
+            if (resultSet.next()) {
+                // 填充課程資訊到頁面元素
+                ((EditText) findViewById(R.id.ClassEdit_nameEdit)).setText(resultSet.getString("課程名稱"));
+                int fee = (int) Math.floor(resultSet.getDouble("課程費用"));
+                ((EditText) findViewById(R.id.ClassEdit_feeEdit)).setText(String.valueOf(fee));
+                ((EditText) findViewById(R.id.ClassEdit_descriptionEdit)).setText(resultSet.getString("課程內容介紹"));
+                ((EditText) findViewById(R.id.ClassEdit_equipmentEdit)).setText(resultSet.getString("所需設備"));
 
-        int cityId = -1;
-        int areaId = -1;
-
-        if (locationType == 1) {
-            // 從資料庫獲取服務地點資訊
-            try (PreparedStatement stmt = MyConnection.prepareStatement(
-                    "SELECT [服務地點名稱], [縣市id], [行政區id], [服務地點地址] FROM [健身教練審核合併] WHERE [健身教練編號] = ?")) {
-                stmt.setInt(1, Coach.getInstance().getCoachId());
-                ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    locationName = rs.getString("服務地點名稱");
-                    cityId = rs.getInt("縣市id");
-                    areaId = rs.getInt("行政區id");
-                    locationAddress = rs.getString("服務地點地址");
-                } else {
-                    Toast.makeText(this, "未找到教練的服務地點資訊", Toast.LENGTH_SHORT).show();
-                    return;
+                // 回綁課程分類
+                int classTypeId = resultSet.getInt("分類編號");
+                for (int i = 0; i < classTypeSpinner.getCount(); i++) {
+                    ClassType item = (ClassType) classTypeSpinner.getItemAtPosition(i);
+                    if (item.classTypeId == classTypeId) {
+                        classTypeSpinner.setSelection(i);
+                        break;
+                    }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                Toast.makeText(this, "讀取服務地點資訊失敗", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        } else {
-            // 檢查 Spinner 是否有值
-            if (citySpinner.getSelectedItem() == null || areaSpinner.getSelectedItem() == null) {
-                Toast.makeText(this, "請選擇有效的縣市和行政區", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
-            City selectedCity = (City) citySpinner.getSelectedItem();
-            Area selectedArea = (Area) areaSpinner.getSelectedItem();
+                // 回綁課程時長
+                int durationId = resultSet.getInt("課程時間長度");
+                for (int i = 0; i < classDurationSpinner.getCount(); i++) {
+                    String item = (String) classDurationSpinner.getItemAtPosition(i);
+                    if (item.equals(durationId + " 分鐘")) {
+                        classDurationSpinner.setSelection(i);
+                        break;
+                    }
+                }
 
-            cityId = selectedCity.cityId;
-            areaId = selectedArea.areaId;
+                // 回綁上課人數
+                int people = resultSet.getInt("上課人數");
+                if (people == 1) {
+                    ((RadioButton) findViewById(R.id.ClassEdit_oneToOneRadio)).setChecked(true);
+                } else if (people > 1) {
+                    ((RadioButton) findViewById(R.id.ClassEdit_groupRadio)).setChecked(true);
+                    EditText groupSizeEdit = findViewById(R.id.ClassEdit_groupSizeEdit);
+                    groupSizeEdit.setVisibility(View.VISIBLE);
+                    groupSizeEdit.setText(String.valueOf(people));
+                }
 
-            if (locationType == 3) {
-                locationName = locationNameEdit.getText().toString().trim();
-                locationAddress = addressEdit.getText().toString().trim();
-            }
-        }
+                // 回綁上課地點
+                int locationType = resultSet.getInt("地點類型");
+                Spinner citySpinner = findViewById(R.id.ClassEdit_citySpinner);
+                Spinner areaSpinner = findViewById(R.id.ClassEdit_areaSpinner);
+                if (locationType == 1) {
+                    ((RadioButton) findViewById(R.id.ClassEdit_trainerStoreRadio)).setChecked(true);
+                } else {
+                    int cityId = resultSet.getInt("縣市id");
+                    int areaId = resultSet.getInt("行政區id");
 
-        byte[] image = null; // 圖片處理邏輯（可從 ImageView 中獲取）
-        if (uri != null) {
-            image = getBytesFromUri(uri);
-        }
+                    if (locationType == 2) {
+                        ((RadioButton) findViewById(R.id.ClassEdit_clientLocationRadio)).setChecked(true);
+                    } else if (locationType == 3) {
+                        ((RadioButton) findViewById(R.id.ClassEdit_otherLocationRadio)).setChecked(true);
+                        EditText locationNameEdit = findViewById(R.id.ClassEdit_locationNameEdit);
+                        locationNameEdit.setVisibility(View.VISIBLE);
+                        locationNameEdit.setText(resultSet.getString("地點名稱"));
 
-        // 插入課程數據
-        String query = "INSERT INTO [健身教練課程] ([課程名稱], [分類編號], [課程內容介紹], [課程時間長度], [上課人數], [地點類型], [地點名稱], [縣市id], [行政區id], [地點地址], [課程費用], [所需設備], [課程圖片], [健身教練編號]) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = MyConnection.prepareStatement(query)) {
-            stmt.setString(1, courseName);
-            stmt.setInt(2, courseType);
-            stmt.setString(3, courseDescription);
-            stmt.setInt(4, courseDuration);
-            stmt.setInt(5, classSize);
-            stmt.setInt(6, locationType);
-            stmt.setString(7, locationName);
-            stmt.setInt(8, cityId);
-            stmt.setInt(9, areaId);
-            stmt.setString(10, locationAddress);
-            stmt.setDouble(11, courseFee);
-            stmt.setString(12, requiredEquipment);
-            if (image != null) {
-                stmt.setBytes(13, image);
+                        EditText addressEdit = findViewById(R.id.ClassEdit_addressEdit);
+                        addressEdit.setVisibility(View.VISIBLE);
+                        addressEdit.setText(resultSet.getString("地點地址"));
+                    }
+
+                    // 顯示縣市和行政區的下拉選單
+                    citySpinner.setVisibility(View.VISIBLE);
+                    areaSpinner.setVisibility(View.VISIBLE);
+
+                    // 回綁縣市，並延遲回綁行政區
+                    for (int i = 0; i < citySpinner.getCount(); i++) {
+                        City city = (City) citySpinner.getItemAtPosition(i);
+                        if (city.cityId == cityId) {
+                            citySpinner.setSelection(i);
+                            Log.d("DEBUG", "Selected city: " + city.cityName);
+
+                            // 使用 Handler 延遲加載行政區
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                loadAreaData(cityId, areaSpinner, areaId);
+                            }, 200); // 延遲 200 毫秒，確保 UI 完全更新
+                            break;
+                        }
+                    }
+                }
+
+                // 加載課程圖片
+                currentImageBytes = resultSet.getBytes("課程圖片");
+                if (currentImageBytes != null && currentImageBytes.length > 0) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(currentImageBytes, 0, currentImageBytes.length);
+                    showImage.setImageBitmap(bitmap);
+                }
             } else {
-                stmt.setNull(13, java.sql.Types.BLOB); // 如果沒有圖片，設置為 NULL
+                Toast.makeText(this, "課程資料未找到", Toast.LENGTH_SHORT).show();
             }
-            stmt.setInt(14, Coach.getInstance().getCoachId());
-            stmt.executeUpdate();
-            Toast.makeText(this, "課程已儲存成功！", Toast.LENGTH_SHORT).show();
-            navigateToClassMain(); // 跳轉到 ClassMain
         } catch (SQLException e) {
             e.printStackTrace();
-            Toast.makeText(this, "儲存課程失敗！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "加載課程失敗，請稍後再試", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadAreaData(int cityId, Spinner areaSpinner, int selectedAreaId) {
+        List<Area> areaList = new ArrayList<>();
+        String areaQuery = "SELECT 行政區id, 行政區 FROM [行政區] WHERE 縣市id = ?";
+
+        try {
+            if (MyConnection == null) {
+                MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+            }
+
+            areaList.add(new Area(-1, "請選擇鄉鎮區")); // 添加提示選項
+
+            PreparedStatement areaStatement = MyConnection.prepareStatement(areaQuery);
+            areaStatement.setInt(1, cityId);
+            ResultSet areaResultSet = areaStatement.executeQuery();
+
+            while (areaResultSet.next()) {
+                int areaId = areaResultSet.getInt("行政區id");
+                String areaName = areaResultSet.getString("行政區");
+                areaList.add(new Area(areaId, areaName));
+            }
+
+            areaResultSet.close();
+            areaStatement.close();
+
+            ArrayAdapter<Area> areaAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, areaList);
+            areaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            areaSpinner.setAdapter(areaAdapter);
+
+            /// 延遲設置行政區選擇
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                for (int j = 0; j < areaList.size(); j++) {
+                    if (areaList.get(j).areaId == selectedAreaId) {
+                        areaSpinner.setSelection(j);
+                        Log.d("DEBUG", "Selected area: " + areaList.get(j).areaName);
+                        break;
+                    }
+                }
+            }, 200); // 延遲 200 毫秒
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "加載鄉鎮區失敗", Toast.LENGTH_SHORT).show();
+        }
+    }
+    /**
+     * 保存課程
+     */
+    private void saveCourse() {
+        // 驗證欄位
+        if (!validateFields()) {
+            return; // 如果欄位驗證失敗，退出方法
+        }
+
+        // 優先使用 updatedImageBytes
+        byte[] imageBytesToSave = updatedImageBytes != null ? updatedImageBytes : currentImageBytes;
+
+        String query = "UPDATE [健身教練課程] " +
+                "SET [課程名稱] = ?, " +
+                "[分類編號] = ?, " +
+                "[課程時間長度] = ?, " +
+                "[課程內容介紹] = ?, " +
+                "[所需設備] = ?, " +
+                "[課程費用] = ?, " +
+                "[上課人數] = ?, " +
+                "[地點類型] = ?, " +
+                "[地點名稱] = ?, " +
+                "[地點地址] = ?, " +
+                "[縣市id] = ?, " +
+                "[行政區id] = ?" +
+                (imageBytesToSave != null ? ", [課程圖片] = ?" : "") +
+                " WHERE [課程編號] = ?";
+
+        try (PreparedStatement statement = MyConnection.prepareStatement(query)) {
+            // 收集用戶輸入資料
+            String courseName = ((EditText) findViewById(R.id.ClassEdit_nameEdit)).getText().toString().trim();
+            int courseType = ((ClassType) classTypeSpinner.getSelectedItem()).classTypeId;
+            int courseTime = Integer.parseInt(classDurationSpinner.getSelectedItem().toString().replace(" 分鐘", ""));
+            String courseDescription = ((EditText) findViewById(R.id.ClassEdit_descriptionEdit)).getText().toString().trim();
+            String requiredEquipment = ((EditText) findViewById(R.id.ClassEdit_equipmentEdit)).getText().toString().trim();
+            double courseFee = Double.parseDouble(((EditText) findViewById(R.id.ClassEdit_feeEdit)).getText().toString());
+            int classSize = classSizeRadioGroup.getCheckedRadioButtonId() == R.id.ClassEdit_oneToOneRadio ? 1 : Integer.parseInt(groupSizeEdit.getText().toString());
+
+            int locationType = locationRadioGroup.getCheckedRadioButtonId() == R.id.ClassEdit_trainerStoreRadio ? 1 :
+                    locationRadioGroup.getCheckedRadioButtonId() == R.id.ClassEdit_clientLocationRadio ? 2 : 3;
+
+            String locationName = null;
+            String locationAddress = null;
+
+            int cityId = -1;
+            int areaId = -1;
+
+            if (locationType == 1) {
+                // 從資料庫獲取服務地點資訊
+                try (PreparedStatement stmt = MyConnection.prepareStatement(
+                        "SELECT [服務地點名稱], [縣市id], [行政區id], [服務地點地址] FROM [健身教練審核合併] WHERE [健身教練編號] = ?")) {
+                    stmt.setInt(1, Coach.getInstance().getCoachId());
+                    ResultSet rs = stmt.executeQuery();
+                    if (rs.next()) {
+                        locationName = rs.getString("服務地點名稱");
+                        cityId = rs.getInt("縣市id");
+                        areaId = rs.getInt("行政區id");
+                        locationAddress = rs.getString("服務地點地址");
+                    } else {
+                        Toast.makeText(this, "未找到教練的服務地點資訊", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "讀取服務地點資訊失敗", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+                // 檢查 Spinner 是否有值
+                if (citySpinner.getSelectedItem() == null || areaSpinner.getSelectedItem() == null) {
+                    Toast.makeText(this, "請選擇有效的縣市和行政區", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                City selectedCity = (City) citySpinner.getSelectedItem();
+                Area selectedArea = (Area) areaSpinner.getSelectedItem();
+
+                cityId = selectedCity.cityId;
+                areaId = selectedArea.areaId;
+
+                if (locationType == 3) {
+                    locationName = ((EditText) findViewById(R.id.ClassEdit_locationNameEdit)).getText().toString().trim();
+                    locationAddress = ((EditText) findViewById(R.id.ClassEdit_addressEdit)).getText().toString().trim();
+                }
+            }
+
+            // 設定參數
+            statement.setString(1, courseName);
+            statement.setInt(2, courseType);
+            statement.setInt(3, courseTime);
+            statement.setString(4, courseDescription);
+            statement.setString(5, requiredEquipment);
+            statement.setDouble(6, courseFee);
+            statement.setInt(7, classSize);
+            statement.setInt(8, locationType);
+            statement.setString(9, locationType == 3 ? locationName : null);
+            statement.setString(10, locationType == 3 ? locationAddress : null);
+            statement.setInt(11, cityId);
+            statement.setInt(12, areaId);
+
+            // 如果有圖片，將圖片參數添加到查詢
+            if (imageBytesToSave != null) {
+                statement.setBytes(13, imageBytesToSave);
+                statement.setInt(14, classId);
+            } else {
+                statement.setInt(13, classId);
+            }
+
+            // 執行更新操作
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                Toast.makeText(this, "課程更新成功！", Toast.LENGTH_SHORT).show();
+                navigateToClassMain(); // 更新完成後返回主頁
+            } else {
+                Toast.makeText(this, "課程更新失敗！", Toast.LENGTH_SHORT).show();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "儲存過程中發生錯誤", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -553,8 +744,6 @@ public class ClassAdd extends AppCompatActivity {
         startActivity(intent);
         finish(); // 關閉當前 Activity
     }
-
-
     /**
      * 將 Uri 轉為 byte[]
      */
@@ -578,7 +767,7 @@ public class ClassAdd extends AppCompatActivity {
     private boolean validateFields() {
         // 檢查主要的 EditText 欄位
         if (!validateEditTexts(
-                new int[]{R.id.ClassAdd_nameEdit, R.id.ClassAdd_descriptionEdit, R.id.ClassAdd_equipmentEdit, R.id.ClassAdd_feeEdit},
+                new int[]{R.id.ClassEdit_nameEdit, R.id.ClassEdit_descriptionEdit, R.id.ClassEdit_equipmentEdit, R.id.ClassEdit_feeEdit},
                 new String[]{"請輸入課程名稱", "請輸入課程描述", "請輸入所需設備", "請輸入課程費用"})) {
             return false;
         }
@@ -593,24 +782,24 @@ public class ClassAdd extends AppCompatActivity {
         // 驗證上課地點相關欄位
         int locationType = locationRadioGroup.getCheckedRadioButtonId();
 
-        if (locationType == R.id.ClassAdd_clientLocationRadio) {
+        if (locationType == R.id.ClassEdit_clientLocationRadio) {
             // 如果選擇 "到府(客戶指定地點)"
             if (!validateSpinner(citySpinner, "請選擇縣市") || !validateSpinner(areaSpinner, "請選擇鄉鎮區")) {
                 return false;
             }
-        } else if (locationType == R.id.ClassAdd_otherLocationRadio) {
+        } else if (locationType == R.id.ClassEdit_otherLocationRadio) {
             // 如果選擇 "其他(教練指定地點)"
-            if (!validateEditText(R.id.ClassAdd_locationNameEdit, "請輸入地點名稱") ||
+            if (!validateEditText(R.id.ClassEdit_locationNameEdit, "請輸入地點名稱") ||
                     !validateSpinner(citySpinner, "請選擇縣市") ||
                     !validateSpinner(areaSpinner, "請選擇鄉鎮區") ||
-                    !validateEditText(R.id.ClassAdd_addressEdit, "請輸入詳細地址")) {
+                    !validateEditText(R.id.ClassEdit_addressEdit, "請輸入詳細地址")) {
                 return false;
             }
         }
 
         // 驗證群組人數欄位（如果選擇了群組課程）
-        if (classSizeRadioGroup.getCheckedRadioButtonId() == R.id.ClassAdd_groupRadio) {
-            EditText groupSizeEdit = findViewById(R.id.ClassAdd_groupSizeEdit);
+        if (classSizeRadioGroup.getCheckedRadioButtonId() == R.id.ClassEdit_groupRadio) {
+            EditText groupSizeEdit = findViewById(R.id.ClassEdit_groupSizeEdit);
             String groupSize = groupSizeEdit.getText().toString().trim();
 
             if (groupSize.isEmpty()) {
@@ -635,6 +824,7 @@ public class ClassAdd extends AppCompatActivity {
 
         return true; // 所有驗證通過
     }
+
     private boolean validateEditTexts(int[] editTextIds, String[] errorMessages) {
         for (int i = 0; i < editTextIds.length; i++) {
             if (!validateEditText(editTextIds[i], errorMessages[i])) {
@@ -673,5 +863,4 @@ public class ClassAdd extends AppCompatActivity {
         }
         return true;
     }
-
 }

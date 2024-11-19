@@ -28,7 +28,6 @@ import com.google.android.material.tabs.TabLayout;
 public class Coach_AppointmentsAll extends AppCompatActivity {
     FrameLayout frameLayout;
     TabLayout tabLayout;
-    ImageButton Gobackbtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +38,10 @@ public class Coach_AppointmentsAll extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Gobackbtn=(ImageButton)findViewById(R.id.coach_Appointment_back);
+
+        // 返回按鈕
+        findViewById(R.id.coach_Appointment_back).setOnClickListener(v -> finish());
+
         frameLayout=(FrameLayout)findViewById(R.id.CoachAppointmentFrameLayout);
         tabLayout=(TabLayout)findViewById(R.id.CoachAppointmentTabLayout);
 

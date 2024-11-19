@@ -7,22 +7,211 @@
     android:layout_height="match_parent"
     tools:context=".Coach.Scheduled.ScheduledAdd">
 
-    <com.hdev.calendar.view.SingleCalendarView
-        android:id="@+id/ScheduledAdd_calendarView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_marginTop="32dp"
-        app:day_font_size="16sp"
-        app:default_color="#000000"
-        app:default_dim_color="#AAAAAA"
-        app:header_view="com.hdev.calendar.view.DefaultHeaderView"
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:selected_bg_color="#0078D7"
-        app:selected_day_color="#EFEFEF"
-        app:week_title_color="@color/medium_gray"
-        app:week_title_font_size="20sp"
-        app:weekend_color="#F96A31" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- 返回按鈕 -->
+        <ImageButton
+            android:id="@+id/ScheduledAdd_backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="返回上一頁"
+            android:scaleType="centerInside"
+            android:src="@drawable/back" />
+
+        <!-- 標頭標題 -->
+        <TextView
+            android:id="@+id/page_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="新增班表"
+            android:textColor="#808080"
+            android:textSize="20sp" />
+
+        <!-- 底部細底線 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#d3d3d3" />
+    </RelativeLayout>
+
+
+    <!-- 步驟 1: 選擇日期 -->
+    <TextView
+        android:id="@+id/tvStepTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Step 1: 選擇日期"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header" />
+
+    <!-- 已選擇日期顯示 -->
+
+    <Button
+        android:id="@+id/btnSelectDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="156dp"
+        android:text="選擇日期"
+        app:layout_constraintBottom_toBottomOf="@+id/tvStepTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/tvStepTitle"
+        app:layout_constraintTop_toTopOf="@+id/tvStepTitle" />
+
+    <TextView
+        android:id="@+id/tvSelectedDates"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="未選擇任何日期"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSelectDate" />
+
+    <!-- 步驟 2: 選擇課程 -->
+
+    <!-- 課程顯示框 -->
+    <TextView
+        android:id="@+id/tvStep2Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="Step 2: 選擇課程"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSelectedDates" />
+
+    <TextView
+        android:id="@+id/tvSelectedCourse"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="尚未選擇課程"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/btnSelectCourse"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvStep2Title" />
+
+    <!-- 選擇課程按鈕 -->
+    <Button
+        android:id="@+id/btnSelectCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="選擇課程"
+        app:layout_constraintBottom_toBottomOf="@+id/tvSelectedCourse"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvSelectedCourse"
+        app:layout_constraintTop_toTopOf="@+id/tvSelectedCourse" />
+
+    <!-- 步驟 3: 設定開始時間 -->
+
+    <!-- 時間輸入框 -->
+    <TextView
+        android:id="@+id/tvStep3Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Step 3: 設定開始時間"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSelectedCourse" />
+
+    <LinearLayout
+        android:id="@+id/llTimePicker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvStep3Title">
+
+        <!-- 開始時間 -->
+        <EditText
+            android:id="@+id/etStartTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="false"
+            android:gravity="center"
+            android:hint="開始時間"
+            android:inputType="none" />
+
+
+        <!-- 分隔符 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:gravity="center"
+            android:text="—"
+            android:textSize="18sp" />
+
+        <!-- 結束時間 -->
+        <EditText
+            android:id="@+id/etEndTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="false"
+            android:gravity="center"
+            android:hint="結束時間"
+            android:inputType="none" />
+    </LinearLayout>
+
+    <!-- 新增與取消按鈕 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llTimePicker">
+
+        <Button
+            android:id="@+id/btnAddSchedule"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="新增班表" />
+
+        <Button
+            android:id="@+id/btnCancelSchedule"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="全部取消" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

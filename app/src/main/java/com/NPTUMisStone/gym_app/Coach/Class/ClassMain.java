@@ -40,6 +40,7 @@ public class ClassMain extends AppCompatActivity {
     private Connection MyConnection;
     private SwipeRefreshLayout swipeRefreshLayout;
     private CustomAdapter adapter;
+    private RecyclerView recyclerView;
     private boolean isLoadingData = false;
 
     @Override
@@ -76,10 +77,9 @@ public class ClassMain extends AppCompatActivity {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new ArrayList<>(),
                 new ArrayList<>()
         );
-        RecyclerView recyclerView = findViewById(R.id.ClassMain_classRecycler);
+        recyclerView = findViewById(R.id.ClassMain_classRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -97,24 +97,22 @@ public class ClassMain extends AppCompatActivity {
                 List<Integer> idList = new ArrayList<>();
                 List<byte[]> imageList = new ArrayList<>();
                 List<String> nameList = new ArrayList<>();
-                List<String> descriptionList = new ArrayList<>();
                 List<Integer> durationList = new ArrayList<>();
                 List<Integer> sizeList = new ArrayList<>();
                 List<Double> feeList = new ArrayList<>();
 
                 // 加載數據
-                fetchClassData(idList, imageList, nameList, descriptionList, durationList, sizeList, feeList);
+                fetchClassData(idList, imageList, nameList, durationList, sizeList, feeList);
 
                 // 更新 UI 和資料
                 new Handler(Looper.getMainLooper()).post(() -> {
                     adapter.idList = idList;
                     adapter.imageList = imageList;
                     adapter.nameList = nameList;
-                    adapter.descriptionList = descriptionList;
                     adapter.durationList = durationList;
                     adapter.sizeList = sizeList;
                     adapter.feeList = feeList;
-                    adapter.notifyItemRangeChanged(0, idList.size());
+                    adapter.notifyDataSetChanged();
 
                     if (idList.isEmpty()) {
                         Toast.makeText(this, "目前無課程資料", Toast.LENGTH_SHORT).show();
@@ -136,10 +134,9 @@ public class ClassMain extends AppCompatActivity {
 
 
 
-    private void fetchClassData(List<Integer> idList, List<byte[]> imageList, List<String> nameList,
-                                List<String> descriptionList, List<Integer> durationList,
+    private void fetchClassData(List<Integer> idList, List<byte[]> imageList, List<String> nameList, List<Integer> durationList,
                                 List<Integer> sizeList, List<Double> feeList) {
-        String query = "SELECT [課程編號], [課程名稱], [課程內容介紹], [課程費用], " +
+        String query = "SELECT [課程編號], [課程名稱], [課程費用], " +
                 "[上課人數], [課程時間長度], [課程圖片] " +
                 "FROM [健身教練課程] WHERE [健身教練編號] = ?";
 
@@ -150,7 +147,6 @@ public class ClassMain extends AppCompatActivity {
             while (resultSet.next()) {
                 idList.add(resultSet.getInt("課程編號"));
                 nameList.add(resultSet.getString("課程名稱"));
-                descriptionList.add(resultSet.getString("課程內容介紹"));
                 feeList.add(resultSet.getDouble("課程費用"));
                 sizeList.add(resultSet.getInt("上課人數"));
                 durationList.add(resultSet.getInt("課程時間長度"));
@@ -167,22 +163,19 @@ public class ClassMain extends AppCompatActivity {
 
 
     // 保留 CustomAdapter 顯示資料
-    class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ItemViewHolder> {
+    static class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ItemViewHolder> {
         List<Integer> idList;
         List<byte[]> imageList;
         List<String> nameList;
-        List<String> descriptionList;
         List<Integer> durationList;
         List<Integer> sizeList;
         List<Double> feeList;
 
-        CustomAdapter(List<Integer> ids, List<byte[]> images, List<String> names,
-                      List<String> descriptions, List<Integer> durations,
+        CustomAdapter(List<Integer> ids, List<byte[]> images, List<String> names, List<Integer> durations,
                       List<Integer> sizes, List<Double> fees) {
             idList = ids;
             imageList = images;
             nameList = names;
-            descriptionList = descriptions;
             durationList = durations;
             sizeList = sizes;
             feeList = fees;
@@ -202,14 +195,20 @@ public class ClassMain extends AppCompatActivity {
             if (imageData != null && imageData.length > 0) {
                 holder.imageView.setImageBitmap(ImageHandle.getBitmap(imageData));
             } else {
-                holder.imageView.setImageResource(R.drawable.course_ic_null_class);
+                holder.imageView.setImageResource(R.drawable.null_class);
             }
 
             holder.nameTextView.setText(nameList.get(position));
-            holder.descriptionTextView.setText(descriptionList.get(position));
-            holder.priceTextView.setText(getString(R.string.Class_feeText, feeList.get(position)));
-            holder.sizeTextView.setText(getString(R.string.Class_numberText, sizeList.get(position)));
-            holder.timeTextView.setText(getString(R.string.Class_timeText, durationList.get(position)));
+            holder.priceTextView.setText("$ " + (int) Math.floor(feeList.get(position)) + " /堂");
+            holder.sizeTextView.setText("人數: " + sizeList.get(position) + " 人");
+            holder.timeTextView.setText("時長: " + durationList.get(position) + " 分鐘");
+
+            // 設置點擊事件
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), ClassEdit.class);
+                intent.putExtra("classId", idList.get(position)); // 傳遞課程 ID
+                v.getContext().startActivity(intent);
+            });
         }
 
         @Override
@@ -220,7 +219,6 @@ public class ClassMain extends AppCompatActivity {
         static class ItemViewHolder extends RecyclerView.ViewHolder {
             ImageView imageView;
             TextView nameTextView;
-            TextView descriptionTextView;
             TextView priceTextView;
             TextView sizeTextView;
             TextView timeTextView;
@@ -229,7 +227,6 @@ public class ClassMain extends AppCompatActivity {
                 super(view);
                 imageView = view.findViewById(R.id.Class_Item_imageView);
                 nameTextView = view.findViewById(R.id.Class_Item_nameText);
-                descriptionTextView = view.findViewById(R.id.Class_Item_descriptionText);
                 priceTextView = view.findViewById(R.id.Class_Item_price);
                 sizeTextView = view.findViewById(R.id.Class_Item_size);
                 timeTextView = view.findViewById(R.id.Class_Item_time);
