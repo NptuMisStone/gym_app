@@ -1,4 +1,4 @@
-package com.NPTUMisStone.gym_app.Main.Initial;
+package com.NPTUMisStone.mapview;
 
 import android.os.StrictMode;
 import android.util.Log;

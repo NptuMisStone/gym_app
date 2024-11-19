@@ -198,6 +198,9 @@ v0.85：嘗試解決「java.sql.SQLException: Invalid state, the Connection obje
 
 v0.86：教練課程完成&各頁面標頭調整&班表還需要調整(宇哲)
 
+v0.87：嘗試解決「java.sql.SQLException: I/O Error: Connection reset」錯誤 準備提供:
+mapview模組連接資料庫功能(侑宸)
+
 ## 補充：
 
 ### 圖片：

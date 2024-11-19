@@ -255,14 +255,12 @@ public class ClassMap extends AppCompatActivity {
         pointAnnotationManager.addClickListener(annotation -> {
             if (annotation.getId() == pointAnnotation.getId()) {
                 AlertDialog builder = new AlertDialog.Builder(ClassMap.this)
-                        .setTitle("課程地址")
-                        .setView(R.layout.coach_class_item)
+                        .setTitle("課程地址").setView(R.layout.coach_class_item)
                         .setPositiveButton("查看更多資訊", (dialog, which) -> {
                             if (classID != -1) {
                                 setResult(RESULT_OK, getIntent().putExtra("看更多課程ID", classID));
                                 finish();
-                            } else
-                                Toast.makeText(ClassMap.this, "無法取得課程ID", Toast.LENGTH_SHORT).show();
+                            } else Toast.makeText(ClassMap.this, "無法取得課程ID", Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton("導航", (dialog, which) -> {
 

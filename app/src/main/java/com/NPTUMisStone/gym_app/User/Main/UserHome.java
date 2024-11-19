@@ -131,9 +131,7 @@ public class UserHome extends AppCompatActivity {
             Intent data = result.getData();
             if (data != null) {
                 int resultString = data.getIntExtra("看更多課程ID", -1);
-                Intent intent = new Intent(this, User_Class_Detail.class);
-                intent.putExtra("看更多課程ID", resultString);
-                startActivity(intent);
+                startActivity(new Intent(this, User_Class_Detail.class).putExtra("看更多課程ID", resultString));
             }
         }
         else Toast.makeText(this, "未選擇任何課程", Toast.LENGTH_SHORT).show();
