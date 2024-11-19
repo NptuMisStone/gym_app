@@ -1,4 +1,4 @@
-[# gym_app
+# gym_app
 
 健身房系統建置:提升營運效率與客戶體驗之研究
 ---
@@ -192,7 +192,9 @@ v0.82：教練預約管理(尚未做查看預約名單)(煒楷)
 
 v0.83：整理地圖模組(侑宸)
 
-##]() 補充：
+v0.84：嘗試解決「java.sql.SQLException: Invalid state, the Connection object is closed.」錯誤(侑宸)
+
+## 補充：
 
 ### 圖片：
 
@@ -203,22 +205,22 @@ R.drawable.main_login_ic_account：預設使用者圖片
 1. 快速排版程式碼：Code/Reformat Code
 2. 解決部分編譯錯誤：Build/Clean Project->Build/Rebuild Project File/Invalid Caches/Restart
 3. 更改sdk環境：Gradle Scripts/local.properties sdk.dir
-4. 更改專案版本號：Gradle Scripts/build.gradle 
-5. 更改引入套件：Gradle Scripts/build.gradle 
+4. 更改專案版本號：Gradle Scripts/build.gradle
+5. 更改引入套件：Gradle Scripts/build.gradle
 6. 更改套件版本：Gradle Scripts/libs.versions.toml
 7. 快速查詢：Ctrl+F/Ctrl+Shift+F
 
 ### Android Studio 程式
 
-1. extends AsyncTask<Void, Void, Void>為已棄用方法，請改用
-   【Executors.newSingleThreadExecutor().execute(() -> {
+1. `extends AsyncTask<Void, Void, Void>`為已棄用方法，請改用
+   【`Executors.newSingleThreadExecutor().execute(() -> {
    //Background work here
    new Handler(Looper.getMainLooper()).post(() -> {
    //UI Thread work here
-   }); });】方法
+   }); });`】方法
 
 2. 各個Activity中的ID請注意分別取不同名字，避免互相干擾，建議取名方式為「layout名稱_
-   +元件功能+元件類型」，例：「forget_accountEdit」
+   +元件功能+元件類型」，例：忘記密碼介面帳號的輸入框id:「Forget_accountEdit」
    當確認帳密無誤時可發送驗證碼，並將enable關掉，並隱藏帳密欄位顯示重設欄位
 
 3. 要使用google提供的javamail-android發送電子郵件首先需要Google帳戶啟用兩步驟驗證->
@@ -226,8 +228,8 @@ R.drawable.main_login_ic_account：預設使用者圖片
 
 4. 當遇到「It will always be more efficient to use more specific change events if you can. Rely on
    notifyDataSetChanged as a last resort.」問題
-   請將目前使用的RecycleView更新方法從notifyDataSetChanged()方法，改成使用notifyItemRangeChanged(0,
-   adList.size())
+   請將目前使用的RecycleView更新方法從`notifyDataSetChanged()`方法，
+   改成使用`notifyItemRangeChanged(0, adList.size())`
 
 5. 如果出現「SQL Connection: Network error IOException: Socket closed」，可試試看延長逾期時間
 
@@ -235,8 +237,8 @@ R.drawable.main_login_ic_account：預設使用者圖片
 
 7. 如果遇到AGP版本問題，請將專案的AGP版本與Android Studio可支援AGP版本調整至對應
 
-8. 當遇到「'getAdapterPosition()' is deprecated」，把getAdapterPosition()
-   改成getBindingAdapterPosition()
+8. 當遇到「'getAdapterPosition()' is deprecated」，把`getAdapterPosition()`
+   改成`getBindingAdapterPosition()`
 
 9. 使用Fragment套件時，ID取名不可用中文
 
