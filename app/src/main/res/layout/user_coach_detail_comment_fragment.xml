@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.AllCoach.DetailCoach.User_Coach_Detail_Comment_Fragment">
+    tools:context=".User.AllCoach.CoachDetail_CommentFragment">
 
     <ScrollView
         android:layout_width="match_parent"

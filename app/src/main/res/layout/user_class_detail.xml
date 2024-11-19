@@ -5,10 +5,23 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.AllClass.DetailClass.User_Class_Detail">
+    tools:context=".User.Class.ClassDetail">
+
+    <ImageButton
+        android:id="@+id/ClassDetail_directionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/all_effect_ripple"
+        android:contentDescription="@string/goBack"
+        android:scaleType="centerCrop"
+        android:src="@drawable/user_class_detail_ic_direction"
+        app:layout_constraintBottom_toTopOf="@+id/guideline25"
+        app:layout_constraintEnd_toEndOf="@+id/ClassDetail_classImage"
+        app:layout_constraintStart_toEndOf="@+id/ClassDetail_classImage" />
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/ClassDetail_titleToolbar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/white"
@@ -20,13 +33,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/user_DetailClass_back"
+        android:id="@+id/ClassDetail_backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:background="@drawable/all_effect_ripple"
         android:contentDescription="@string/goBack"
-        android:onClick="user_detail_class_goback"
         android:scaleType="centerCrop"
         android:src="@drawable/all_ic_arrow_back1"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
@@ -34,7 +46,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/user_like_detail_class_btn"
+        android:id="@+id/ClassDetail_likeButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="20dp"
@@ -42,12 +54,12 @@
         android:contentDescription="@string/Class_loveImageDescription"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="@+id/ClassDetail_titleToolbar"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/user_like_ic_not_love" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/ClassDetail_titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -61,7 +73,7 @@
         app:layout_constraintVertical_bias="0.51" />
 
     <FrameLayout
-        android:id="@+id/DetailClassFrameLayout"
+        android:id="@+id/ClassDetail_detailFrame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -84,7 +96,7 @@
         app:layout_constraintGuide_percent="0.08" />
 
     <ImageView
-        android:id="@+id/user_detail_class_img"
+        android:id="@+id/ClassDetail_classImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -111,11 +123,11 @@
         app:layout_constraintGuide_percent="0.42" />
 
     <View
-        android:id="@+id/line"
+        android:id="@+id/ClassDetail_gapLine"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@android:color/black"
-        app:layout_constraintBottom_toTopOf="@+id/DetailClassTabLayout"
+        app:layout_constraintBottom_toTopOf="@+id/ClassDetail_chooseTab"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline25" />
@@ -128,22 +140,22 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/DetailClassTabLayout"
+        android:id="@+id/ClassDetail_chooseTab"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/DetailClassFrameLayout"
+        app:layout_constraintBottom_toTopOf="@+id/ClassDetail_detailFrame"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline25">
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/DetailClassTab"
+            android:id="@+id/ClassDetail_infoTab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Class_titleText" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/DetailClassTimeTab"
+            android:id="@+id/ClassDetail_timeTab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Class_timeTitleText" />

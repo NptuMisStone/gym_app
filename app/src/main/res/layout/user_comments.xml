@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.Comments.User_Comments">
+    tools:context=".User.Comments.UserComments">
     <ImageButton
         android:id="@+id/user_Comment_back"
         android:layout_width="35dp"
@@ -29,7 +29,7 @@
         app:layout_constraintGuide_percent="0.0875513" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/ClassDetail_titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"

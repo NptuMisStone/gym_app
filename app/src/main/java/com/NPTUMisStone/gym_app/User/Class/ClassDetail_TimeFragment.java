@@ -1,9 +1,7 @@
-package com.NPTUMisStone.gym_app.User.AllClass.DetailClass;
+package com.NPTUMisStone.gym_app.User.Class;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,32 +17,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.AllClass.User_Confirm_Appointment;
-import com.NPTUMisStone.gym_app.User.Comments.User_Comments;
-import com.NPTUMisStone.gym_app.User.Main.User;
-import com.NPTUMisStone.gym_app.User.Records.NowAppointment.NowAppointmentFragment;
-import com.NPTUMisStone.gym_app.User.Search.Calendar.CalendarFragment;
-import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.NPTUMisStone.gym_app.databinding.UserDetailClassTimeFragmentBinding;
 import com.hdev.calendar.bean.DateInfo;
 import com.hdev.calendar.view.SingleCalendarView;
-
-import net.sourceforge.jtds.jdbc.DateTime;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,17 +38,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
-public class User_Detail_Class_Time_Fragment extends Fragment {
+public class ClassDetail_TimeFragment extends Fragment {
 
     private UserDetailClassTimeFragmentBinding binding;
     Connection MyConnection;
     private int classID;
     private List<java.sql.Date> courseDates;
     SingleCalendarView singleCalendarView;
-    ArrayList<User_Detail_Class_Time_Fragment.User_Detail_Class_Time_Data> detailClassTimeData = new ArrayList<>();
+    ArrayList<ClassDetail_TimeFragment.User_Detail_Class_Time_Data> detailClassTimeData = new ArrayList<>();
 
-    public static User_Detail_Class_Time_Fragment newInstance() {
-        return new User_Detail_Class_Time_Fragment();
+    public static ClassDetail_TimeFragment newInstance() {
+        return new ClassDetail_TimeFragment();
     }
 
     @Override
@@ -117,7 +101,7 @@ public class User_Detail_Class_Time_Fragment extends Fragment {
                 preparedStatement.setString(2,date.getYear()+"-"+date.getMonth()+"-"+date.getDay());
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next())
-                    detailClassTimeData.add(new User_Detail_Class_Time_Fragment.User_Detail_Class_Time_Data(
+                    detailClassTimeData.add(new ClassDetail_TimeFragment.User_Detail_Class_Time_Data(
                             rs.getDate("日期"),
                             rs.getString("星期幾"),
                             rs.getString("開始時間"),
@@ -136,7 +120,7 @@ public class User_Detail_Class_Time_Fragment extends Fragment {
     }
     private void updateUI() {
         if (getActivity() != null && isAdded()) {
-            User_Detail_Class_Time_Fragment.DetailClassTimeAdapter detailClassTimeAdapter  = new User_Detail_Class_Time_Fragment.DetailClassTimeAdapter(getActivity(),detailClassTimeData,binding.getRoot());
+            ClassDetail_TimeFragment.DetailClassTimeAdapter detailClassTimeAdapter  = new ClassDetail_TimeFragment.DetailClassTimeAdapter(getActivity(),detailClassTimeData,binding.getRoot());
             RecyclerView detailclasstimeRecyclerView = binding.userDetailClassTimeRecyclerView;
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
             detailclasstimeRecyclerView.setLayoutManager(layoutManager);
@@ -195,13 +179,13 @@ public class User_Detail_Class_Time_Fragment extends Fragment {
         private int getScheduleID(){return scheduleID;}
 
     }
-    class DetailClassTimeAdapter extends RecyclerView.Adapter<User_Detail_Class_Time_Fragment.DetailClassTimeAdapter.ViewHolder>
+    class DetailClassTimeAdapter extends RecyclerView.Adapter<ClassDetail_TimeFragment.DetailClassTimeAdapter.ViewHolder>
     {
 
-        List<User_Detail_Class_Time_Fragment.User_Detail_Class_Time_Data> detailClassTimeDataList;
+        List<ClassDetail_TimeFragment.User_Detail_Class_Time_Data> detailClassTimeDataList;
         Context context;
         View view;
-        public DetailClassTimeAdapter(Context context, List<User_Detail_Class_Time_Fragment.User_Detail_Class_Time_Data> detailClassTimeDataList, View view) {
+        public DetailClassTimeAdapter(Context context, List<ClassDetail_TimeFragment.User_Detail_Class_Time_Data> detailClassTimeDataList, View view) {
             this.context = context;
             this.detailClassTimeDataList = detailClassTimeDataList;
             this.view=view;
@@ -221,14 +205,14 @@ public class User_Detail_Class_Time_Fragment extends Fragment {
 
         @NonNull
         @Override
-        public User_Detail_Class_Time_Fragment.DetailClassTimeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public ClassDetail_TimeFragment.DetailClassTimeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_detail_class_time_fragment_item, parent, false);
-            return new User_Detail_Class_Time_Fragment.DetailClassTimeAdapter.ViewHolder(view);
+            return new ClassDetail_TimeFragment.DetailClassTimeAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull User_Detail_Class_Time_Fragment.DetailClassTimeAdapter.ViewHolder holder, int position) {
-            User_Detail_Class_Time_Fragment.User_Detail_Class_Time_Data item = detailClassTimeDataList.get(position);
+        public void onBindViewHolder(@NonNull ClassDetail_TimeFragment.DetailClassTimeAdapter.ViewHolder holder, int position) {
+            ClassDetail_TimeFragment.User_Detail_Class_Time_Data item = detailClassTimeDataList.get(position);
 
             holder.detaildate.setText(item.getDate().toString());
             holder.detailweek.setText(item.getWeek());
@@ -267,7 +251,7 @@ public class User_Detail_Class_Time_Fragment extends Fragment {
                 e.printStackTrace();
             }
             holder.to_ap_btn.setOnClickListener(v -> {
-                Intent intent = new Intent(requireActivity(), User_Confirm_Appointment.class);
+                Intent intent = new Intent(requireActivity(), ConfirmAppointment.class);
                 intent.putExtra("預約課表ID", item.getScheduleID());
                 startActivity(intent);
             });

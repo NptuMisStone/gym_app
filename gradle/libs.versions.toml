@@ -17,6 +17,7 @@ material = "1.12.0"
 navigationFragment = "2.8.4"
 navigationUi = "2.8.4"
 okhttp = "4.12.0"
+places = "4.1.0"
 playServicesBase = "18.5.0"
 retrofit = "2.11.0"
 shimmer = "0.5.0"
@@ -45,6 +46,7 @@ hdev0225-calendarview = { module = "com.github.hdev0225:CalendarView", version.r
 car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
 hdodenhof-circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+android-places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
 androidx-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "extjunit" }

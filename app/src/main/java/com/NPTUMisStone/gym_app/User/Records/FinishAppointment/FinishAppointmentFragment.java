@@ -26,7 +26,7 @@ import android.widget.TextView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.Comments.User_Comments;
+import com.NPTUMisStone.gym_app.User.Comments.UserComments;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.NPTUMisStone.gym_app.databinding.UserFragmentFinishAppointmentBinding;
@@ -252,7 +252,7 @@ public class FinishAppointmentFragment extends Fragment {
                 e.printStackTrace();
             }
             holder.comment_btn.setOnClickListener(v -> {
-                Intent intent = new Intent(requireActivity(),User_Comments.class);
+                Intent intent = new Intent(requireActivity(), UserComments.class);
                 intent.putExtra("reservationID", item.getReservationID());
                 intent.putExtra("從哪裡來","完成預約頁");
                 startActivity(intent);

@@ -23,10 +23,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.AllClass.DetailClass.User_Class_Detail;
-import com.NPTUMisStone.gym_app.User.AllClass.User_All_Class;
-import com.NPTUMisStone.gym_app.User.AllCoach.User_All_Coach;
-import com.NPTUMisStone.gym_app.User.Like.User_Like;
+import com.NPTUMisStone.gym_app.User.Class.ClassDetail;
+import com.NPTUMisStone.gym_app.User.Class.AllClass;
+import com.NPTUMisStone.gym_app.User.AllCoach.AllCoach;
+import com.NPTUMisStone.gym_app.User.Like.UserLike;
 import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
 import com.NPTUMisStone.gym_app.User_And_Coach.AdHelper;
 import com.NPTUMisStone.gym_app.User_And_Coach.Contact;
@@ -102,9 +102,9 @@ public class UserHome extends AppCompatActivity {
         progressBarHandler.showProgressBar();
         int id = view.getId();
         try {
-            if (id == R.id.UserHome_classButton) startActivity(new Intent(this, User_All_Class.class));
-            else if (id == R.id.UserHome_coachButton) startActivity(new Intent(this, User_All_Coach.class));
-            else if (id == R.id.UserHome_loveButton) startActivity(new Intent(this, User_Like.class));
+            if (id == R.id.UserHome_classButton) startActivity(new Intent(this, AllClass.class));
+            else if (id == R.id.UserHome_coachButton) startActivity(new Intent(this, AllCoach.class));
+            else if (id == R.id.UserHome_loveButton) startActivity(new Intent(this, UserLike.class));
             else if (id == R.id.UserHome_historyButton) startActivity(new Intent(this, AppointmentAll.class));
             else if (id == R.id.UserHome_gymButton) startNavigationActivity();
             else if (id == R.id.UserHome_contactButton) startActivity(new Intent(this, Contact.class));
@@ -131,7 +131,7 @@ public class UserHome extends AppCompatActivity {
             Intent data = result.getData();
             if (data != null) {
                 int resultString = data.getIntExtra("看更多課程ID", -1);
-                startActivity(new Intent(this, User_Class_Detail.class).putExtra("看更多課程ID", resultString));
+                startActivity(new Intent(this, ClassDetail.class).putExtra("看更多課程ID", resultString));
             }
         }
         else Toast.makeText(this, "未選擇任何課程", Toast.LENGTH_SHORT).show();

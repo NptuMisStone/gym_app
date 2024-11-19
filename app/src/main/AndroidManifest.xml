@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- Connect to the database -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- grab user's general location -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -32,25 +32,25 @@
             android:name=".User_And_Coach.Contact"
             android:exported="false" />
         <activity
-            android:name=".User.AllCoach.DetailCoach.User_Coach_Detail"
+            android:name=".User.AllCoach.CoachDetail"
             android:exported="false" />
         <activity
-            android:name=".User.AllCoach.User_All_Coach"
+            android:name=".User.AllCoach.AllCoach"
             android:exported="false" />
         <activity
-            android:name=".User.AllClass.User_Confirm_Appointment"
+            android:name=".User.Class.ConfirmAppointment"
             android:exported="false" />
         <activity
-            android:name=".User.AllClass.DetailClass.User_Class_Detail"
+            android:name=".User.Class.ClassDetail"
             android:exported="true" />
         <activity
-            android:name=".User.AllClass.User_All_Class"
+            android:name=".User.Class.AllClass"
             android:exported="false" />
         <activity
-            android:name=".User.Like.User_Like"
+            android:name=".User.Like.UserLike"
             android:exported="false" />
         <activity
-            android:name=".User.Comments.User_Comments"
+            android:name=".User.Comments.UserComments"
             android:exported="false" />
         <activity
             android:name=".User.Search.Coach.CoachDetail"

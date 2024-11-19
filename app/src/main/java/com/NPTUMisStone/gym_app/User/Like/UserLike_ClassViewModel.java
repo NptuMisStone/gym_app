@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class UserLikeClassViewModel extends ViewModel {
+public class UserLike_ClassViewModel extends ViewModel {
     private final MutableLiveData<String> mText;
-    public UserLikeClassViewModel() {
+    public UserLike_ClassViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is LikeClass fragment");
     }

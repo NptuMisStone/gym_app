@@ -62,6 +62,7 @@ dependencies {
     // Google Play Services
     implementation(libs.android.play.services.base)
     implementation(libs.android.play.services.maps)             // 地圖顯示與地圖導航
+    implementation (libs.android.places)
 
     // Mapbox-Maps：https://docs.mapbox.com/android/maps/guides/install/
     //implementation(libs.mapbox.navigation.ui)                     // 地圖顯示與地圖

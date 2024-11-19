@@ -40,22 +40,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
-public class User_LikeCoachFragment extends Fragment {
+public class UserLike_CoachFragment extends Fragment {
 
     private UserLikeCoachFragmentBinding binding;
     private Connection MyConnection;
-    ArrayList<User_LikeCoachFragment.User_Like_Coach_Data> like_coach_data =new ArrayList<>();
+    ArrayList<UserLike_CoachFragment.User_Like_Coach_Data> like_coach_data =new ArrayList<>();
     private ProgressBar progressBar;
     TextView nodata;
 
-    public static User_LikeCoachFragment newInstance() {
-        return new User_LikeCoachFragment();
+    public static UserLike_CoachFragment newInstance() {
+        return new UserLike_CoachFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        UserLikeCoachViewModel userLikeCoachViewModel =new ViewModelProvider(this).get(UserLikeCoachViewModel.class);
+        UserLike_CoachViewModel userLikeCoachViewModel =new ViewModelProvider(this).get(UserLike_CoachViewModel.class);
         binding=UserLikeCoachFragmentBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
 
@@ -83,7 +83,7 @@ public class User_LikeCoachFragment extends Fragment {
                 ResultSet rs = searchStatement.executeQuery();
                 while (rs.next())
 
-                    like_coach_data.add(new User_LikeCoachFragment.User_Like_Coach_Data(
+                    like_coach_data.add(new UserLike_CoachFragment.User_Like_Coach_Data(
                             rs.getInt("健身教練編號"),
                             rs.getBytes("健身教練圖片"),
                             rs.getString("健身教練姓名"),
@@ -101,7 +101,7 @@ public class User_LikeCoachFragment extends Fragment {
 
     private void updateUI() {
         if (getActivity() != null && isAdded()) {
-            User_LikeCoachFragment.LikeCoachAdapter likeCoachAdapter = new User_LikeCoachFragment.LikeCoachAdapter(getActivity(),like_coach_data,binding.getRoot());
+            UserLike_CoachFragment.LikeCoachAdapter likeCoachAdapter = new UserLike_CoachFragment.LikeCoachAdapter(getActivity(),like_coach_data,binding.getRoot());
             RecyclerView likecoachRecyclerView = binding.userLikeCoachRecycleview;
             likecoachRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             likecoachRecyclerView.setAdapter(likeCoachAdapter);
@@ -150,13 +150,13 @@ public class User_LikeCoachFragment extends Fragment {
         public String getCoachType(){return coachType;}
 
     }
-    class LikeCoachAdapter extends RecyclerView.Adapter<User_LikeCoachFragment.LikeCoachAdapter.ViewHolder>
+    class LikeCoachAdapter extends RecyclerView.Adapter<UserLike_CoachFragment.LikeCoachAdapter.ViewHolder>
     {
 
-        List<User_LikeCoachFragment.User_Like_Coach_Data> like_coach_dataList;
+        List<UserLike_CoachFragment.User_Like_Coach_Data> like_coach_dataList;
         Context context;
         View view;
-        public LikeCoachAdapter(Context context, List<User_LikeCoachFragment.User_Like_Coach_Data> like_coach_dataList , View view) {
+        public LikeCoachAdapter(Context context, List<UserLike_CoachFragment.User_Like_Coach_Data> like_coach_dataList , View view) {
             this.context = context;
             this.like_coach_dataList = like_coach_dataList;
             this.view=view;
@@ -176,14 +176,14 @@ public class User_LikeCoachFragment extends Fragment {
 
         @NonNull
         @Override
-        public User_LikeCoachFragment.LikeCoachAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public UserLike_CoachFragment.LikeCoachAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_like_coach_item, parent, false);
-            return new User_LikeCoachFragment.LikeCoachAdapter.ViewHolder(view);
+            return new UserLike_CoachFragment.LikeCoachAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull User_LikeCoachFragment.LikeCoachAdapter.ViewHolder holder, int position) {
-            User_LikeCoachFragment.User_Like_Coach_Data item = like_coach_dataList.get(position);
+        public void onBindViewHolder(@NonNull UserLike_CoachFragment.LikeCoachAdapter.ViewHolder holder, int position) {
+            UserLike_CoachFragment.User_Like_Coach_Data item = like_coach_dataList.get(position);
 
             if (item.getCoachimage() != null) {
                 Bitmap bitmap = ImageHandle.getBitmap(item.getCoachimage());

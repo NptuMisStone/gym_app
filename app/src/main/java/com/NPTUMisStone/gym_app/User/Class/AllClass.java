@@ -1,4 +1,4 @@
-package com.NPTUMisStone.gym_app.User.AllClass;
+package com.NPTUMisStone.gym_app.User.Class;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -37,7 +37,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.AllClass.DetailClass.User_Class_Detail;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -53,11 +52,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
-public class User_All_Class extends AppCompatActivity {
+public class AllClass extends AppCompatActivity {
     private CityExpandableListAdapter cityadapter;
     private BottomSheetDialog filterDialog;
     Connection MyConnection;
-    ArrayList<User_All_Class.User_All_Class_Data> class_data = new ArrayList<>();
+    ArrayList<AllClass.User_All_Class_Data> class_data = new ArrayList<>();
     private ProgressBar progressBar;
     ImageView filterbtn, searchbtn;
     TextView searchtext;
@@ -117,7 +116,7 @@ public class User_All_Class extends AppCompatActivity {
                 ResultSet rs = searchStatement.executeQuery();
                 while (rs.next())
 
-                    class_data.add(new User_All_Class.User_All_Class_Data(
+                    class_data.add(new AllClass.User_All_Class_Data(
                             rs.getInt("課程編號"),
                             rs.getBytes("課程圖片"),
                             rs.getString("課程名稱"),
@@ -138,7 +137,7 @@ public class User_All_Class extends AppCompatActivity {
 
     private void updateUI() {
 
-        User_All_Class.All_ClassAdapter ClassAdapter = new User_All_Class.All_ClassAdapter(this, class_data, findViewById(R.id.main));
+        AllClass.All_ClassAdapter ClassAdapter = new AllClass.All_ClassAdapter(this, class_data, findViewById(R.id.main));
         RecyclerView classRecyclerView = findViewById(R.id.userClassRecycleview);
         classRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         classRecyclerView.setAdapter(ClassAdapter);
@@ -151,7 +150,7 @@ public class User_All_Class extends AppCompatActivity {
         byte[] classimage;
         String className, classPrice, coachName, classIntro, classPeople;
 
-        static ArrayList<User_All_Class.User_All_Class_Data> classData = new ArrayList<>();
+        static ArrayList<AllClass.User_All_Class_Data> classData = new ArrayList<>();
 
         public User_All_Class_Data(int classID, byte[] classimage, String className, String classPrice, String coachName, String classIntro, String classPeople) {
             this.classID = classID;
@@ -163,19 +162,18 @@ public class User_All_Class extends AppCompatActivity {
             this.classPeople = classPeople;
         }
 
-        public static ArrayList<User_All_Class.User_All_Class_Data> getClassData() {
+        public static ArrayList<AllClass.User_All_Class_Data> getClassData() {
             if (classData == null) {
                 return null;
             }
             return classData;
         }
 
-
         private int getClassID() {
             return classID;
         }
 
-        private byte[] getClassimage() {
+        private byte[] getClassImage() {
             return classimage;
         }
 
@@ -200,13 +198,13 @@ public class User_All_Class extends AppCompatActivity {
         }
     }
 
-    class All_ClassAdapter extends RecyclerView.Adapter<User_All_Class.All_ClassAdapter.ViewHolder> {
+    class All_ClassAdapter extends RecyclerView.Adapter<AllClass.All_ClassAdapter.ViewHolder> {
 
-        List<User_All_Class.User_All_Class_Data> class_dataList;
+        List<AllClass.User_All_Class_Data> class_dataList;
         Context context;
         View view;
 
-        public All_ClassAdapter(Context context, List<User_All_Class.User_All_Class_Data> class_dataList, View view) {
+        public All_ClassAdapter(Context context, List<AllClass.User_All_Class_Data> class_dataList, View view) {
             this.context = context;
             this.class_dataList = class_dataList;
             this.view = view;
@@ -234,18 +232,18 @@ public class User_All_Class extends AppCompatActivity {
 
         @NonNull
         @Override
-        public User_All_Class.All_ClassAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public AllClass.All_ClassAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_all_class_item, parent, false);
-            return new User_All_Class.All_ClassAdapter.ViewHolder(view);
+            return new AllClass.All_ClassAdapter.ViewHolder(view);
         }
 
         @SuppressLint("StringFormatMatches")
         @Override
-        public void onBindViewHolder(@NonNull User_All_Class.All_ClassAdapter.ViewHolder holder, int position) {
-            User_All_Class.User_All_Class_Data item = class_dataList.get(position);
+        public void onBindViewHolder(@NonNull AllClass.All_ClassAdapter.ViewHolder holder, int position) {
+            AllClass.User_All_Class_Data item = class_dataList.get(position);
 
-            if (item.getClassimage() != null) {
-                Bitmap bitmap = ImageHandle.getBitmap(item.getClassimage());
+            if (item.getClassImage() != null) {
+                Bitmap bitmap = ImageHandle.getBitmap(item.getClassImage());
                 holder.class_image.setImageBitmap(ImageHandle.resizeBitmap(bitmap));
             }
             holder.class_name.setText(item.getClassName());
@@ -254,7 +252,7 @@ public class User_All_Class extends AppCompatActivity {
             holder.class_intro.setText(item.getClassIntro());
             holder.class_people.setText("人數：" + item.getClassPeople() + "人");
             holder.moreindo_btn.setOnClickListener(v -> {
-                Intent intent = new Intent(context, User_Class_Detail.class);
+                Intent intent = new Intent(context, ClassDetail.class);
                 intent.putExtra("看更多課程ID", item.getClassID());
                 startActivity(intent);
             });
@@ -680,7 +678,7 @@ public class User_All_Class extends AppCompatActivity {
                 ResultSet rs = statement.executeQuery();
                 class_data.clear();
                 while (rs.next()) {
-                    class_data.add(new User_All_Class.User_All_Class_Data(
+                    class_data.add(new AllClass.User_All_Class_Data(
                             rs.getInt("課程編號"),
                             rs.getBytes("課程圖片"),
                             rs.getString("課程名稱"),

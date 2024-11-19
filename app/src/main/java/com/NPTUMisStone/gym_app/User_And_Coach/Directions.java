@@ -45,7 +45,7 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
  * Use Mapbox Java Services to request directions from the Mapbox Directions API and show the
  * route with a LineLayer.
  */
-public class DirectionsActivity extends AppCompatActivity {
+public class Directions extends AppCompatActivity {
 /*
     private static final String ROUTE_LAYER_ID = "route-layer-id";
     private static final String ROUTE_SOURCE_ID = "route-source-id";

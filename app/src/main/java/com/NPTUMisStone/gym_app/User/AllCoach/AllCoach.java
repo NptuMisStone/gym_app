@@ -28,7 +28,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.AllCoach.DetailCoach.User_Coach_Detail;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 
@@ -41,11 +40,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
-public class User_All_Coach extends AppCompatActivity {
+public class AllCoach extends AppCompatActivity {
 
     Connection MyConnection;
     private ProgressBar progressBar;
-    ArrayList<User_All_Coach.User_All_Coach_Data> coach_data = new ArrayList<>();
+    ArrayList<AllCoach.User_All_Coach_Data> coach_data = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +70,7 @@ public class User_All_Coach extends AppCompatActivity {
                 ResultSet rs = searchStatement.executeQuery();
                 while (rs.next())
 
-                    coach_data.add(new User_All_Coach.User_All_Coach_Data(
+                    coach_data.add(new AllCoach.User_All_Coach_Data(
                             rs.getInt("健身教練編號"),
                             rs.getBytes("健身教練圖片"),
                             rs.getString("健身教練姓名"),
@@ -88,7 +87,7 @@ public class User_All_Coach extends AppCompatActivity {
     }
     private void updateUI() {
 
-        User_All_Coach.AllCoachAdapter coachAdapter = new User_All_Coach.AllCoachAdapter(this,coach_data,findViewById(R.id.main));
+        AllCoach.AllCoachAdapter coachAdapter = new AllCoach.AllCoachAdapter(this,coach_data,findViewById(R.id.main));
         RecyclerView coachRecyclerView = findViewById(R.id.userCoachRecycleview);
         coachRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         coachRecyclerView.setAdapter(coachAdapter);
@@ -98,7 +97,7 @@ public class User_All_Coach extends AppCompatActivity {
         int all_coachID;
         byte[] coachimage;
         String coachName,coachType;
-        static ArrayList<User_All_Coach.User_All_Coach_Data> allCoachData = new ArrayList<>();
+        static ArrayList<AllCoach.User_All_Coach_Data> allCoachData = new ArrayList<>();
 
         public User_All_Coach_Data(int all_coachID,  byte[] coachimage, String coachName, String coachType) {
             this.all_coachID=all_coachID;
@@ -107,7 +106,7 @@ public class User_All_Coach extends AppCompatActivity {
             this.coachType=coachType;
 
         }
-        public static ArrayList<User_All_Coach.User_All_Coach_Data> getAllCoachData() {
+        public static ArrayList<AllCoach.User_All_Coach_Data> getAllCoachData() {
             if (allCoachData == null) {
                 return null;
             }
@@ -124,13 +123,13 @@ public class User_All_Coach extends AppCompatActivity {
         private String getCoachType(){return coachType;}
 
     }
-    class AllCoachAdapter extends RecyclerView.Adapter<User_All_Coach.AllCoachAdapter.ViewHolder>
+    class AllCoachAdapter extends RecyclerView.Adapter<AllCoach.AllCoachAdapter.ViewHolder>
     {
 
-        List<User_All_Coach.User_All_Coach_Data> all_coach_dataList;
+        List<AllCoach.User_All_Coach_Data> all_coach_dataList;
         Context context;
         View view;
-        public AllCoachAdapter(Context context, List<User_All_Coach.User_All_Coach_Data> all_coach_dataList , View view) {
+        public AllCoachAdapter(Context context, List<AllCoach.User_All_Coach_Data> all_coach_dataList , View view) {
             this.context = context;
             this.all_coach_dataList = all_coach_dataList;
             this.view=view;
@@ -152,14 +151,14 @@ public class User_All_Coach extends AppCompatActivity {
 
         @NonNull
         @Override
-        public User_All_Coach.AllCoachAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public AllCoach.AllCoachAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_all_coach_item, parent, false);
-            return new User_All_Coach.AllCoachAdapter.ViewHolder(view);
+            return new AllCoach.AllCoachAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull User_All_Coach.AllCoachAdapter.ViewHolder holder, int position) {
-            User_All_Coach.User_All_Coach_Data item = all_coach_dataList.get(position);
+        public void onBindViewHolder(@NonNull AllCoach.AllCoachAdapter.ViewHolder holder, int position) {
+            AllCoach.User_All_Coach_Data item = all_coach_dataList.get(position);
 
             if (item.getCoachimage() != null) {
                 Bitmap bitmap = ImageHandle.getBitmap(item.getCoachimage());
@@ -168,7 +167,7 @@ public class User_All_Coach extends AppCompatActivity {
             holder.coach_name.setText(item.getCoachName());
             holder.coach_type.setText(item.getCoachType());
             holder.moreinfo_btn.setOnClickListener(v -> {
-                Intent intent = new Intent(context, User_Coach_Detail.class);
+                Intent intent = new Intent(context, CoachDetail.class);
                 intent.putExtra("看更多教練ID", item.getAll_coachID());
                 startActivity(intent);
                 finish();

@@ -1,11 +1,8 @@
-package com.NPTUMisStone.gym_app.User.AllCoach.DetailCoach;
+package com.NPTUMisStone.gym_app.User.AllCoach;
 
-import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -40,17 +37,9 @@ import android.widget.Toast;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.AllClass.DetailClass.User_Class_Detail;
-import com.NPTUMisStone.gym_app.User.AllClass.User_All_Class;
-import com.NPTUMisStone.gym_app.User.AllCoach.User_All_Coach;
-import com.NPTUMisStone.gym_app.User.Comments.User_Comments;
-import com.NPTUMisStone.gym_app.User.Like.User_Like;
+import com.NPTUMisStone.gym_app.User.Comments.UserComments;
 import com.NPTUMisStone.gym_app.User.Main.User;
-import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
-import com.NPTUMisStone.gym_app.User.Search.GymList;
-import com.NPTUMisStone.gym_app.User_And_Coach.AIInteractive;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.databinding.UserCoachDetailClassFragmentBinding;
 import com.NPTUMisStone.gym_app.databinding.UserCoachDetailCommentFragmentBinding;
 
 import java.sql.Connection;
@@ -63,7 +52,7 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 import android.app.Activity;
 
-public class User_Coach_Detail_Comment_Fragment extends Fragment {
+public class CoachDetail_CommentFragment extends Fragment {
     private UserCoachDetailCommentFragmentBinding binding;
     private Connection MyConnection;
     int coachID;
@@ -72,10 +61,10 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
     ProgressBar star5,star4,star3,star2,star1;
     public int User_Coach_Detail_commentID;
     boolean exists = false;
-    ArrayList<User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data> commentData = new ArrayList<>();
+    ArrayList<CoachDetail_CommentFragment.User_Coach_Detail_Comment_Data> commentData = new ArrayList<>();
     private ActivityResultLauncher<Intent> commentLauncher;
-    public static User_Coach_Detail_Comment_Fragment newInstance() {
-        return new User_Coach_Detail_Comment_Fragment();
+    public static CoachDetail_CommentFragment newInstance() {
+        return new CoachDetail_CommentFragment();
     }
 
     @Override
@@ -212,7 +201,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
                 ResultSet rs = searchStatement.executeQuery();
                 while (rs.next())
 
-                    commentData.add(new User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data(
+                    commentData.add(new CoachDetail_CommentFragment.User_Coach_Detail_Comment_Data(
                             rs.getInt("使用者編號"),
                             rs.getInt("預約編號"),
                             rs.getInt("評論編號"),
@@ -243,7 +232,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
                 ResultSet rs = searchStatement.executeQuery();
                 while (rs.next())
 
-                    commentData.add(new User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data(
+                    commentData.add(new CoachDetail_CommentFragment.User_Coach_Detail_Comment_Data(
                             rs.getInt("使用者編號"),
                             rs.getInt("預約編號"),
                             rs.getInt("評論編號"),
@@ -274,7 +263,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
                 ResultSet rs = searchStatement.executeQuery();
                 while (rs.next())
 
-                    commentData.add(new User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data(
+                    commentData.add(new CoachDetail_CommentFragment.User_Coach_Detail_Comment_Data(
                             rs.getInt("使用者編號"),
                             rs.getInt("預約編號"),
                             rs.getInt("評論編號"),
@@ -306,7 +295,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
                 ResultSet rs = searchStatement.executeQuery();
                 while (rs.next())
 
-                    commentData.add(new User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data(
+                    commentData.add(new CoachDetail_CommentFragment.User_Coach_Detail_Comment_Data(
                             rs.getInt("使用者編號"),
                             rs.getInt("預約編號"),
                             rs.getInt("評論編號"),
@@ -328,7 +317,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
     }
     private void updateUI() {
         if (getActivity() != null && isAdded()) {
-            User_Coach_Detail_Comment_Fragment.Detail_Coach_CommentAdapter detailCoachCommentAdapter = new User_Coach_Detail_Comment_Fragment.Detail_Coach_CommentAdapter(getActivity(),commentData,binding.getRoot());
+            CoachDetail_CommentFragment.Detail_Coach_CommentAdapter detailCoachCommentAdapter = new CoachDetail_CommentFragment.Detail_Coach_CommentAdapter(getActivity(),commentData,binding.getRoot());
             RecyclerView coachDetailCommentRecyclerView= binding.userCoachDetailCommentRecyclerview;
             coachDetailCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             coachDetailCommentRecyclerView.setAdapter(detailCoachCommentAdapter);
@@ -355,7 +344,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
         String userName,commentdate,comment,className,coach_response;
 
 
-        static ArrayList<User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data> commentData = new ArrayList<>();
+        static ArrayList<CoachDetail_CommentFragment.User_Coach_Detail_Comment_Data> commentData = new ArrayList<>();
 
         public User_Coach_Detail_Comment_Data(int userId,int reservationID,int commentID,int rating,byte[] userimage,String userName,String commentdate,String comment,String className,String coach_response) {
             this.userId=userId;
@@ -370,7 +359,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
             this.coach_response=coach_response;
 
         }
-        public static ArrayList<User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data> getCommentData() {
+        public static ArrayList<CoachDetail_CommentFragment.User_Coach_Detail_Comment_Data> getCommentData() {
             if (commentData == null) {
                 return null;
             }
@@ -390,12 +379,12 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
 
     }
 
-    class Detail_Coach_CommentAdapter extends RecyclerView.Adapter<User_Coach_Detail_Comment_Fragment.Detail_Coach_CommentAdapter.ViewHolder>
+    class Detail_Coach_CommentAdapter extends RecyclerView.Adapter<CoachDetail_CommentFragment.Detail_Coach_CommentAdapter.ViewHolder>
     {
-        List<User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data> comment_dataList;
+        List<CoachDetail_CommentFragment.User_Coach_Detail_Comment_Data> comment_dataList;
         Context context;
         View view;
-        public Detail_Coach_CommentAdapter(Context context, List<User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data> comment_dataList , View view) {
+        public Detail_Coach_CommentAdapter(Context context, List<CoachDetail_CommentFragment.User_Coach_Detail_Comment_Data> comment_dataList , View view) {
             this.context = context;
             this.comment_dataList = comment_dataList;
             this.view=view;
@@ -422,14 +411,14 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
         }
         @NonNull
         @Override
-        public User_Coach_Detail_Comment_Fragment.Detail_Coach_CommentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public CoachDetail_CommentFragment.Detail_Coach_CommentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_coach_detail_comment_fragment_item, parent, false);
-            return new User_Coach_Detail_Comment_Fragment.Detail_Coach_CommentAdapter.ViewHolder(view);
+            return new CoachDetail_CommentFragment.Detail_Coach_CommentAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull User_Coach_Detail_Comment_Fragment.Detail_Coach_CommentAdapter.ViewHolder holder, int position) {
-            User_Coach_Detail_Comment_Fragment.User_Coach_Detail_Comment_Data item = comment_dataList.get(position);
+        public void onBindViewHolder(@NonNull CoachDetail_CommentFragment.Detail_Coach_CommentAdapter.ViewHolder holder, int position) {
+            CoachDetail_CommentFragment.User_Coach_Detail_Comment_Data item = comment_dataList.get(position);
 
             if (item.getUserimage() != null) {
                 Bitmap bitmap = ImageHandle.getBitmap(item.getUserimage());
@@ -501,7 +490,7 @@ public class User_Coach_Detail_Comment_Fragment extends Fragment {
                 public boolean onMenuItemClick(MenuItem item) {
                     int itemId = item.getItemId();
                     if (itemId == R.id.edit_comment) {
-                        Intent intent = new Intent(view.getContext(), User_Comments.class);
+                        Intent intent = new Intent(view.getContext(), UserComments.class);
                         intent.putExtra("reservationID", reservationID);
                         intent.putExtra("從哪裡來","教練詳細頁");
                         commentLauncher.launch(intent);

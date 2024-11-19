@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.Like.User_LikeClassFragment">
+    tools:context=".User.Like.UserLike_ClassFragment">
 
     <ProgressBar
         android:id="@+id/progressBar"

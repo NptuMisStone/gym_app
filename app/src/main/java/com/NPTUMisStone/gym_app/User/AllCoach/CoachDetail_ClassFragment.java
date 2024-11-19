@@ -1,13 +1,10 @@
-package com.NPTUMisStone.gym_app.User.AllCoach.DetailCoach;
+package com.NPTUMisStone.gym_app.User.AllCoach;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,21 +19,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.AllClass.DetailClass.User_Class_Detail;
-import com.NPTUMisStone.gym_app.User.AllClass.User_All_Class;
-import com.NPTUMisStone.gym_app.User.Comments.User_Comments;
-import com.NPTUMisStone.gym_app.User.Main.User;
-import com.NPTUMisStone.gym_app.User.Records.NowAppointment.NowAppointmentFragment;
+import com.NPTUMisStone.gym_app.User.Class.ClassDetail;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.NPTUMisStone.gym_app.databinding.UserCoachDetailClassFragmentBinding;
-import com.NPTUMisStone.gym_app.databinding.UserDetailClassFragmentBinding;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,17 +38,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
-public class User_Coach_Detail_Class_Fragment extends Fragment {
+public class CoachDetail_ClassFragment extends Fragment {
 
     private UserCoachDetailClassFragmentBinding binding;
     Connection MyConnection;
     int coachID;
-    ArrayList<User_Coach_Detail_Class_Fragment.User_Coach_Detail_Class_Data> classData = new ArrayList<>();
+    ArrayList<CoachDetail_ClassFragment.User_Coach_Detail_Class_Data> classData = new ArrayList<>();
     private ProgressBar progressBar;
     TextView nodata;
 
-    public static User_Coach_Detail_Class_Fragment newInstance() {
-        return new User_Coach_Detail_Class_Fragment();
+    public static CoachDetail_ClassFragment newInstance() {
+        return new CoachDetail_ClassFragment();
     }
 
     @Override
@@ -86,7 +77,7 @@ public class User_Coach_Detail_Class_Fragment extends Fragment {
                 ResultSet rs = searchStatement.executeQuery();
                 while (rs.next())
 
-                    classData.add(new User_Coach_Detail_Class_Fragment.User_Coach_Detail_Class_Data(
+                    classData.add(new CoachDetail_ClassFragment.User_Coach_Detail_Class_Data(
                             rs.getInt("課程編號"),
                             rs.getBytes("課程圖片"),
                             rs.getString("課程名稱"),
@@ -107,7 +98,7 @@ public class User_Coach_Detail_Class_Fragment extends Fragment {
     }
     private void updateUI() {
         if (getActivity() != null && isAdded()) {
-            User_Coach_Detail_Class_Fragment.Detail_Coach_ClassAdapter detailCoachClassAdapter = new User_Coach_Detail_Class_Fragment.Detail_Coach_ClassAdapter(getActivity(),classData,binding.getRoot());
+            CoachDetail_ClassFragment.Detail_Coach_ClassAdapter detailCoachClassAdapter = new CoachDetail_ClassFragment.Detail_Coach_ClassAdapter(getActivity(),classData,binding.getRoot());
             RecyclerView coachDetailClassRecyclerView= binding.userCoachDetailClassRecyclerview;
             coachDetailClassRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             coachDetailClassRecyclerView.setAdapter(detailCoachClassAdapter);
@@ -125,7 +116,7 @@ public class User_Coach_Detail_Class_Fragment extends Fragment {
         byte[] classimage;
         String className,classPrice,classIntro,classPeople,classTimelong,classPlace,classItem;
 
-        static ArrayList<User_Coach_Detail_Class_Fragment.User_Coach_Detail_Class_Data> classData = new ArrayList<>();
+        static ArrayList<CoachDetail_ClassFragment.User_Coach_Detail_Class_Data> classData = new ArrayList<>();
 
         public User_Coach_Detail_Class_Data(int classID,byte[] classimage,String className,String classPrice,String classIntro,String classPeople,String classTimelong,String classPlace,String classItem) {
             this.classID=classID;
@@ -138,7 +129,7 @@ public class User_Coach_Detail_Class_Fragment extends Fragment {
             this.classPlace=classPlace;
             this.classItem=classItem;
         }
-        public static ArrayList<User_Coach_Detail_Class_Fragment.User_Coach_Detail_Class_Data> getClassData() {
+        public static ArrayList<CoachDetail_ClassFragment.User_Coach_Detail_Class_Data> getClassData() {
             if (classData == null) {
                 return null;
             }
@@ -167,13 +158,13 @@ public class User_Coach_Detail_Class_Fragment extends Fragment {
         private String getClassPlace(){return classPlace;}
         private String getClassItem(){return classItem;}
     }
-    class Detail_Coach_ClassAdapter extends RecyclerView.Adapter<User_Coach_Detail_Class_Fragment.Detail_Coach_ClassAdapter.ViewHolder>
+    class Detail_Coach_ClassAdapter extends RecyclerView.Adapter<CoachDetail_ClassFragment.Detail_Coach_ClassAdapter.ViewHolder>
     {
 
-        List<User_Coach_Detail_Class_Fragment.User_Coach_Detail_Class_Data> class_dataList;
+        List<CoachDetail_ClassFragment.User_Coach_Detail_Class_Data> class_dataList;
         Context context;
         View view;
-        public Detail_Coach_ClassAdapter(Context context, List<User_Coach_Detail_Class_Fragment.User_Coach_Detail_Class_Data> class_dataList , View view) {
+        public Detail_Coach_ClassAdapter(Context context, List<CoachDetail_ClassFragment.User_Coach_Detail_Class_Data> class_dataList , View view) {
             this.context = context;
             this.class_dataList = class_dataList;
             this.view=view;
@@ -199,14 +190,14 @@ public class User_Coach_Detail_Class_Fragment extends Fragment {
         }
         @NonNull
         @Override
-        public User_Coach_Detail_Class_Fragment.Detail_Coach_ClassAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public CoachDetail_ClassFragment.Detail_Coach_ClassAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_coach_detail_class_fragment_item, parent, false);
-            return new User_Coach_Detail_Class_Fragment.Detail_Coach_ClassAdapter.ViewHolder(view);
+            return new CoachDetail_ClassFragment.Detail_Coach_ClassAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull User_Coach_Detail_Class_Fragment.Detail_Coach_ClassAdapter.ViewHolder holder, int position) {
-            User_Coach_Detail_Class_Fragment.User_Coach_Detail_Class_Data item = class_dataList.get(position);
+        public void onBindViewHolder(@NonNull CoachDetail_ClassFragment.Detail_Coach_ClassAdapter.ViewHolder holder, int position) {
+            CoachDetail_ClassFragment.User_Coach_Detail_Class_Data item = class_dataList.get(position);
 
             if (item.getClassimage() != null) {
                 Bitmap bitmap = ImageHandle.getBitmap(item.getClassimage());
@@ -220,7 +211,7 @@ public class User_Coach_Detail_Class_Fragment extends Fragment {
             holder.class_place.setText("地點"+item.getClassPlace());
             holder.class_item.setText("所需設備："+item.getClassItem());
             holder.seeclassdetail.setOnClickListener(v -> {
-                Intent intent = new Intent(requireActivity(), User_Class_Detail.class);
+                Intent intent = new Intent(requireActivity(), ClassDetail.class);
                 intent.putExtra("看更多課程ID", item.getClassID());
                 startActivity(intent);
             });

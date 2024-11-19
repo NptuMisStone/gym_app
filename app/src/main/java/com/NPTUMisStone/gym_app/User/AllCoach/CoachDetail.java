@@ -1,11 +1,13 @@
-package com.NPTUMisStone.gym_app.User.AllClass.DetailClass;
+package com.NPTUMisStone.gym_app.User.AllCoach;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -28,131 +30,158 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 
-public class User_Class_Detail extends AppCompatActivity {
+public class CoachDetail extends AppCompatActivity {
+
+    FrameLayout frameLayout;
+    TabLayout tabLayout;
     Connection MyConnection;
-    ImageButton likeButton;
-    int classID;
+    ImageButton likebtn;
+    ImageView coachimg;
+    Intent intent;
+    int coachID;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.user_class_detail);
+        setContentView(R.layout.user_coach_detail);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        classID = getIntent().getIntExtra("看更多課程ID", 0);
-        // 將 classID 傳遞給 Fragment
+        intent = getIntent();
+        coachID = intent.getIntExtra("看更多教練ID", 0);
+
+        frameLayout=(FrameLayout)findViewById(R.id.DetailCoachFrameLayout);
+        tabLayout=(TabLayout)findViewById(R.id.DetailCoachTabLayout);
+
+        // 將 coachID 傳遞給 Fragment
         // 先設置 Fragment
-        User_Detail_Class_Fragment detailFragment = new User_Detail_Class_Fragment();
+        tabLayout.selectTab(tabLayout.getTabAt(1));
+        CoachDetail_InfoFragment infoFragment = new CoachDetail_InfoFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("classID", classID);
-        detailFragment.setArguments(bundle);
+        bundle.putInt("coachID", coachID);
+        infoFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.DetailClassFrameLayout, detailFragment)
+                .replace(R.id.DetailCoachFrameLayout, infoFragment)
                 .addToBackStack(null)
                 .commit();
-        ((TabLayout)findViewById(R.id.DetailClassTabLayout)).addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Fragment fragment = switch (tab.getPosition()) {
-                    case 0 -> detailFragment;
-                    case 1 -> new User_Detail_Class_Time_Fragment();
-                    default -> null;
-                };
+                Fragment fragment = null;
+                switch (tab.getPosition()) {
+                    case 0:
+                        fragment = new CoachDetail_ClassFragment();
+                        break;
+                    case 1:
+                        fragment = infoFragment;
+                        break;
+                    case 2:
+                        fragment = new CoachDetail_CommentFragment();
+                        break;
+                }
                 if (fragment != null) {
                     // 傳遞 classID 给新的 Fragment
                     Bundle bundle = new Bundle();
-                    bundle.putInt("classID", classID);
+                    bundle.putInt("coachID", coachID);
                     fragment.setArguments(bundle);
+
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.DetailClassFrameLayout, fragment)
+                            .replace(R.id.DetailCoachFrameLayout, fragment)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .commit();
                 } else {
-                    Log.e("AppointmentAll", "無法載入 Fragment");
+                    Log.e("User_Coach_Detail", "無法載入 Fragment");
                 }
             }
+
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {}
+
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-        likeButton =findViewById(R.id.user_like_detail_class_btn);
+        likebtn=findViewById(R.id.user_like_detail_coach_btn);
+        coachimg=findViewById(R.id.user_detail_coach_img);
         try {
-            String query = "SELECT 課程圖片 FROM 健身教練課表課程合併 WHERE 課程編號 = ?" ;
+            String query = "SELECT 健身教練圖片 FROM [健身教練審核合併] WHERE 健身教練編號 = ?" ;
             PreparedStatement Statement = MyConnection.prepareStatement(query);
-            Statement.setInt(1,classID);
+            Statement.setInt(1,coachID);
             ResultSet rs = Statement.executeQuery();
             while (rs.next()) {
-                if (rs.getBytes("課程圖片") != null) {
-                    Bitmap bitmap = ImageHandle.getBitmap(rs.getBytes("課程圖片"));
-                    ((ImageView)findViewById(R.id.user_detail_class_img)).setImageBitmap(ImageHandle.resizeBitmap(bitmap));
+                if (rs.getBytes("健身教練圖片") != null) {
+                    Bitmap bitmap = ImageHandle.getBitmap(rs.getBytes("健身教練圖片"));
+                    coachimg.setImageBitmap(ImageHandle.resizeBitmap(bitmap));
                 }
             }
             rs.close();
             Statement.close();
         } catch (SQLException e) {
-            Log.e("User_Class_Detail", "SQL error");
+            e.printStackTrace();
         }
         try {
             MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-            String sql = "SELECT COUNT(*) FROM 課程被收藏 WHERE 課程編號 = ? AND 使用者編號 = ?";
+            String sql = "SELECT COUNT(*) FROM 教練被收藏 WHERE 健身教練編號 = ? AND 使用者編號 = ?";
             PreparedStatement Statement = MyConnection.prepareStatement(sql);
-            Statement.setInt(1,classID);
+            Statement.setInt(1,coachID);
             Statement.setInt(2, User.getInstance().getUserId());
             ResultSet rs = Statement.executeQuery();
             if (rs.next()) {
                 int count = rs.getInt(1);
-                if (count > 0 ) likeButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_love));
-                else likeButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_not_love));
+                if (count > 0) {
+                    likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_love));
+                } else {
+                    likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_not_love));
+                }
             }
             rs.close();
             Statement.close();
         } catch (SQLException e) {
-            Log.e("User_Class_Detail", "SQL error");
+            e.printStackTrace();
         }
-        likeButton.setOnClickListener(v -> {
-            Drawable currentDrawable = likeButton.getDrawable();
-            if (Objects.equals(currentDrawable.getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.user_like_ic_not_love)).getConstantState())) {
+        likebtn.setOnClickListener(v -> {
+            Drawable currentDrawable = likebtn.getDrawable();
+            if (currentDrawable.getConstantState().equals(ContextCompat.getDrawable(this, R.drawable.user_like_ic_not_love).getConstantState())) {
                 // 如果當前是 dislike 狀態，切換到 like
-                likeButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_love));
+                likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_love));
+
                 // 更新資料庫
                 try {
                     MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-                    String insertSql = "INSERT INTO 課程被收藏 (使用者編號, 課程編號) VALUES (?, ?)";
+                    String insertSql = "INSERT INTO 教練被收藏 (使用者編號, 健身教練編號) VALUES (?, ?)";
                     PreparedStatement insertStatement = MyConnection.prepareStatement(insertSql);
                     insertStatement.setInt(1, User.getInstance().getUserId());
-                    insertStatement.setInt(2, classID);
+                    insertStatement.setInt(2, coachID);
                     insertStatement.executeUpdate();
                     insertStatement.close();
                 } catch (SQLException e) {
-                    Log.e("User_Class_Detail", "SQL error");
+                    e.printStackTrace();
                 }
             } else {
                 // 如果當前是 like 狀態，切換到 dislike
-                likeButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_not_love));
+                likebtn.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_not_love));
                 try {
                     MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-                    String deleteSql = "DELETE FROM 課程被收藏 WHERE 課程編號 = ? AND 使用者編號 = ?";
+                    String deleteSql = "DELETE FROM 教練被收藏 WHERE 健身教練編號 = ? AND 使用者編號 = ?";
                     PreparedStatement deleteStatement = MyConnection.prepareStatement(deleteSql);
-                    deleteStatement.setInt(1, classID);
+                    deleteStatement.setInt(1, coachID);
                     deleteStatement.setInt(2, User.getInstance().getUserId());
                     deleteStatement.executeUpdate();
                     deleteStatement.close();
                 } catch (SQLException e) {
-                    Log.e("User_Class_Detail", "SQL error");
+                    e.printStackTrace();
                 }
             }
 
         });
     }
-    public  void user_detail_class_goback(View view){
+    public  void user_detail_coach_goback(View view){
+        Intent it =new Intent(this, AllCoach.class);
+        startActivity(it);
         finish();
     }
 }

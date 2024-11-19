@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.AllCoach.DetailCoach.User_Coach_Detail_Class_Fragment">
+    tools:context=".User.AllCoach.CoachDetail_ClassFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_coach_detail_class_recyclerview"

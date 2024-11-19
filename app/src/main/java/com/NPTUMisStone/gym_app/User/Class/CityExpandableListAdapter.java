@@ -1,4 +1,4 @@
-package com.NPTUMisStone.gym_app.User.AllClass;
+package com.NPTUMisStone.gym_app.User.Class;
 
 import android.content.Context;
 import android.view.LayoutInflater;

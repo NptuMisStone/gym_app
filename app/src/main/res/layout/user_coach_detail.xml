@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.AllCoach.DetailCoach.User_Coach_Detail">
+    tools:context=".User.AllCoach.CoachDetail">
 
 
     <androidx.appcompat.widget.Toolbar
@@ -136,7 +136,7 @@
         app:civ_border_width="4dp"/>
 
     <View
-        android:id="@+id/line"
+        android:id="@+id/ClassDetail_gapLine"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@android:color/black"

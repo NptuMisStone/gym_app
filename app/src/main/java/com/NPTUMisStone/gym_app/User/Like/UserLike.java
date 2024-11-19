@@ -15,14 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.Records.CancelAppointment.CancelAppointmentFragment;
-import com.NPTUMisStone.gym_app.User.Records.CoachCancelAppointment.CoachCancelAppointmentFragment;
-import com.NPTUMisStone.gym_app.User.Records.FinishAppointment.FinishAppointmentFragment;
-import com.NPTUMisStone.gym_app.User.Records.NowAppointment.NowAppointmentFragment;
-import com.NPTUMisStone.gym_app.User.Records.PastAppointment.PastAppointmentFragment;
 import com.google.android.material.tabs.TabLayout;
 
-public class User_Like extends AppCompatActivity {
+public class UserLike extends AppCompatActivity {
     FrameLayout frameLayout;
     TabLayout tabLayout;
     ImageButton Gobackbtn;
@@ -39,17 +34,17 @@ public class User_Like extends AppCompatActivity {
         Gobackbtn=(ImageButton)findViewById(R.id.user_Like_back);
         frameLayout=(FrameLayout)findViewById(R.id.LikeFrameLayout);
         tabLayout=(TabLayout)findViewById(R.id.LikeTabLayout);
-        getSupportFragmentManager().beginTransaction().replace(R.id.LikeFrameLayout,new User_LikeCoachFragment()).addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.LikeFrameLayout,new UserLike_CoachFragment()).addToBackStack(null).commit();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Fragment fragment = null;
                 switch (tab.getPosition()) {
                     case 0:
-                        fragment = new User_LikeCoachFragment();
+                        fragment = new UserLike_CoachFragment();
                         break;
                     case 1:
-                        fragment = new User_LikeClassFragment();
+                        fragment = new UserLike_ClassFragment();
                         break;
                 }
                 if (fragment != null) {

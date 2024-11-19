@@ -39,22 +39,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
-public class User_LikeClassFragment extends Fragment {
+public class UserLike_ClassFragment extends Fragment {
 
     private UserLikeClassFragmentBinding binding;
     private Connection MyConnection;
-    ArrayList<User_LikeClassFragment.User_Like_Class_Data> like_class_data =new ArrayList<>();
+    ArrayList<UserLike_ClassFragment.User_Like_Class_Data> like_class_data =new ArrayList<>();
     private ProgressBar progressBar;
     TextView nodata;
 
-    public static User_LikeClassFragment newInstance() {
-        return new User_LikeClassFragment();
+    public static UserLike_ClassFragment newInstance() {
+        return new UserLike_ClassFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        UserLikeClassViewModel userLikeClassViewModel =new ViewModelProvider(this).get(UserLikeClassViewModel.class);
+        UserLike_ClassViewModel userLikeClassViewModel =new ViewModelProvider(this).get(UserLike_ClassViewModel.class);
         binding=UserLikeClassFragmentBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
 
@@ -76,7 +76,7 @@ public class User_LikeClassFragment extends Fragment {
                 ResultSet rs = searchStatement.executeQuery();
                 while (rs.next())
 
-                    like_class_data.add(new User_LikeClassFragment.User_Like_Class_Data(
+                    like_class_data.add(new UserLike_ClassFragment.User_Like_Class_Data(
                             rs.getInt("課程編號"),
                             rs.getBytes("課程圖片"),
                             rs.getString("課程名稱"),
@@ -97,7 +97,7 @@ public class User_LikeClassFragment extends Fragment {
 
     private void updateUI() {
         if (getActivity() != null && isAdded()) {
-            User_LikeClassFragment.LikeClassAdapter likeClassAdapter = new User_LikeClassFragment.LikeClassAdapter(getActivity(),like_class_data,binding.getRoot());
+            UserLike_ClassFragment.LikeClassAdapter likeClassAdapter = new UserLike_ClassFragment.LikeClassAdapter(getActivity(),like_class_data,binding.getRoot());
             RecyclerView likeclassRecyclerView = binding.userLikeClassRecycleview;
             likeclassRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             likeclassRecyclerView.setAdapter(likeClassAdapter);
@@ -115,7 +115,7 @@ public class User_LikeClassFragment extends Fragment {
         byte[] classimage;
         String className,classPrice,coachName,classIntro,classPeople;
 
-        static ArrayList<User_LikeClassFragment.User_Like_Class_Data> likeClassData = new ArrayList<>();
+        static ArrayList<UserLike_ClassFragment.User_Like_Class_Data> likeClassData = new ArrayList<>();
 
         public User_Like_Class_Data(int classID,byte[] classimage,String className,String classPrice,String coachName,String classIntro,String classPeople) {
             this.classID=classID;
@@ -126,7 +126,7 @@ public class User_LikeClassFragment extends Fragment {
             this.classIntro=classIntro;
             this.classPeople=classPeople;
         }
-        public static ArrayList<User_LikeClassFragment.User_Like_Class_Data> getLikeClassData() {
+        public static ArrayList<UserLike_ClassFragment.User_Like_Class_Data> getLikeClassData() {
             if (likeClassData == null) {
                 return null;
             }
@@ -157,13 +157,13 @@ public class User_LikeClassFragment extends Fragment {
         }
     }
 
-    class LikeClassAdapter extends RecyclerView.Adapter<User_LikeClassFragment.LikeClassAdapter.ViewHolder>
+    class LikeClassAdapter extends RecyclerView.Adapter<UserLike_ClassFragment.LikeClassAdapter.ViewHolder>
     {
 
-        List<User_LikeClassFragment.User_Like_Class_Data> like_class_dataList;
+        List<UserLike_ClassFragment.User_Like_Class_Data> like_class_dataList;
         Context context;
         View view;
-        public LikeClassAdapter(Context context, List<User_LikeClassFragment.User_Like_Class_Data> like_class_dataList , View view) {
+        public LikeClassAdapter(Context context, List<UserLike_ClassFragment.User_Like_Class_Data> like_class_dataList , View view) {
             this.context = context;
             this.like_class_dataList = like_class_dataList;
             this.view=view;
@@ -188,14 +188,14 @@ public class User_LikeClassFragment extends Fragment {
 
         @NonNull
         @Override
-        public User_LikeClassFragment.LikeClassAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public UserLike_ClassFragment.LikeClassAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_like_class_item, parent, false);
-            return new User_LikeClassFragment.LikeClassAdapter.ViewHolder(view);
+            return new UserLike_ClassFragment.LikeClassAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull User_LikeClassFragment.LikeClassAdapter.ViewHolder holder, int position) {
-            User_LikeClassFragment.User_Like_Class_Data item = like_class_dataList.get(position);
+        public void onBindViewHolder(@NonNull UserLike_ClassFragment.LikeClassAdapter.ViewHolder holder, int position) {
+            UserLike_ClassFragment.User_Like_Class_Data item = like_class_dataList.get(position);
 
             if (item.getClassimage() != null) {
                 Bitmap bitmap = ImageHandle.getBitmap(item.getClassimage());

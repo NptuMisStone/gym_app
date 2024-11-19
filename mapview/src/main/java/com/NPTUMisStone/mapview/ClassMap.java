@@ -15,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
@@ -262,9 +263,7 @@ public class ClassMap extends AppCompatActivity {
                                 finish();
                             } else Toast.makeText(ClassMap.this, "無法取得課程ID", Toast.LENGTH_SHORT).show();
                         })
-                        .setNegativeButton("導航", (dialog, which) -> {
-
-                        }).show();
+                        .setNegativeButton("導航", (dialog, which) -> startActivity(new Intent(this,Navigation.class))).show();
                 builder.create();
                 return true;
             }

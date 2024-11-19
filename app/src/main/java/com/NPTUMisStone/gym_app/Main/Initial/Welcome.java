@@ -38,8 +38,8 @@ public class Welcome extends AppCompatActivity {
     }
     private void Connect() {    //資料庫連線：https://blog.csdn.net/jacobywu/article/details/125614398
         isTrying = true;
-        ProgressBar progressBar = findViewById(R.id.welcome_progressBar);
-        ImageView welcome_state = findViewById(R.id.welcome_state);
+        ProgressBar progressBar = findViewById(R.id.Welcome_progressBar);
+        ImageView welcome_state = findViewById(R.id.Welcome_state);
         try {
             MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
             if (MyConnection != null) {
@@ -55,7 +55,7 @@ public class Welcome extends AppCompatActivity {
                 isTrying = false;
                 progressBar.setVisibility(View.GONE);
                 welcome_state.setVisibility(View.VISIBLE);
-                findViewById(R.id.logoImage).setOnClickListener(v -> {  if(!isTrying) retry();});
+                findViewById(R.id.Welcome_logoImage).setOnClickListener(v -> {  if(!isTrying) retry();});
             }
         } catch (Exception e) {
             Log.e("拿不到連線狀態回傳", Objects.requireNonNull(e.getMessage()));
@@ -64,8 +64,8 @@ public class Welcome extends AppCompatActivity {
     }
 
     private void retry() {
-        findViewById(R.id.welcome_progressBar).setVisibility(View.VISIBLE);
-        findViewById(R.id.welcome_state).setVisibility(View.GONE);
+        findViewById(R.id.Welcome_progressBar).setVisibility(View.VISIBLE);
+        findViewById(R.id.Welcome_state).setVisibility(View.GONE);
         new Handler(Looper.getMainLooper()).postDelayed(this::Connect, 500);
     }
 }

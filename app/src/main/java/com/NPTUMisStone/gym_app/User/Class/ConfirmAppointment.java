@@ -1,8 +1,7 @@
-package com.NPTUMisStone.gym_app.User.AllClass;
+package com.NPTUMisStone.gym_app.User.Class;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -17,19 +16,16 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.AllClass.DetailClass.User_Class_Detail;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
-import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.time.LocalTime;
 
-public class User_Confirm_Appointment extends AppCompatActivity {
+public class ConfirmAppointment extends AppCompatActivity {
     Connection MyConnection;
     Intent intent;
     int scheduleID,classID,coachID,appeople;
