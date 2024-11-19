@@ -192,7 +192,9 @@ v0.82：教練預約管理(尚未做查看預約名單)(煒楷)
 
 v0.83：整理地圖模組(侑宸)
 
-v0.84：嘗試解決「java.sql.SQLException: Invalid state, the Connection object is closed.」錯誤(侑宸)
+v0.84：教練預約管理完成(煒楷)
+
+v0.85：嘗試解決「java.sql.SQLException: Invalid state, the Connection object is closed.」錯誤(侑宸)
 
 ## 補充：
 
