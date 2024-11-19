@@ -46,6 +46,11 @@ public class ClassDetail extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.user_class_detail);
         setupWindowInsets();
+        initializeComponents();
+        setupListeners();
+    }
+
+    private void initializeComponents() {
         classID = getIntent().getIntExtra("看更多課程ID", 0);
         setupFragment();
         setupTabLayout();
@@ -54,50 +59,66 @@ public class ClassDetail extends AppCompatActivity {
         loadClassImage();
         updateLikeButtonState();
         setupLikeButtonListener();
+    }
+
+    private void setupListeners() {
         findViewById(R.id.ClassDetail_backButton).setOnClickListener(v -> finish());
-        findViewById(R.id.ClassDetail_directionButton).setOnClickListener(v ->getCurrentLocation());
+        findViewById(R.id.ClassDetail_directionButton).setOnClickListener(v -> getCurrentLocation());
     }
+
     private void requestLocationPermission() {
-        int PERMISSION_REQUEST_LOCATION = 1;
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_LOCATION);
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        }, 1);
     }
+
     private void getCurrentLocation() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestLocationPermission();
-            return;
-        }
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, location -> {
-                    if (location != null) {
-                        double latitude = location.getLatitude();
-                        double longitude = location.getLongitude();
-                        String currentLocation = latitude + "," + longitude;
-
-                        executeQuery("SELECT 縣市,行政區,顯示地點地址 FROM [健身教練課程-有排課的] WHERE 課程編號 = ?", rs -> {
-                            try {
-                                if (rs.next()) {
-                                    String address = rs.getString("縣市") + rs.getString("行政區") + rs.getString("顯示地點地址");
-                                    Uri uri = Uri.parse("https://www.google.com/maps/dir/" + currentLocation + "/" + address);
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri).setPackage("com.google.android.apps.maps").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    if (intent.resolveActivity(getPackageManager()) != null)
-                                        startActivity(intent);
-                                    else  //沒有安裝Google Map
-                                        startActivity(new Intent(Intent.ACTION_VIEW, uri));
-                                }
-                            } catch (SQLException e) {
-                                Log.e("User_Class_Detail", "SQL error", e);
+        if (checkLocationPermissions()) {
+            try {
+                fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, location -> {
+                            if (location != null) {
+                                openGoogleMaps(location.getLatitude(), location.getLongitude());
+                            } else {
+                                Log.e("User_Class_Detail", "Location data is unavailable");
                             }
-                        });
-                    } else {
-                        // Location data is unavailable, handle accordingly
-                    }
-                })
-                .addOnFailureListener(this, e -> {
-                    // Failed to get location, handle accordingly
-                });
+                        })
+                        .addOnFailureListener(this, e -> Log.e("User_Class_Detail", "Failed to get location", e));
+            } catch (SecurityException e) {
+                Log.e("User_Class_Detail", "Location permission not granted", e);
+            }
+        } else {
+            requestLocationPermission();
+        }
     }
+
+    private boolean checkLocationPermissions() {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void openGoogleMaps(double latitude, double longitude) {
+        String currentLocation = latitude + "," + longitude;
+        executeQuery("SELECT 縣市,行政區,顯示地點地址 FROM [健身教練課程-有排課的] WHERE 課程編號 = ?", rs -> {
+            try {
+                if (rs.next()) {
+                    String address = rs.getString("縣市") + rs.getString("行政區") + rs.getString("顯示地點地址");
+                    Uri uri = Uri.parse("https://www.google.com/maps/dir/" + currentLocation + "/" + address);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri).setPackage("com.google.android.apps.maps").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    if (intent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(intent);
+                    } else {
+                        startActivity(new Intent(Intent.ACTION_VIEW, uri)); // No Google Maps installed
+                    }
+                }
+            } catch (SQLException e) {
+                Log.e("User_Class_Detail", "SQL error", e);
+            }
+        });
+    }
+
     private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -109,7 +130,7 @@ public class ClassDetail extends AppCompatActivity {
     private void setupFragment() {
         ClassDetail_InfoFragment detailFragment = new ClassDetail_InfoFragment();
         detailFragment.setArguments(createBundle());
-        getSupportFragmentManager().beginTransaction().addToBackStack(null)
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.ClassDetail_detailFrame, detailFragment).commit();
     }
 
@@ -128,10 +149,12 @@ public class ClassDetail extends AppCompatActivity {
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
     }
 
@@ -150,10 +173,12 @@ public class ClassDetail extends AppCompatActivity {
     }
 
     private void loadClassImage() {
-        executeQuery("SELECT 課程圖片 FROM 健身教練課表課程合併 WHERE 課程編號 = ?", rs -> {
-            if (rs.getBytes("課程圖片") != null) {
+        executeQuery("SELECT 課程圖片 FROM 健身教練課程 WHERE 課程編號 = ?", rs -> {
+            if (rs.next() && rs.getBytes("課程圖片") != null) {
                 Bitmap bitmap = ImageHandle.getBitmap(rs.getBytes("課程圖片"));
                 ((ImageView) findViewById(R.id.ClassDetail_classImage)).setImageBitmap(ImageHandle.resizeBitmap(bitmap));
+            } else {
+                Log.e("User_Class_Detail", "No image found");
             }
         });
     }
@@ -162,8 +187,7 @@ public class ClassDetail extends AppCompatActivity {
         executeQuery("SELECT COUNT(*) FROM 課程被收藏 WHERE 課程編號 = ? AND 使用者編號 = ?", rs -> {
             if (rs.next() && rs.getInt(1) > 0)
                 likeButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_love));
-            else
-                likeButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_not_love));
+            else likeButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.user_like_ic_not_love));
         });
     }
 
@@ -183,7 +207,9 @@ public class ClassDetail extends AppCompatActivity {
     private void executeQuery(String query, ResultSetHandler handler) {
         try (PreparedStatement statement = MyConnection.prepareStatement(query)) {
             statement.setInt(1, classID);
-            try (ResultSet rs = statement.executeQuery()) {
+            if (query.contains("AND 使用者編號 = ?"))
+                statement.setInt(2, User.getInstance().getUserId());
+            try (ResultSet rs = statement.executeQuery()){
                 handler.handle(rs);
             }
         } catch (SQLException e) {
