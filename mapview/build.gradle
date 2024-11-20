@@ -50,5 +50,4 @@ dependencies {
     implementation (libs.mapbox.navigation.android) /*{
         exclude group: "com.mapbox.common", module: "okhttp"
     }*/
-
 }

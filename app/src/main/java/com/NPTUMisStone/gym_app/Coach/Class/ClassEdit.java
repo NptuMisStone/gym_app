@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -178,10 +179,13 @@ public class ClassEdit extends AppCompatActivity {
         uploadButton.setOnClickListener(v -> changeImage());
 
         // 返回按鈕
-        findViewById(R.id.ClassMain_backButton).setOnClickListener(v -> finish());
+        findViewById(R.id.ClassEdit_backButton).setOnClickListener(v -> finish());
 
         // 保存按鈕
         findViewById(R.id.ClassEdit_saveButton).setOnClickListener(v -> saveCourse());
+
+        // 刪除按鈕
+        findViewById(R.id.ClassEdit_delButton).setOnClickListener(v -> deleteCourse());
     }
     /**
      * 加載初始數據
@@ -863,4 +867,40 @@ public class ClassEdit extends AppCompatActivity {
         }
         return true;
     }
+    /**
+     * 刪除課程
+     */
+    private void deleteCourse() {
+        // 創建一個確認對話框
+        new AlertDialog.Builder(this)
+                .setTitle("刪除課程")
+                .setMessage("是否確定刪除課程？刪除後課程將無法復原！")
+                .setPositiveButton("確定", (dialog, which) -> {
+                    // 執行刪除課程邏輯
+                    String qry = "DELETE FROM 健身教練課程 WHERE 課程編號 = ?";
+                    try (PreparedStatement stmt = MyConnection.prepareStatement(qry)) {
+                        stmt.setInt(1, classId); // 使用課程 ID 設置參數
+                        int rowsAffected = stmt.executeUpdate();
+                        if (rowsAffected > 0) {
+                            Toast.makeText(this, "課程已成功刪除", Toast.LENGTH_SHORT).show();
+                            // 使用 Handler 延遲 2 秒後跳轉到 ClassMain
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                navigateToClassMain(); // 跳轉到主頁面
+                            }, 2000); // 2000 毫秒即 2 秒
+
+                        } else {
+                            Toast.makeText(this, "刪除失敗，課程不存在", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "刪除過程中發生錯誤，請稍後再試", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("取消", (dialog, which) -> {
+                    // 點擊取消時，關閉對話框
+                    dialog.dismiss();
+                })
+                .show();
+    }
+
 }

@@ -3,6 +3,8 @@ package com.NPTUMisStone.gym_app.Coach.Class;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -540,7 +542,10 @@ public class ClassAdd extends AppCompatActivity {
             stmt.setInt(14, Coach.getInstance().getCoachId());
             stmt.executeUpdate();
             Toast.makeText(this, "課程已儲存成功！", Toast.LENGTH_SHORT).show();
-            navigateToClassMain(); // 跳轉到 ClassMain
+            // 使用 Handler 延遲 2 秒後跳轉到 ClassMain
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                navigateToClassMain(); // 跳轉到主頁面
+            }, 2000); // 2000 毫秒即 2 秒
         } catch (SQLException e) {
             e.printStackTrace();
             Toast.makeText(this, "儲存課程失敗！", Toast.LENGTH_SHORT).show();

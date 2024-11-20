@@ -63,62 +63,45 @@
     </RelativeLayout>
 
 
+    <!-- 前周按鈕 -->
+
+    <!-- 下周按鈕 -->
+
     <TextView
         android:id="@+id/ScheduledMain_dateDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="2024-11-04"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header" />
-    <!-- 前周按鈕 -->
-
-    <!-- 下周按鈕 -->
-
-    <Button
-        android:id="@+id/ScheduledMain_previousWeekButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="前周"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ScheduledMain_dateDisplay" />
-
-    <Button
-        android:id="@+id/ScheduledMain_nextWeekButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="12dp"
-        android:text="下周"
-        app:layout_constraintBottom_toBottomOf="@+id/ScheduledMain_todayButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.405"
-        app:layout_constraintStart_toEndOf="@+id/ScheduledMain_todayButton"
-        app:layout_constraintTop_toBottomOf="@+id/ScheduledMain_dateDisplay" />
 
     <Button
         android:id="@+id/ScheduledMain_todayButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:text="回到今天"
-        app:layout_constraintStart_toEndOf="@+id/ScheduledMain_previousWeekButton"
-        app:layout_constraintTop_toBottomOf="@+id/ScheduledMain_dateDisplay" />
+        app:layout_constraintBottom_toBottomOf="@+id/ScheduledMain_dateDisplay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.724"
+        app:layout_constraintStart_toEndOf="@+id/ScheduledMain_dateDisplay"
+        app:layout_constraintTop_toTopOf="@+id/ScheduledMain_dateDisplay"
+        app:layout_constraintVertical_bias="0.666" />
 
     <LinearLayout
         android:id="@+id/ScheduledMain_weekHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ScheduledMain_todayButton">
+        app:layout_constraintTop_toBottomOf="@+id/ScheduledMain_dateDisplay">
 
         <!-- 一到日的標題 -->
         <TextView

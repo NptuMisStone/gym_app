@@ -22,7 +22,7 @@
 
         <!-- 返回按鈕 -->
         <ImageButton
-            android:id="@+id/ClassMain_backButton"
+            android:id="@+id/ClassEdit_backButton"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentStart="true"
@@ -35,7 +35,7 @@
 
         <!-- 標頭標題 -->
         <TextView
-            android:id="@+id/ClassMain_titleText"
+            android:id="@+id/ClassEdit_titleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -44,6 +44,19 @@
             android:text="編輯課程"
             android:textColor="#808080"
             android:textSize="20sp" />
+
+        <!-- 刪除課程按鈕 -->
+        <ImageButton
+            android:id="@+id/ClassEdit_delButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="刪除課程"
+            android:scaleType="centerInside"
+            android:src="@drawable/bin" />
 
         <!-- 底部細底線 -->
         <View

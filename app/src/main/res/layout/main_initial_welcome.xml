@@ -5,18 +5,24 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#3bafbf"
     tools:context=".Main.Initial.Welcome">
+
 
     <ImageView
         android:id="@+id/Welcome_logoImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#B2C5FF"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#3bafbf"
         android:contentDescription="@string/main_welcome_content_description"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.328"
         app:srcCompat="@drawable/main_initial_welcome_ic_logo" />
 
     <ProgressBar
