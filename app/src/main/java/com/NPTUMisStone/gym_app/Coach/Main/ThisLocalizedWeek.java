@@ -12,13 +12,12 @@ public class ThisLocalizedWeek {
     private final static ZoneId TZ = ZoneId.systemDefault(); // 使用系統的時區
 
     private final Locale locale;
-    private final DayOfWeek firstDayOfWeek;
+    private final DayOfWeek firstDayOfWeek = DayOfWeek.MONDAY; // 設定週一為起始日
     private final DayOfWeek lastDayOfWeek;
 
     public ThisLocalizedWeek(final Locale locale) {
         this.locale = locale;
-        this.firstDayOfWeek = DayOfWeek.MONDAY; // 台灣習慣週一起始
-        this.lastDayOfWeek = DayOfWeek.SUNDAY; // 週日結束
+        this.lastDayOfWeek = DayOfWeek.SUNDAY; // 設定週日為結束日
     }
 
     public LocalDate getFirstDay() {
@@ -27,14 +26,6 @@ public class ThisLocalizedWeek {
 
     public LocalDate getLastDay() {
         return LocalDate.now(TZ).with(TemporalAdjusters.nextOrSame(this.lastDayOfWeek));
-    }
-
-    public DayOfWeek getFirstDayOfWeek() {
-        return this.firstDayOfWeek;
-    }
-
-    public DayOfWeek getLastDayOfWeek() {
-        return this.lastDayOfWeek;
     }
 
     @Override

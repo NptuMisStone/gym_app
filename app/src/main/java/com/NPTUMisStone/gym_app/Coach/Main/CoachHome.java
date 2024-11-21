@@ -16,20 +16,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.NPTUMisStone.gym_app.Coach.Class.ClassMain;
 import com.NPTUMisStone.gym_app.Coach.Comments.Coach_Comments;
 
 import com.NPTUMisStone.gym_app.Coach.Records.Coach_AppointmentsAll;
-import com.NPTUMisStone.gym_app.Coach.Scheduled.MainActivity;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledMain;
-import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledSet;
-import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledCheck;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.AIInteractive;
 import com.NPTUMisStone.gym_app.User_And_Coach.Advertisement;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
@@ -99,8 +93,6 @@ public class CoachHome extends AppCompatActivity {
                 startActivity(new Intent(this, ClassMain.class));
             else if (id == R.id.CoachHome_commentManagementCard)
                 startActivity(new Intent(this, Coach_Comments.class));
-            else if (id == R.id.button)
-                startActivity(new Intent(this, MainActivity.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);
         }

@@ -24,5 +24,7 @@
     <color name="cancel_ap">#B6B6B6</color>
     <color name="past_ap">#CF808B</color>
     <color name="coach_cancel_ap">#E5B76A</color>
+    <color name="default_text_color">#000000</color> <!-- 默認黑色文字 -->
+    <color name="selected_text_color">#FFFFFF</color> <!-- 選中白色文字 -->
 
 </resources>

@@ -4,32 +4,56 @@
     android:padding="0dp"
     android:layout_margin="12dp">
 
+    <!-- 父容器 -->
     <LinearLayout
         android:id="@+id/courseCardLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/course_card_background">
+        android:orientation="horizontal"
+        android:background="@drawable/course_card_background"
+        android:padding="0dp"> <!-- 父容器的 padding 設為 0 -->
 
+        <!-- 左側時間 -->
         <TextView
             android:id="@+id/courseTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/course_time_background"
             android:gravity="center"
+            android:padding="8dp"
             android:text="09:00 - 10:00"
             android:textColor="@android:color/white"
-            android:background="@drawable/course_time_background"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/CheckItem_checkedText"
-            android:layout_width="match_parent"
+        <!-- 右側課程資訊 -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:text="課程名稱"
-            android:textSize="18sp"
+            android:layout_weight="1"
+            android:orientation="vertical"
             android:gravity="center_vertical"
-            android:textColor="@android:color/black" />
+            android:padding="8dp"> <!-- 給右側內容適當 padding -->
+
+            <TextView
+                android:id="@+id/CheckItem_checkedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="課程名稱"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:singleLine="true"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/courseLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="課程地點"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

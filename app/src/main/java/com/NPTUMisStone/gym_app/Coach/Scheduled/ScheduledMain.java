@@ -1,12 +1,18 @@
 package com.NPTUMisStone.gym_app.Coach.Scheduled;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +40,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import android.widget.LinearLayout;
+
 
 public class ScheduledMain extends AppCompatActivity {
 
@@ -41,6 +49,20 @@ public class ScheduledMain extends AppCompatActivity {
     private CustomAdapter adapter;
     private TextView dateDisplay;
     private Calendar currentWeekCalendar;
+    private Button selectedButton; // 用於記錄當前選中的按鈕
+    private long lastClickTime = 0;
+    private static final long CLICK_DELAY = 500; // 500毫秒
+
+    private boolean isClickable() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastClickTime < CLICK_DELAY) {
+            return false; // 忽略過於快速的點擊
+        }
+        lastClickTime = currentTime;
+        return true;
+    }
+
+
 
     // 自定義的 Course 類，用於存儲課程信息
     public class Course {
@@ -87,97 +109,384 @@ public class ScheduledMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.coach_scheduled_main);
+
+        // 初始化數據庫連接
+        MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+
+        // 初始化系統視圖
+        setupWindowInsets();
+        setupNavigationButtons();
+
+        // 初始化 RecyclerView 和日期顯示
+        initializeViews();
+
+        // 設定當前周的日曆
+        currentWeekCalendar = Calendar.getInstance();
+        currentWeekCalendar.setFirstDayOfWeek(Calendar.MONDAY);
+
+        // 初始化上次選中的日期為今天
+        lastSelectedDay = (Calendar) currentWeekCalendar.clone();
+        resetTime(lastSelectedDay);
+
+        // 更新日期顯示和按鈕狀態
+        updateWeekCalendar(currentWeekCalendar);
+        highlightTodayButton(); // 設置紅框
+
+        // 設置選中按鈕（橘底）
+        updateButtonSelection(getButtonIndexForDay(lastSelectedDay));
+
+        // 加載今天的課程
+        loadScheduleForDay(currentWeekCalendar);
+
+        // 點擊「回到今天」
+        findViewById(R.id.ScheduledMain_todayButton).setOnClickListener(v -> {
+            View weekContainer = findViewById(R.id.ScheduledMain_weekContainer);
+
+            // 獲取今天的日期
+            Calendar today = Calendar.getInstance();
+            today.setFirstDayOfWeek(Calendar.MONDAY);
+            resetTime(today);
+
+            // 計算目標週與當前週的差值
+            int weekDifference = today.get(Calendar.WEEK_OF_YEAR) - currentWeekCalendar.get(Calendar.WEEK_OF_YEAR);
+
+            // 計算動畫方向
+            int translationX = weekDifference > 0 ? weekContainer.getWidth() : -weekContainer.getWidth();
+
+            // 平移動畫
+            ObjectAnimator exitAnimator = ObjectAnimator.ofFloat(weekContainer, "translationX", 0, -translationX);
+            ObjectAnimator enterAnimator = ObjectAnimator.ofFloat(weekContainer, "translationX", translationX, 0);
+
+            exitAnimator.setDuration(300);
+            enterAnimator.setDuration(300);
+
+            // 在退出動畫結束後執行回到今天的邏輯
+            exitAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    // 更新 currentWeekCalendar 為今天的週
+                    currentWeekCalendar = (Calendar) today.clone();
+
+                    // 更新週顯示
+                    updateWeekCalendar(currentWeekCalendar);
+
+                    // 高亮今天按鈕
+                    highlightTodayButton();
+
+                    // 更新選中按鈕（橘底）
+                    updateButtonSelection(getButtonIndexForDay(today));
+
+                    // 更新日期顯示和課程列表
+                    updateDisplayedDateAndSchedule(today);
+
+                    // 播放進入動畫
+                    enterAnimator.start();
+                }
+            });
+
+            // 播放退出動畫
+            exitAnimator.start();
+        });
+
+
+
+        // 設定每個日期按鈕的點擊事件
+        setupDayButtonClickListeners();
+
+        // 初始化手勢偵測器
+        GestureDetector gestureDetector = new GestureDetector(this, new GestureListener());
+
+        findViewById(R.id.weekContainerWrapper).setOnTouchListener((v, event) -> {
+            gestureDetector.onTouchEvent(event);
+            return true; // 確保事件不被子視圖攔截
+        });
+
+        // 為每個按鈕添加觸摸事件，並傳遞給手勢偵測器
+        for (int i = 1; i <= 7; i++) {
+            int buttonId = getResources().getIdentifier("day" + i, "id", getPackageName());
+            Button dayButton = findViewById(buttonId);
+
+            dayButton.setOnTouchListener((v, event) -> {
+                // 傳遞手勢事件
+                gestureDetector.onTouchEvent(event);
+
+                // 同時保留按鈕的點擊功能
+                return false;
+            });
+        }
+    }
+
+
+
+    private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
 
-        MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+    private void setupNavigationButtons() {
         findViewById(R.id.ScheduledCheck_backButton).setOnClickListener(v -> finish());
-        // 新增課表按鈕，點擊跳轉到 ScheduledAdd 頁面
         findViewById(R.id.ScheduledAdd_button).setOnClickListener(v -> {
             Intent intent = new Intent(ScheduledMain.this, ScheduledAdd.class);
             startActivity(intent);
         });
+    }
 
-        // 初始化視圖和日期顯示
+    private void initializeViews() {
         dateDisplay = findViewById(R.id.ScheduledMain_dateDisplay);
-        Button todayButton = findViewById(R.id.ScheduledMain_todayButton);
         recyclerView = findViewById(R.id.ScheduledCheck_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        // 初始化適配器
         adapter = new CustomAdapter(this, new ArrayList<>());
         recyclerView.setAdapter(adapter);
-
-
-        // 設定當前周的日曆
-        currentWeekCalendar = Calendar.getInstance();
-        currentWeekCalendar.setFirstDayOfWeek(Calendar.MONDAY); // 將星期一設為一週的第一天
-
-        // 設置進入頁面時顯示今天的日期
-        dateDisplay.setText(formatDate(currentWeekCalendar)); // 更新顯示的日期
-
-        updateWeekCalendar(currentWeekCalendar);
-
-        // 點擊 "回到今天" 按鈕
-        todayButton.setOnClickListener(v -> {
-            currentWeekCalendar = Calendar.getInstance(); // 設定為今天
-            currentWeekCalendar.setFirstDayOfWeek(Calendar.MONDAY); // 確保今天也按照星期一為第一天
-
-            // 更新周曆和日期顯示
-            updateWeekCalendar(currentWeekCalendar);
-            dateDisplay.setText(formatDate(currentWeekCalendar)); // 更新顯示的日期
-
-            loadScheduleForDay(currentWeekCalendar); // 加載今天的課程
-        });
-
-        // 設定每個日期按鈕的點擊事件
-        for (int i = 1; i <= 7; i++) {
-            int buttonId = getResources().getIdentifier("day" + i, "id", getPackageName());
-            Button dayButton = findViewById(buttonId);
-            int finalI = i;
-            dayButton.setOnClickListener(v -> {
-                Calendar selectedDay = (Calendar) currentWeekCalendar.clone();
-                selectedDay.setFirstDayOfWeek(Calendar.MONDAY); // 確保選擇日期也以星期一為起點
-                selectedDay.set(Calendar.DAY_OF_WEEK, finalI + Calendar.MONDAY - 1); // 調整索引
-                loadScheduleForDay(selectedDay);
-                dateDisplay.setText(formatDate(selectedDay)); // 更新顯示的日期
-            });
-        }
-
-        // 初始加載今天的課程
-        loadScheduleForDay(currentWeekCalendar);
     }
 
     private void updateWeekCalendar(Calendar calendar) {
-        // 迭代一週的天數（從1到7），並設定按鈕
         for (int i = 1; i <= 7; i++) {
             int buttonId = getResources().getIdentifier("day" + i, "id", getPackageName());
             Button dayButton = findViewById(buttonId);
 
-            // 克隆當前的日曆實例，然後設定當前的星期幾（從星期一到星期日）
             Calendar dayOfWeek = (Calendar) calendar.clone();
             dayOfWeek.setFirstDayOfWeek(Calendar.MONDAY);
-
-            // 正確地設定星期幾，i=1 對應星期一，i=7 對應星期日
             dayOfWeek.set(Calendar.DAY_OF_WEEK, i + Calendar.MONDAY - 1);
 
-            // 設定按鈕的文字為當天的日期
             dayButton.setText(String.valueOf(dayOfWeek.get(Calendar.DAY_OF_MONTH)));
         }
     }
 
+    private void highlightTodayButton() {
+        Calendar today = Calendar.getInstance(); // 獲取今天的日期
+        resetTime(today);
+
+        // 確認今天是否屬於當前週
+        Calendar startOfWeek = (Calendar) currentWeekCalendar.clone();
+        startOfWeek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        resetTime(startOfWeek);
+
+        Calendar endOfWeek = (Calendar) startOfWeek.clone();
+        endOfWeek.add(Calendar.DAY_OF_WEEK, 6);
+
+        for (int i = 1; i <= 7; i++) {
+            int buttonId = getResources().getIdentifier("day" + i, "id", getPackageName());
+            Button button = findViewById(buttonId);
+            if (button != null) {
+                if (!today.before(startOfWeek) && !today.after(endOfWeek)) {
+                    // 如果今天在當前週，設置紅框
+                    if (i == getButtonIndexForDay(today)) {
+                        button.setActivated(true); // 添加紅框
+                    } else {
+                        button.setActivated(false); // 移除其他按鈕的紅框
+                    }
+                } else {
+                    // 如果今天不在當前週，移除所有按鈕的紅框
+                    button.setActivated(false);
+                }
+            }
+        }
+    }
+
+
+    private void updateButtonSelection(int dayIndex) {
+        // 清除之前選中的按鈕的橘底樣式
+        if (selectedButton != null) {
+            selectedButton.setSelected(false);
+            selectedButton.setTextColor(getResources().getColor(R.color.default_text_color)); // 默認黑色文字
+        }
+
+        // 設置當前選中按鈕的橘底樣式
+        int buttonId = getResources().getIdentifier("day" + dayIndex, "id", getPackageName());
+        Button dayButton = findViewById(buttonId);
+        if (dayButton != null) {
+            dayButton.setSelected(true); // 設置橘底
+            dayButton.setTextColor(getResources().getColor(R.color.selected_text_color)); // 白色文字
+            selectedButton = dayButton;
+        }
+
+        // 確保紅框只在今天
+        highlightTodayButton();
+    }
+
+
+    private int getTodayIndex() {
+        int todayIndex = currentWeekCalendar.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY + 1;
+        return (todayIndex <= 0) ? 7 : todayIndex; // 如果是星期日，修正為 7
+    }
+
+    private void setupDayButtonClickListeners() {
+        for (int i = 1; i <= 7; i++) {
+            int buttonId = getResources().getIdentifier("day" + i, "id", getPackageName());
+            Button dayButton = findViewById(buttonId);
+
+            final int dayIndex = i;
+            dayButton.setOnClickListener(v -> {
+                if (!isClickable()) {
+                    return; // 忽略快速點擊
+                }
+
+                // 更新選中按鈕（橘底）
+                updateButtonSelection(dayIndex);
+
+                // 更新顯示日期和課程
+                Calendar selectedDay = (Calendar) currentWeekCalendar.clone();
+                selectedDay.setFirstDayOfWeek(Calendar.MONDAY);
+                selectedDay.set(Calendar.DAY_OF_WEEK, dayIndex + Calendar.MONDAY - 1);
+                updateDisplayedDateAndSchedule(selectedDay);
+            });
+        }
+    }
+
+    private Calendar lastSelectedDay = null; // 保存上一個選中的日期
+    private void updateDisplayedDateAndSchedule(Calendar selectedDay) {
+        dateDisplay.setText(formatDate(selectedDay));
+
+        // 確保清除時間部分，僅比較日期
+        resetTime(selectedDay);
+
+        if (lastSelectedDay == null) {
+            // 如果之前沒有選中日期，初始化為今天
+            lastSelectedDay = (Calendar) selectedDay.clone();
+        }
+
+        // 比較與之前選中的日期
+        int comparison = selectedDay.compareTo(lastSelectedDay);
+
+        // 防止動畫重疊
+        if (recyclerView.getLayoutAnimation() != null && !recyclerView.getLayoutAnimation().isDone()) {
+            Log.d("AnimationDebug", "Skipping animation as the previous one is not finished.");
+        } else {
+            if (comparison < 0) {
+                // 選中的日期比之前小，設置向左滑入動畫
+                recyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this, R.anim.layout_slide_in_left));
+            } else if (comparison > 0) {
+                // 選中的日期比之前大，設置向右滑入動畫
+                recyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this, R.anim.layout_slide_in_right));
+            } else {
+                // 如果與之前選中的是同一天，清除動畫
+                recyclerView.setLayoutAnimation(null);
+            }
+
+            // 開始動畫
+            recyclerView.scheduleLayoutAnimation();
+        }
+
+        // 更新上一個選中的日期
+        lastSelectedDay = (Calendar) selectedDay.clone();
+
+        // 加載課程列表
+        loadScheduleForDay(selectedDay);
+    }
+    private void resetTime(Calendar calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+    }
+    private String formatDate(Calendar calendar) {
+        return calendar.get(Calendar.YEAR) + "-" +
+                (calendar.get(Calendar.MONTH) + 1) + "-" +
+                calendar.get(Calendar.DAY_OF_MONTH);
+    }
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        private static final int SWIPE_THRESHOLD = 100; // 滑動距離閾值
+        private static final int SWIPE_VELOCITY_THRESHOLD = 100; // 滑動速度閾值
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            float diffX = e2.getX() - e1.getX();
+
+            // 垂直滑動忽略
+            if (Math.abs(diffX) > Math.abs(e2.getY() - e1.getY())) {
+                if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (diffX > 0) {
+                        // 向右滑動 -> 前一週
+                        animateWeekTransition(false);
+                    } else {
+                        // 向左滑動 -> 下一週
+                        animateWeekTransition(true);
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+    private void animateWeekTransition(boolean isNextWeek) {
+        View weekContainer = findViewById(R.id.ScheduledMain_weekContainer);
+        int translationX = isNextWeek ? weekContainer.getWidth() : -weekContainer.getWidth();
+
+        // 平移進出動畫
+        ObjectAnimator exitAnimator = ObjectAnimator.ofFloat(weekContainer, "translationX", 0, -translationX);
+        ObjectAnimator enterAnimator = ObjectAnimator.ofFloat(weekContainer, "translationX", translationX, 0);
+
+        exitAnimator.setDuration(300);
+        enterAnimator.setDuration(300);
+
+        exitAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (isNextWeek) {
+                    currentWeekCalendar.add(Calendar.WEEK_OF_YEAR, 1);
+                } else {
+                    currentWeekCalendar.add(Calendar.WEEK_OF_YEAR, -1);
+                }
+
+                // 更新對應的選中日期
+                if (lastSelectedDay != null) {
+                    lastSelectedDay.add(Calendar.WEEK_OF_YEAR, isNextWeek ? 1 : -1);
+                } else {
+                    lastSelectedDay = (Calendar) currentWeekCalendar.clone();
+                    lastSelectedDay.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                }
+                resetTime(lastSelectedDay);
+
+                // 更新週顯示
+                updateWeekCalendar(currentWeekCalendar);
+
+                // 重新檢查並高亮今天
+                highlightTodayButton();
+
+                // 更新選中按鈕
+                updateButtonSelection(getButtonIndexForDay(lastSelectedDay));
+
+                // 更新日期顯示和課程列表
+                updateDisplayedDateAndSchedule(lastSelectedDay);
+
+                enterAnimator.start();
+            }
+        });
+        exitAnimator.start();
+    }
+    private int getButtonIndexForDay(Calendar calendar) {
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK); // 原始值，週日為1
+        return (dayOfWeek == Calendar.SUNDAY) ? 7 : dayOfWeek - Calendar.MONDAY + 1;
+    }
+
+
+    //-----------------------------------------------------------------------------
+
     private void loadScheduleForDay(Calendar day) {
-        // 從資料庫中獲取課程資料
+        // 獲取課程數據
         List<Course> courses = fetchCoursesForDay(day);
 
-        // 清除並更新 RecyclerView 的數據
-        adapter.courseList.clear();  // 使用 courseList，而不是 nameList
+        // 更新 RecyclerView 的數據
+        adapter.courseList.clear();
         adapter.courseList.addAll(courses);
-        adapter.notifyDataSetChanged(); // 通知適配器數據已更新
+        adapter.notifyDataSetChanged();
+
+        // 切換 RecyclerView 和 EmptyView 的可見性
+        TextView emptyView = findViewById(R.id.empty_view);
+        if (courses.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
     }
+
 
     private List<Course> fetchCoursesForDay(Calendar day) {
         List<Course> courses = new ArrayList<>();
@@ -224,10 +533,6 @@ public class ScheduledMain extends AppCompatActivity {
         return calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
     }
 
-    private String formatDate(Calendar calendar) {
-        // 格式化日期為 YYYY-MM-DD 格式
-        return calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
-    }
 
     // 自定義適配器類，用於顯示課程列表
     static class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {

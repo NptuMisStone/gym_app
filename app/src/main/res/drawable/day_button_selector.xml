@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 今天選中狀態 -->
+    <item android:state_selected="true" android:state_activated="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#FF5722" /> <!-- 橘色背景 -->
+            <stroke
+                android:width="2dp"
+                android:color="#FF0000" /> <!-- 紅色外框 -->
+            <corners android:radius="50dp" />
+        </shape>
+    </item>
+
+    <!-- 今天非選中狀態 -->
+    <item android:state_activated="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" /> <!-- 白色背景 -->
+            <stroke
+                android:width="2dp"
+                android:color="#FF0000" /> <!-- 紅色外框 -->
+            <corners android:radius="50dp" />
+        </shape>
+    </item>
+
+    <!-- 選中狀態（非今天） -->
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#FF5722" /> <!-- 橘色背景 -->
+            <corners android:radius="50dp" />
+        </shape>
+    </item>
+
+    <!-- 默認狀態 -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" /> <!-- 白色背景 -->
+            <corners android:radius="50dp" />
+        </shape>
+    </item>
+</selector>

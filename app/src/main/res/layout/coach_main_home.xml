@@ -276,21 +276,6 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.96" />
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="291dp"
-                android:layout_marginBottom="319dp"
-                android:onClick="onClick"
-                android:text="Button"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline20"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout9" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
