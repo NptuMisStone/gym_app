@@ -177,8 +177,8 @@ public class ScheduledAdd extends AppCompatActivity {
             EditText startTimeEditText = findViewById(R.id.etStartTime);
             EditText endTimeEditText = findViewById(R.id.etEndTime);
 
-            if (isStart && hourOfDay < 7) {
-                Toast.makeText(this, "開始時間不得在七點前", Toast.LENGTH_SHORT).show();
+            if (isStart && hourOfDay < 6) {
+                Toast.makeText(this, "開始時間不得在06:00前", Toast.LENGTH_SHORT).show();
                 // 清空時間
                 startTimeEditText.setText("");
                 endTimeEditText.setText("");
@@ -186,7 +186,7 @@ public class ScheduledAdd extends AppCompatActivity {
             }
 
             if (!isStart && hourOfDay > 23) {
-                Toast.makeText(this, "結束時間不得超過十一點", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "結束時間不得超過23:00點", Toast.LENGTH_SHORT).show();
                 // 清空時間
                 startTimeEditText.setText("");
                 endTimeEditText.setText("");

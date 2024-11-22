@@ -63,6 +63,20 @@
     </RelativeLayout>
 
 
+    <ImageButton
+        android:id="@+id/ScheduledMain_findButton"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="16dp"
+        android:background="@null"
+        android:contentDescription="日期查詢"
+        android:scaleType="centerInside"
+        android:src="@drawable/scheduled_calendar"
+        app:layout_constraintEnd_toStartOf="@+id/ScheduledMain_dateDisplay"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ScheduledMain_dateDisplay" />
+
     <TextView
         android:id="@+id/ScheduledMain_dateDisplay"
         android:layout_width="wrap_content"
@@ -75,27 +89,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header" />
 
-    <Button
+
+    <ImageButton
         android:id="@+id/ScheduledMain_todayButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="回到今天"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="16dp"
+        android:background="@null"
+        android:contentDescription="回到今天"
+        android:scaleType="centerInside"
+        android:src="@drawable/scheduled_today"
         app:layout_constraintBottom_toBottomOf="@+id/ScheduledMain_dateDisplay"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.724"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/ScheduledMain_dateDisplay"
-        app:layout_constraintTop_toTopOf="@+id/ScheduledMain_dateDisplay"
-        app:layout_constraintVertical_bias="0.666" />
+        app:layout_constraintTop_toTopOf="@+id/ScheduledMain_dateDisplay" />
 
     <FrameLayout
         android:id="@+id/weekContainerWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/ScheduledMain_dateDisplay"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ScheduledMain_dateDisplay">
 
         <LinearLayout
             android:id="@+id/ScheduledMain_weekContainer"
@@ -108,151 +125,151 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ScheduledMain_dateDisplay">
 
-        <!-- 星期標題 -->
-        <LinearLayout
-            android:id="@+id/ScheduledMain_weekHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
+            <!-- 星期標題 -->
+            <LinearLayout
+                android:id="@+id/ScheduledMain_weekHeader"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:gravity="center"
-                android:text="週一"
-                android:textSize="16sp" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="週二"
-                android:textSize="16sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="週一"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="週三"
-                android:textSize="16sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="週二"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="週四"
-                android:textSize="16sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="週三"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="週五"
-                android:textSize="16sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="週四"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="週六"
-                android:textSize="16sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="週五"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="0dp"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="週六"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="週日"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- 日期按鈕 -->
+            <LinearLayout
+                android:id="@+id/ScheduledMain_weekDays"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:gravity="center"
-                android:text="週日"
-                android:textSize="16sp" />
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/day1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/day_button_selector"
+                    android:text="1"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/day2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/day_button_selector"
+                    android:text="2"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/day3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/day_button_selector"
+                    android:text="3"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/day4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/day_button_selector"
+                    android:text="4"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/day5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/day_button_selector"
+                    android:text="5"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/day6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/day_button_selector"
+                    android:text="6"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/day7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/day_button_selector"
+                    android:text="7"
+                    android:textSize="18sp" />
+            </LinearLayout>
         </LinearLayout>
-
-        <!-- 日期按鈕 -->
-        <LinearLayout
-            android:id="@+id/ScheduledMain_weekDays"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/day1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/day_button_selector"
-                android:text="1"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/day2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/day_button_selector"
-                android:text="2"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/day3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/day_button_selector"
-                android:text="3"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/day4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/day_button_selector"
-                android:text="4"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/day5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/day_button_selector"
-                android:text="5"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/day6"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/day_button_selector"
-                android:text="6"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/day7"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/day_button_selector"
-                android:text="7"
-                android:textSize="18sp" />
-        </LinearLayout>
-    </LinearLayout>
-</FrameLayout>
+    </FrameLayout>
 
 
     <!-- 課程列表 (RecyclerView) -->
@@ -275,8 +292,8 @@
         android:text="無課程"
         android:textSize="18sp"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
