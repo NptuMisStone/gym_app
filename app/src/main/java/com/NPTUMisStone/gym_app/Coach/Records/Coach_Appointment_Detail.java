@@ -1,7 +1,9 @@
 package com.NPTUMisStone.gym_app.Coach.Records;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,8 +57,6 @@ public class Coach_Appointment_Detail extends AppCompatActivity {
             return insets;
         });
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-        // 返回按鈕
-        findViewById(R.id.coach_Appointment_detail_back).setOnClickListener(v -> finish());
         scheduleID = getIntent().getIntExtra("看預約名單ID", 0);
         nodata=findViewById(R.id.nodata_coach_ap_detail);
         nodata.setVisibility(View.GONE);
@@ -290,6 +290,9 @@ public class Coach_Appointment_Detail extends AppCompatActivity {
         }
     }
     public  void coach_Appointment_detail_goback(View view){
-        finish();
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("刷新數據", true);
+        setResult(RESULT_OK, resultIntent);
+        super.finish();
     }
 }

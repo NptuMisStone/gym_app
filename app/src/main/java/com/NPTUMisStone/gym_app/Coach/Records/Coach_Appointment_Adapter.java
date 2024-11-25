@@ -1,4 +1,5 @@
 package com.NPTUMisStone.gym_app.Coach.Records;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
@@ -24,10 +26,12 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 public class Coach_Appointment_Adapter extends RecyclerView.Adapter<Coach_Appointment_Adapter.ViewHolder> {
+    Fragment parentFragment;
     List<Coach_AppointmentData> appointmentDataList;
     Context context;
     Connection MyConnection;
-    public Coach_Appointment_Adapter(Context context, List<Coach_AppointmentData> appointmentList) {
+    public Coach_Appointment_Adapter(Fragment parentFragment, List<Coach_AppointmentData> appointmentList) {
+        this.parentFragment = parentFragment;
         this.context = context;
         this.appointmentDataList = appointmentList;
     }
@@ -88,9 +92,9 @@ public class Coach_Appointment_Adapter extends RecyclerView.Adapter<Coach_Appoin
             }
         });
         holder.detailBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(context, Coach_Appointment_Detail.class);
+            Intent intent = new Intent(parentFragment.getContext(), Coach_Appointment_Detail.class);
             intent.putExtra("看預約名單ID", item.getScheduleID());
-            context.startActivity(intent);
+            parentFragment.startActivityForResult(intent, 1001);
         });
     }
     @Override

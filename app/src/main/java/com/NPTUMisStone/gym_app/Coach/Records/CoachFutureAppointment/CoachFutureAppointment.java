@@ -1,7 +1,10 @@
 package com.NPTUMisStone.gym_app.Coach.Records.CoachFutureAppointment;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -96,7 +99,7 @@ public class CoachFutureAppointment extends Fragment {
     }
     private void updateUI() {
         if (getActivity() != null && isAdded()) {
-            Coach_Appointment_Adapter coachAppointmentAdapter = new Coach_Appointment_Adapter(getActivity(),appointmentData);
+            Coach_Appointment_Adapter coachAppointmentAdapter = new Coach_Appointment_Adapter(this,appointmentData);
             RecyclerView coachApFutureRecycleview   = binding.coachApFutureRecycleview;
             coachApFutureRecycleview.setLayoutManager(new LinearLayoutManager(getActivity()));
             coachApFutureRecycleview.setAdapter(coachAppointmentAdapter);
@@ -113,6 +116,14 @@ public class CoachFutureAppointment extends Fragment {
         super.onDestroyView();
         binding = null; // 避免内存泄漏
     }
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1001 && resultCode == AppCompatActivity.RESULT_OK) {
+            if (data != null && data.getBooleanExtra("刷新數據", false)) {
+                fetchFutureAppointments();
+            }
+        }
+    }
 
 }
