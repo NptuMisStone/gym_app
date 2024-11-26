@@ -1,13 +1,24 @@
 package com.NPTUMisStone.gym_app.Coach.Scheduled;
 
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +38,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -35,9 +49,13 @@ import java.util.concurrent.Executors;
 
 public class ScheduledAdd extends AppCompatActivity {
 
-    List<DateInfo> dateInfoList;
+    List<DateInfo> dateInfoList = new ArrayList<>();
     boolean isDialogShow = false;
     Connection MyConnection;
+    int classPeriod = 0; // 儲存當前課程時長
+    int selectedClassId = -1; // 保存選中的 classId
+    private int selectedCourseIndex = 0; // 默認為第一個課程
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +66,44 @@ public class ScheduledAdd extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+
+        // 返回按鈕
         findViewById(R.id.ScheduledAdd_backButton).setOnClickListener(v -> finish());
 
         // 初始化按鈕和輸入框
+        initDefaultTime();
         initDateSelectionButton();
         initCourseSelectionButton();
+
+        // 綁定 btnAddSchedule
+        Button btnAddSchedule = findViewById(R.id.btnAddSchedule);
+        // 設置點擊事件
+        btnAddSchedule.setOnClickListener(v -> {
+            addSchedule();
+        });
     }
+
+    private void initDefaultTime() {
+        EditText etStartTime = findViewById(R.id.etStartTime);
+
+        // 禁止直接編輯
+        etStartTime.setFocusable(false); // 禁止鍵盤輸入
+        etStartTime.setClickable(true); // 允許點擊觸發事件
+
+        // 為開始時間設置點擊事件，打開時間選擇對話框
+        etStartTime.setOnClickListener(v -> {
+            if (selectedClassId == -1 || classPeriod == 0) {
+                Toast.makeText(this, "請先選擇課程", Toast.LENGTH_SHORT).show();
+            } else {
+                String currentTime = etStartTime.getText().toString(); // 獲取當前的開始時間
+                showCustomTimePickerDialog(currentTime);
+            }
+        });
+
+    }
+
     private void initDateSelectionButton() {
         Button btnSelectDate = findViewById(R.id.btnSelectDate);
         btnSelectDate.setOnClickListener(v -> showDatePicker());
@@ -65,89 +114,141 @@ public class ScheduledAdd extends AppCompatActivity {
         btnSelectCourse.setOnClickListener(v -> showCourseSelectionDialog());
     }
 
-    private void initTimePickerEditText(int classPeriod) {
-        EditText etStartTime = findViewById(R.id.etStartTime);
-        etStartTime.setOnClickListener(v -> {
-            if (selectedClassId == -1) {
-                Toast.makeText(this, "請先選擇課程", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            showTimePickerDialog(classPeriod, true);
-        });
-    }
-
-
     private void showDatePicker() {
-        if (isDialogShow) return;    //避免重複開啟
+        if (isDialogShow) return;
         isDialogShow = true;
-        View dialogView = getLayoutInflater().inflate(R.layout.coach_scheduled_set_calendar, null); //自定義日歷元件：https://blog.csdn.net/coffee_shop/article/details/130709029
+
+        View dialogView = getLayoutInflater().inflate(R.layout.coach_scheduled_set_calendar, null);
         MultiCalendarView mCalendarView = dialogView.findViewById(R.id.ScheduledSet_calendarView);
-        mCalendarView.setDateRange(System.currentTimeMillis(), System.currentTimeMillis() + 365L * 24 * 60 * 60 * 1000, System.currentTimeMillis());
+
+        // 設置日期範圍
+        mCalendarView.setDateRange(System.currentTimeMillis()+ 24 * 60 * 60 * 1000,
+                System.currentTimeMillis() + 365L * 24 * 60 * 60 * 1000, System.currentTimeMillis());
+
+        // 如果有選中日期，回填
         if (dateInfoList != null) mCalendarView.setSelectedDateList(dateInfoList);
-        mCalendarView.setOnMultiDateSelectedListener((view, selectedDays, selectedDates) -> {
-            ((AlertDialog) view.getTag()).setMessage(selectedDates.isEmpty() ? "請選擇日期" : "已選擇" + selectedDates.size() + "天");
-            return null;
-        });
+
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setMessage(dateInfoList == null || dateInfoList.isEmpty() ? "請選擇日期" : "已選擇" + dateInfoList.size() + "天")
-                .setTitle("選擇日期").setView(dialogView).setPositiveButton("確定", (dialog1, which) -> {
+                .setTitle("選擇日期")
+                .setView(dialogView)
+                .setPositiveButton("確定", (dialog1, which) -> {
                     dateInfoList = mCalendarView.getSelectedDateList();
-                    List<String> dateList = new ArrayList<>();
-                    for (DateInfo dateInfo : dateInfoList)
-                        dateList.add(dateInfo.getYear() + "/" + dateInfo.getMonth() + "/" + dateInfo.getDay());
-                    ((TextView) findViewById(R.id.tvSelectedDates)).setText(dateList.isEmpty() ? "" : dateList.toString());
-                }).create();
+
+                    TextView summaryTextView = findViewById(R.id.tvSelectedDatesSummary);
+                    if (dateInfoList == null || dateInfoList.isEmpty()) {
+                        summaryTextView.setText("尚未選擇日期");
+                    } else {
+                        summaryTextView.setText(String.format("已選擇 %d 天", dateInfoList.size()));
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .create();
+
         mCalendarView.setTag(dialog);
         dialog.setOnDismissListener(dialogInterface -> isDialogShow = false);
         dialog.show();
     }
+
     private void showCourseSelectionDialog() {
         Executors.newSingleThreadExecutor().execute(() -> {
-            fetchCourseData(); // 從後端獲取課程名和 ID 列表
+            fetchCourseData();
 
             if (courseNames.isEmpty()) {
                 runOnUiThread(() -> Toast.makeText(this, "無可用課程", Toast.LENGTH_SHORT).show());
                 return;
             }
 
-            String[] courseArray = courseNames.toArray(new String[0]);
             runOnUiThread(() -> {
-                final int[] selectedItem = {0}; // 默認選擇第一項
+                String[] courseArray = courseNames.toArray(new String[0]);
 
-                // 創建 AlertDialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("選擇課程")
-                        .setSingleChoiceItems(courseArray, selectedItem[0], (dialog, which) -> {
-                            selectedItem[0] = which; // 更新選擇的課程索引
+                new AlertDialog.Builder(this)
+                        .setTitle("選擇課程")
+                        .setSingleChoiceItems(courseArray, selectedCourseIndex, (dialog, which) -> {
+                            selectedCourseIndex = which; // 保存用戶選擇的索引
                         })
                         .setPositiveButton("確定", (dialog, which) -> {
-                            String selectedCourse = courseArray[selectedItem[0]];
-                            int selectedClassId = courseIds.get(selectedItem[0]); // 對應的 classId
-                            updateSelectedCourse(selectedCourse, selectedClassId); // 更新主界面
-                            dialog.dismiss();
+                            String selectedCourse = courseArray[selectedCourseIndex];
+                            int selectedClassId = courseIds.get(selectedCourseIndex);
+                            updateSelectedCourse(selectedCourse, selectedClassId);
                         })
-                        .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
-                        .create()
+                        .setNegativeButton("取消", null)
                         .show();
             });
         });
     }
+    private void showCustomTimePickerDialog(String initialTime) {
+        if (isDialogShow) return; // 避免重複開啟
+        isDialogShow = true;
 
+        // 加載自定義佈局
+        View dialogView = getLayoutInflater().inflate(R.layout.custom_time_picker, null);
+
+        NumberPicker npHour = dialogView.findViewById(R.id.npHour);
+        NumberPicker npMinute = dialogView.findViewById(R.id.npMinute);
+
+        // 設置小時範圍（6:00 ~ 22:30）
+        npHour.setMinValue(6);
+        npHour.setMaxValue(22);
+
+        // 設置分鐘範圍（:00 和 :30）
+        npMinute.setMinValue(0);
+        npMinute.setMaxValue(1);
+        npMinute.setDisplayedValues(new String[]{"00", "30"});
+
+        // 解析傳入的初始時間
+        int initialHour = 6;
+        int initialMinute = 0;
+        if (initialTime != null && !initialTime.isEmpty()) {
+            try {
+                String[] timeParts = initialTime.split(":");
+                initialHour = Integer.parseInt(timeParts[0]);
+                initialMinute = Integer.parseInt(timeParts[1]);
+                initialMinute = (initialMinute == 30) ? 1 : 0; // 將分鐘轉換為 NumberPicker 的索引
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // 設置 NumberPicker 的初始值
+        npHour.setValue(initialHour);
+        npMinute.setValue(initialMinute);
+
+        // 建立 AlertDialog
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setTitle("選擇時間")
+                .setPositiveButton("確定", (dialogInterface, which) -> {
+                    int selectedHour = npHour.getValue();
+                    int selectedMinute = npMinute.getValue() * 30;
+
+                    // 更新開始時間
+                    EditText etStartTime = findViewById(R.id.etStartTime);
+                    EditText etEndTime = findViewById(R.id.etEndTime);
+
+                    String startTime = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
+                    etStartTime.setText(startTime);
+
+                    String endTime = calculateTime(selectedHour, selectedMinute, classPeriod, true);
+                    etEndTime.setText(endTime);
+                })
+                .setNegativeButton("取消", (dialogInterface, which) -> dialogInterface.dismiss())
+                .create();
+
+        dialog.setOnDismissListener(dialogInterface -> isDialogShow = false);
+        dialog.show();
+    }
 
     private List<String> courseNames = new ArrayList<>();
     private List<Integer> courseIds = new ArrayList<>();
 
     private synchronized void fetchCourseData() {
         String query = "SELECT [課程編號], [課程名稱] FROM [健身教練課程] WHERE [健身教練編號] = ?";
-
         try (PreparedStatement statement = MyConnection.prepareStatement(query)) {
-            statement.setInt(1, Coach.getInstance().getCoachId()); // 使用教練 ID 過濾課程
+            statement.setInt(1, Coach.getInstance().getCoachId());
             ResultSet resultSet = statement.executeQuery();
 
             courseNames.clear();
             courseIds.clear();
-
-            // 獲取課程名稱和對應的課程 ID
             while (resultSet.next()) {
                 courseIds.add(resultSet.getInt("課程編號"));
                 courseNames.add(resultSet.getString("課程名稱"));
@@ -156,131 +257,215 @@ public class ScheduledAdd extends AppCompatActivity {
             Log.e("SQL", "課程查詢失敗", e);
         }
     }
-
-    private int selectedClassId = -1; // 保存選中的 classId
-
     private void updateSelectedCourse(String selectedCourse, int classId) {
         TextView tvSelectedCourse = findViewById(R.id.tvSelectedCourse);
         tvSelectedCourse.setText(selectedCourse);
-        selectedClassId = classId; // 保存選中的 classId
-        Toast.makeText(this, "選擇的課程：" + selectedCourse, Toast.LENGTH_SHORT).show();
-        int classPeriod = getClassPeriod(selectedClassId); // 使用選中的 classId 獲取課程時長
-        initTimePickerEditText(classPeriod);
+        selectedClassId = classId;
+
+        // 獲取課程時長
+        int classPeriod = getClassPeriod(classId);
+        Log.e("SQL", "課程時間長度：" + classPeriod);
+        if (classPeriod > 0) {
+            // 保存課程時長到全局變數
+            this.classPeriod = classPeriod;
+
+            // 更新時間字段
+            updateTimeFields(classPeriod);
+        } else {
+            Toast.makeText(this, "課程時長無效，請重新選擇課程", Toast.LENGTH_SHORT).show();
+        }
     }
+    private void updateTimeFields(int classPeriod) {
+        EditText etStartTime = findViewById(R.id.etStartTime);
+        EditText etEndTime = findViewById(R.id.etEndTime);
 
-    private void showTimePickerDialog(int classPeriod, boolean isStart) {
-        if (isDialogShow) return;
-        isDialogShow = true;
+        // 固定開始時間為 06:00
+        String startTime = "06:00";
+        etStartTime.setText(startTime);
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
-            // 驗證時間
-            EditText startTimeEditText = findViewById(R.id.etStartTime);
-            EditText endTimeEditText = findViewById(R.id.etEndTime);
-
-            if (isStart && hourOfDay < 6) {
-                Toast.makeText(this, "開始時間不得在06:00前", Toast.LENGTH_SHORT).show();
-                // 清空時間
-                startTimeEditText.setText("");
-                endTimeEditText.setText("");
-                return;
-            }
-
-            if (!isStart && hourOfDay > 23) {
-                Toast.makeText(this, "結束時間不得超過23:00點", Toast.LENGTH_SHORT).show();
-                // 清空時間
-                startTimeEditText.setText("");
-                endTimeEditText.setText("");
-                return;
-            }
-
-            if (isStart) {
-                // 更新開始時間
-                String startTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
-                startTimeEditText.setText(startTime);
-
-                // 根據開始時間計算結束時間
-                String endTime = calculateTime(hourOfDay, minute, classPeriod, true);
-
-                // 檢查結束時間是否超過 23:00
-                int endHour = Integer.parseInt(endTime.split(":")[0]);
-                if (endHour > 23) {
-                    Toast.makeText(this, "課程結束時間不得超過十一點", Toast.LENGTH_SHORT).show();
-                    // 清空時間
-                    startTimeEditText.setText("");
-                    endTimeEditText.setText("");
-                } else {
-                    endTimeEditText.setText(endTime);
-                }
-            } else {
-                // 更新結束時間
-                String endTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
-                endTimeEditText.setText(endTime);
-
-                // 根據結束時間計算開始時間
-                String startTime = calculateTime(hourOfDay, minute, classPeriod, false);
-
-                // 檢查開始時間是否小於 7:00
-                int startHour = Integer.parseInt(startTime.split(":")[0]);
-                if (startHour < 7) {
-                    Toast.makeText(this, "課程開始時間不得早於七點", Toast.LENGTH_SHORT).show();
-                    // 清空時間
-                    startTimeEditText.setText("");
-                    endTimeEditText.setText("");
-                } else {
-                    startTimeEditText.setText(startTime);
-                }
-            }
-        }, 7, 0, true); // 預設時間為早上 7:00
-
-        timePickerDialog.setOnDismissListener(dialogInterface -> isDialogShow = false);
-        timePickerDialog.show();
+        // 計算結束時間
+        String endTime = calculateTime(6, 0, classPeriod, true);
+        etEndTime.setText(endTime);
     }
-
     private String calculateTime(int hourOfDay, int minute, int classPeriod, boolean isStart) {
-        // 將時長轉換為分鐘加總
-        int totalMinutes = hourOfDay * 60 + minute;
+        int totalMinutes = hourOfDay * 60 + minute + (isStart ? classPeriod : -classPeriod);
 
-        // 加或減去課程時長
-        totalMinutes += isStart ? classPeriod : -classPeriod;
+        // 獲取開始和結束時間輸入框
+        EditText etStartTime = findViewById(R.id.etStartTime);
+        EditText etEndTime = findViewById(R.id.etEndTime);
 
-        // 確保時間在有效範圍內
-        if (totalMinutes < 0) totalMinutes += 24 * 60; // 一天的總分鐘數
+        // 超出範圍的處理
+        if (totalMinutes > 1380) { // 超過 23:00
+            Toast.makeText(this, "結束時間不可超過 23:00", Toast.LENGTH_SHORT).show();
+            if (isStart) {
+                etStartTime.setText(""); // 清空開始時間
+                etEndTime.setText(""); // 清空結束時間
+            }
+            return "";
+        }
+        if (totalMinutes < 360) { // 早於 06:00
+            Toast.makeText(this, "時間不可早於 06:00", Toast.LENGTH_SHORT).show();
+            if (!isStart) {
+                etStartTime.setText(""); // 清空開始時間
+                etEndTime.setText(""); // 清空結束時間
+            }
+            return "";
+        }
 
-        // 計算小時和分鐘
-        int newHour = (totalMinutes / 60) % 24; // 小時部分
-        int newMinute = totalMinutes % 60;     // 分鐘部分
-
-        // 返回格式化時間字串
+        // 計算新時間
+        int newHour = totalMinutes / 60;
+        int newMinute = totalMinutes % 60;
         return String.format(Locale.getDefault(), "%02d:%02d", newHour, newMinute);
     }
 
+    private int getClassPeriod(Integer classId) {
+        if (classId == null || classId == -1) return 0;
 
-
-    //取得課程時間長度
-    private int getClassPeriod(Integer classId){
-        if (classId == null || classId == -1) {
-            Log.w("ScheduledAdd", "Invalid classId: " + classId);
-            return 0; // 默認為 0
-        }
-        Callable<Integer> task = () -> {
-            int classPeriod = 0;
-            try {
-                String searchQuery = "SELECT [課程時間長度] FROM [健身教練課程] WHERE [課程編號] = ?";
-                PreparedStatement searchStatement = MyConnection.prepareStatement(searchQuery);
-                searchStatement.setInt(1, classId);
-                ResultSet searchResult = searchStatement.executeQuery();
-                if (searchResult.next()) classPeriod = searchResult.getInt("課程時間長度");
-            } catch (SQLException e) {
-                Log.e("SQL", "Error in search SQL", e);
-            }
-            if (classPeriod == 0) new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(this, "取得課程時間長度失敗", Toast.LENGTH_SHORT).show());
-            return classPeriod;
-        };
         try {
+            Callable<Integer> task = () -> {
+                int classPeriod = 0;
+                try (PreparedStatement statement = MyConnection.prepareStatement(
+                        "SELECT [課程時間長度] FROM [健身教練課程] WHERE [課程編號] = ?")) {
+                    statement.setInt(1, classId);
+                    ResultSet resultSet = statement.executeQuery();
+                    if (resultSet.next()) classPeriod = resultSet.getInt("課程時間長度");
+                } catch (SQLException e) {
+                    Log.e("SQL", "查詢課程時間失敗", e);
+                }
+                return classPeriod;
+            };
+
             return Executors.newSingleThreadExecutor().submit(task).get();
         } catch (Exception e) {
-            Log.e("FutureTask", "Error getting class period", e);
+            Log.e("FutureTask", "課程時間獲取失敗", e);
             return 0;
         }
     }
+
+    private void addSchedule() {
+        String courseStartTime = ((EditText) findViewById(R.id.etStartTime)).getText().toString();
+        String courseEndTime = ((EditText) findViewById(R.id.etEndTime)).getText().toString();
+
+        if (dateInfoList.isEmpty()) {
+            Toast.makeText(this, "請先選擇日期再進行操作", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (selectedClassId == -1) {
+            Toast.makeText(this, "請先選擇課程再進行操作", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String queryCheck = "SELECT 課程編號, 開始時間, 結束時間 " +
+                "FROM [健身教練課表課程-判斷課程衝突用] " +
+                "WHERE 日期 = ? AND 健身教練編號 = ? " +
+                "ORDER BY 開始時間 ASC";
+
+        String queryInsert = "INSERT INTO [健身教練課表] (課程編號, 日期, 開始時間, 結束時間, 星期幾, 預約人數) VALUES (?, ?, ?, ?, ?, ?)";
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try (PreparedStatement checkStmt = MyConnection.prepareStatement(queryCheck);
+                 PreparedStatement insertStmt = MyConnection.prepareStatement(queryInsert)) {
+
+                String[] chineseDays = {"星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"};
+
+                for (DateInfo dateInfo : dateInfoList) {
+                    LocalDate localDate = LocalDate.of(dateInfo.getYear(), dateInfo.getMonth(), dateInfo.getDay());
+                    String formattedDate = localDate.toString(); // 格式化為 yyyy-MM-dd
+                    String dayOfWeek = chineseDays[localDate.getDayOfWeek().getValue() - 1]; // 轉換為中文星期
+
+                    // 設置檢查衝突的參數
+                    checkStmt.setString(1, formattedDate);
+                    checkStmt.setInt(2, Coach.getInstance().getCoachId());
+
+                    LocalTime selectedStartTime = LocalTime.parse(courseStartTime, DateTimeFormatter.ofPattern("HH:mm"));
+                    LocalTime selectedEndTime = LocalTime.parse(courseEndTime, DateTimeFormatter.ofPattern("HH:mm"));
+
+                    LocalTime previousEndTime = null;
+                    LocalTime nextStartTime = null;
+
+                    String previousCourseId = null;
+                    String nextCourseId = null;
+
+                    boolean hasConflict = false;
+
+                    try (ResultSet resultSet = checkStmt.executeQuery()) {
+                        while (resultSet.next()) {
+                            LocalTime scheduledStartTime = LocalTime.parse(resultSet.getString("開始時間"), DateTimeFormatter.ofPattern("HH:mm"));
+                            LocalTime scheduledEndTime = LocalTime.parse(resultSet.getString("結束時間"), DateTimeFormatter.ofPattern("HH:mm"));
+                            String scheduledCourseId = resultSet.getString("課程編號");
+
+                            // 判斷時間衝突
+                            if ((selectedStartTime.isAfter(scheduledStartTime) && selectedStartTime.isBefore(scheduledEndTime)) ||
+                                    (selectedEndTime.isAfter(scheduledStartTime) && selectedEndTime.isBefore(scheduledEndTime)) ||
+                                    (selectedStartTime.equals(scheduledStartTime) || selectedEndTime.equals(scheduledEndTime) ||
+                                            (selectedStartTime.isBefore(scheduledStartTime) && selectedEndTime.isAfter(scheduledEndTime)))) {
+                                hasConflict = true;
+                                break;
+                            }
+
+                            // 更新最近的前一課程結束時間
+                            if (!scheduledEndTime.isAfter(selectedStartTime) &&
+                                    (previousEndTime == null || scheduledEndTime.isAfter(previousEndTime))) {
+                                previousEndTime = scheduledEndTime;
+                                previousCourseId = scheduledCourseId;
+                            }
+
+                            // 更新最近的後一課程開始時間
+                            if (!scheduledStartTime.isBefore(selectedEndTime) &&
+                                    (nextStartTime == null || scheduledStartTime.isBefore(nextStartTime))) {
+                                nextStartTime = scheduledStartTime;
+                                nextCourseId = scheduledCourseId;
+                            }
+                        }
+
+                        // 檢查與前後課程的間隔時間
+                        if (previousEndTime != null && !previousCourseId.equals(String.valueOf(selectedClassId)) &&
+                                selectedStartTime.isBefore(previousEndTime.plusMinutes(30))) {
+                            runOnUiThread(() -> Toast.makeText(this, "請與前課程預留至少30分鐘交通時間", Toast.LENGTH_SHORT).show());
+                            return;
+                        }
+
+                        if (nextStartTime != null && !nextCourseId.equals(String.valueOf(selectedClassId)) &&
+                                selectedEndTime.isAfter(nextStartTime.minusMinutes(30))) {
+                            runOnUiThread(() -> Toast.makeText(this, "請與後課程預留至少30分鐘交通時間", Toast.LENGTH_SHORT).show());
+                            return;
+                        }
+
+                        if (hasConflict) {
+                            runOnUiThread(() -> Toast.makeText(this, "所選時間與現有時間重疊", Toast.LENGTH_SHORT).show());
+                            return;
+                        }
+                    }
+
+                    Log.d("SQL", "queryCheck: 日期=" + formattedDate + ", 健身教練編號=" + Coach.getInstance().getCoachId());
+                    Log.d("SQL", "queryInsert: 課程編號=" + selectedClassId + ", 日期=" + formattedDate + ", 開始時間=" + courseStartTime + ", 結束時間=" + courseEndTime + ", 星期幾=" + dayOfWeek);
+
+                    // 插入資料
+                    insertStmt.setInt(1, selectedClassId); // 課程編號
+                    insertStmt.setString(2, formattedDate); // 日期
+                    insertStmt.setString(3, courseStartTime); // 開始時間
+                    insertStmt.setString(4, courseEndTime); // 結束時間
+                    insertStmt.setString(5, dayOfWeek); // 星期幾
+                    insertStmt.setInt(6, 0); // 預約人數（默認為 0）
+                    insertStmt.executeUpdate();
+                }
+
+                // 成功提示
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "班表已新增成功！", Toast.LENGTH_SHORT).show();
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        Intent intent = new Intent(this, ScheduledMain.class);
+                        startActivity(intent);
+                        finish();
+                    }, 2000);
+                });
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(this, "新增班表失敗", Toast.LENGTH_SHORT).show());
+            }
+        });
+    }
+
 }

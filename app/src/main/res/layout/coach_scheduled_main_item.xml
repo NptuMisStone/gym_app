@@ -14,16 +14,33 @@
         android:padding="0dp"> <!-- 父容器的 padding 設為 0 -->
 
         <!-- 左側時間 -->
-        <TextView
-            android:id="@+id/courseTime"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/courseTimeContainer"
+            android:layout_width="92dp"
             android:layout_height="match_parent"
             android:background="@drawable/course_time_background"
             android:gravity="center"
-            android:padding="8dp"
-            android:text="09:00 - 10:00"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/courseStartTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="09:00"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/courseEndTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="10:00"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+        </LinearLayout>
 
         <!-- 右側課程資訊 -->
         <LinearLayout
@@ -44,16 +61,32 @@
                 android:singleLine="true"
                 android:ellipsize="end" />
 
-            <TextView
-                android:id="@+id/courseLocation"
+            <!-- 課程地點和圖標 -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="課程地點"
-                android:textSize="16sp"
-                android:textColor="@android:color/darker_gray"
-                android:layout_marginTop="4dp"
-                android:singleLine="true"
-                android:ellipsize="end" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+
+                <!-- 地圖圖標 -->
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/maps"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- 課程地點 -->
+                <TextView
+                    android:id="@+id/courseLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="課程地點"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/darker_gray"
+                    android:singleLine="true"
+                    android:ellipsize="end" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

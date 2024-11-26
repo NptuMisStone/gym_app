@@ -77,16 +77,18 @@
         app:layout_constraintTop_toTopOf="@+id/tvStepTitle" />
 
     <TextView
-        android:id="@+id/tvSelectedDates"
-        android:layout_width="0dp"
+        android:id="@+id/tvSelectedDatesSummary"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="未選擇任何日期"
+        android:text="尚未選擇日期"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSelectDate" />
+        app:layout_constraintTop_toBottomOf="@+id/tvStepTitle" />
+
 
     <!-- 步驟 2: 選擇課程 -->
 
@@ -95,14 +97,14 @@
         android:id="@+id/tvStep2Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="20dp"
         android:text="Step 2: 選擇課程"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSelectedDates" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSelectedDatesSummary" />
 
     <TextView
         android:id="@+id/tvSelectedCourse"
@@ -183,6 +185,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:clickable="true"
+            android:enabled="false"
             android:focusable="false"
             android:gravity="center"
             android:hint="結束時間"
@@ -206,12 +209,6 @@
             android:layout_weight="1"
             android:text="新增班表" />
 
-        <Button
-            android:id="@+id/btnCancelSchedule"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="全部取消" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

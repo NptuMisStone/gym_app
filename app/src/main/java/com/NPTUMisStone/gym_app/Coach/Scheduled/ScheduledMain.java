@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
+import com.NPTUMisStone.gym_app.Coach.Main.CoachHome;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 
@@ -70,17 +71,24 @@ public class ScheduledMain extends AppCompatActivity {
 
     // 自定義的 Course 類，用於存儲課程信息
     public class Course {
-        private String courseName;
-        private String startTime;
-        private String endTime;
-        private int locationType;
-        private int scheduleId;
+        private String courseName; // 課程名稱
+        private String startTime;  // 開始時間
+        private String endTime;    // 結束時間
+        private int locationType;  // 地點類型
+        private String locationName; // 地點名稱
+        private String city;       // 縣市
+        private String district;   // 行政區
+        private int scheduleId;    // 課表編號
 
-        public Course(String courseName, String startTime, String endTime, int locationType, int scheduleId) {
+        // 修改後的構造方法
+        public Course(String courseName, String startTime, String endTime, int locationType, String locationName, String city, String district, int scheduleId) {
             this.courseName = courseName;
             this.startTime = startTime;
             this.endTime = endTime;
             this.locationType = locationType;
+            this.locationName = locationName;
+            this.city = city;
+            this.district = district;
             this.scheduleId = scheduleId;
         }
 
@@ -101,10 +109,23 @@ public class ScheduledMain extends AppCompatActivity {
             return locationType;
         }
 
+        public String getLocationName() {
+            return locationName;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public String getDistrict() {
+            return district;
+        }
+
         public int getScheduleId() {
             return scheduleId;
         }
     }
+
 
     Connection MyConnection;
 
@@ -291,12 +312,18 @@ public class ScheduledMain extends AppCompatActivity {
     }
 
     private void setupNavigationButtons() {
-        findViewById(R.id.ScheduledCheck_backButton).setOnClickListener(v -> finish());
+        findViewById(R.id.ScheduledCheck_backButton).setOnClickListener(v -> {
+            Intent intent = new Intent(ScheduledMain.this, CoachHome.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // 清除堆疊，防止重複
+            startActivity(intent);
+        });
+
         findViewById(R.id.ScheduledAdd_button).setOnClickListener(v -> {
             Intent intent = new Intent(ScheduledMain.this, ScheduledAdd.class);
             startActivity(intent);
         });
     }
+
 
     private void initializeViews() {
         dateDisplay = findViewById(R.id.ScheduledMain_dateDisplay);
@@ -501,12 +528,16 @@ public class ScheduledMain extends AppCompatActivity {
                 // 更新選中按鈕
                 updateButtonSelection(getButtonIndexForDay(lastSelectedDay));
 
-                // 更新日期顯示和課程列表
+                // 更新日期顯示
                 updateDisplayedDateAndSchedule(lastSelectedDay);
+
+                // **重新加載對應的課程**
+                loadScheduleForDay(lastSelectedDay);
 
                 enterAnimator.start();
             }
         });
+
         exitAnimator.start();
     }
     private int getButtonIndexForDay(Calendar calendar) {
@@ -541,15 +572,9 @@ public class ScheduledMain extends AppCompatActivity {
     private List<Course> fetchCoursesForDay(Calendar day) {
         List<Course> courses = new ArrayList<>();
 
-        // 計算該周的開始和結束日期
-        Calendar startOfWeek = (Calendar) day.clone();
-        startOfWeek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        Calendar endOfWeek = (Calendar) startOfWeek.clone();
-        endOfWeek.add(Calendar.DAY_OF_WEEK, 6);  // 一周的最後一天（星期日）
-
-        String searchQuery = "SELECT [課程名稱], [開始時間], [結束時間], [地點類型], [課表編號] " +
+        String searchQuery = "SELECT [課程名稱], [開始時間], [結束時間], [地點類型], [地點名稱], [縣市], [行政區], [課表編號] " +
                 "FROM [健身教練課表課程合併] " +
-                "WHERE [日期] = ? " +  // 根據具體日期查詢
+                "WHERE [日期] = ? " +
                 "AND [健身教練編號] = ? " +
                 "ORDER BY [開始時間]";
 
@@ -566,10 +591,13 @@ public class ScheduledMain extends AppCompatActivity {
                 String startTime = resultSet.getString("開始時間");
                 String endTime = resultSet.getString("結束時間");
                 int locationType = resultSet.getInt("地點類型");
+                String locationName = resultSet.getString("地點名稱");
+                String city = resultSet.getString("縣市");
+                String district = resultSet.getString("行政區");
                 int scheduleId = resultSet.getInt("課表編號");
 
                 // 添加到課程列表
-                courses.add(new Course(courseName, startTime, endTime, locationType, scheduleId));
+                courses.add(new Course(courseName, startTime, endTime, locationType, locationName, city, district, scheduleId));
             }
         } catch (SQLException e) {
             Log.e("ScheduledMain", "Error loading courses from DB", e);
@@ -577,6 +605,7 @@ public class ScheduledMain extends AppCompatActivity {
 
         return courses;
     }
+
 
 
     private String formatDateForSQL(Calendar calendar) {
@@ -605,16 +634,30 @@ public class ScheduledMain extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Course course = courseList.get(position); // 獲取 Course 對象
-            holder.textView.setText(course.getCourseName()); // 設置課程名稱
-            holder.timeTextView.setText(course.getStartTime() + " - " + course.getEndTime()); // 設置時間範圍
 
-            // 根據 locationType 設置不同的背景顏色
+            // 設置課程名稱
+            holder.textView.setText(course.getCourseName());
+
+            // 分別設置開始時間和結束時間
+            holder.startTimeTextView.setText(course.getStartTime());
+            holder.endTimeTextView.setText(course.getEndTime());
+
+            // 設置地點
+            String locationText;
+            if (course.getLocationType() == 2) { // 到府服務
+                locationText = "到府 (" + course.getCity() + course.getDistrict() + ")";
+            } else { // 固定地點
+                locationText = course.getLocationName();
+            }
+            holder.locationtextView.setText(locationText);
+
+            // 根據 locationType 設置背景顏色
             if (course.getLocationType() == 2) {
                 holder.courseCardLayout.setBackgroundResource(R.drawable.course_card_blue);
-                holder.courseTime.setBackgroundResource(R.drawable.course_time_blue);
+                holder.courseTimeContainer.setBackgroundResource(R.drawable.course_time_blue);
             } else {
                 holder.courseCardLayout.setBackgroundResource(R.drawable.course_card_red);
-                holder.courseTime.setBackgroundResource(R.drawable.course_time_red);
+                holder.courseTimeContainer.setBackgroundResource(R.drawable.course_time_red);
             }
 
             // 點擊事件，轉換 int 為 String
@@ -626,30 +669,37 @@ public class ScheduledMain extends AppCompatActivity {
             });
         }
 
+
+
         @Override
         public int getItemCount() {
             return courseList.size();
         }
 
         static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView textView;
-            TextView timeTextView;
-            View courseCardLayout;
-            TextView courseTime;
+            TextView textView; // 課程名稱
+            TextView locationtextView; // 課程地點
+            TextView startTimeTextView; // 開始時間
+            TextView endTimeTextView; // 結束時間
+            View courseCardLayout; // 父容器
+            View courseTimeContainer; // 時間容器
 
             ViewHolder(View view) {
                 super(view);
                 textView = view.findViewById(R.id.CheckItem_checkedText);
-                timeTextView = view.findViewById(R.id.courseTime);
+                locationtextView = view.findViewById(R.id.courseLocation);
+                startTimeTextView = view.findViewById(R.id.courseStartTime);
+                endTimeTextView = view.findViewById(R.id.courseEndTime);
                 courseCardLayout = view.findViewById(R.id.courseCardLayout);
-                courseTime = view.findViewById(R.id.courseTime);
+                courseTimeContainer = view.findViewById(R.id.courseTimeContainer);
             }
         }
+
     }
 
     private Map<String, String> getScheduleDetails(String scheduleId) {
         Map<String, String> scheduleDetails = new HashMap<>();
-        String query = "SELECT [課程名稱], [日期], [課程時間長度], [開始時間], [結束時間] " +
+        String query = "SELECT [課程名稱], [日期], [課程時間長度], [開始時間], [結束時間], [地點類型], [地點名稱], [縣市], [行政區] " +
                 "FROM [健身教練課表課程合併] " +
                 "WHERE [課表編號] = ?";
 
@@ -659,10 +709,14 @@ public class ScheduledMain extends AppCompatActivity {
 
             if (resultSet.next()) {
                 scheduleDetails.put("courseName", resultSet.getString("課程名稱"));
-                scheduleDetails.put("date", resultSet.getDate("日期").toString()); // SQL 日期轉字符串
+                scheduleDetails.put("date", resultSet.getDate("日期").toString());
                 scheduleDetails.put("duration", resultSet.getString("課程時間長度"));
                 scheduleDetails.put("startTime", resultSet.getString("開始時間"));
                 scheduleDetails.put("endTime", resultSet.getString("結束時間"));
+                scheduleDetails.put("locationType", resultSet.getString("地點類型"));
+                scheduleDetails.put("locationName", resultSet.getString("地點名稱"));
+                scheduleDetails.put("city", resultSet.getString("縣市"));
+                scheduleDetails.put("district", resultSet.getString("行政區"));
             } else {
                 scheduleDetails.put("error", "找不到相關課程信息。");
             }
@@ -673,6 +727,7 @@ public class ScheduledMain extends AppCompatActivity {
 
         return scheduleDetails;
     }
+
 
     private void showScheduleDetailsDialog(String scheduleId) {
         // 獲取課程詳細資訊
@@ -759,8 +814,10 @@ public class ScheduledMain extends AppCompatActivity {
                 // 刪除成功
                 showToast("✅ 刪除成功：班表已刪除");
 
-                // 刷新課程列表
-                loadScheduleForDay(currentWeekCalendar);
+                // 刷新課程列表，使用 lastSelectedDay 而非 currentWeekCalendar
+                if (lastSelectedDay != null) {
+                    loadScheduleForDay(lastSelectedDay);
+                }
             } else {
                 // 刪除失敗，找不到該課表編號
                 showToast("❌ 刪除失敗：找不到對應的課表編號");
@@ -770,8 +827,8 @@ public class ScheduledMain extends AppCompatActivity {
             showToast("❌ 刪除失敗：無法刪除課表，請稍後再試");
         }
     }
+
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
 }
