@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.NPTUMisStone.gym_app.Coach.Class.ClassMain;
 import com.NPTUMisStone.gym_app.Coach.Comments.Coach_Comments;
@@ -52,13 +53,29 @@ public class CoachHome extends AppCompatActivity {
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
         progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
         init_coachInfo();
-        //getString();
+
+        // 獲取 SwipeRefreshLayout
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.CoachHome_swipeRefreshLayout);
+
+        // 設置下拉刷新事件
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // 調用刷新數據的方法
+            refreshPageContent();
+
+            // 完成刷新後，關閉刷新動畫
+            swipeRefreshLayout.setRefreshing(false);
+        });
+    }
+
+    private void refreshPageContent() {
+        // 在此處刷新頁面數據，例如：
+        // 1. 重新加載教練數據
+        // 2. 更新課程內容
+        // 3. 或者其他需要刷新的邏輯
     }
 
     private void init_coachInfo() {
         ((TextView) findViewById(R.id.CoachHome_nameText)).setText(getGreetingMessage());
-        ((TextView) findViewById(R.id.CoachHome_idText)).setText(getString(R.string.All_idText, Coach.getInstance().getCoachId()));
-        findViewById(R.id.CoachHome_editButton).setOnClickListener(v -> startActivity(new Intent(this, CoachInfo.class)));
         findViewById(R.id.CoachHome_photoImage).setOnClickListener(v -> startActivity(new Intent(this, CoachInfo.class)));
         registerReceiver(broadcastReceiver, new IntentFilter("com.NPTUMisStone.gym_app.LOGOUT"), Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Context.RECEIVER_NOT_EXPORTED : 0);
         setUserImage();

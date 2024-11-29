@@ -38,10 +38,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
@@ -122,8 +124,39 @@ public class ScheduledAdd extends AppCompatActivity {
         MultiCalendarView mCalendarView = dialogView.findViewById(R.id.ScheduledSet_calendarView);
 
         // 設置日期範圍
-        mCalendarView.setDateRange(System.currentTimeMillis()+ 24 * 60 * 60 * 1000,
-                System.currentTimeMillis() + 365L * 24 * 60 * 60 * 1000, System.currentTimeMillis());
+        new Thread(() -> {
+            try {
+                // 將教練編號轉換為 String
+                String coachId = String.valueOf(Coach.getInstance().getCoachId());
+                try (PreparedStatement statement = MyConnection.prepareStatement(
+                        "SELECT 合約到期日 FROM 健身教練審核 WHERE 健身教練編號 = ?")) {
+                    statement.setString(1, coachId);
+                    ResultSet resultSet = statement.executeQuery();
+
+                    if (resultSet.next()) {
+                        String contractEndDateStr = resultSet.getString("合約到期日");
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        Date contractEndDate = dateFormat.parse(contractEndDateStr);
+
+                        if (contractEndDate != null) {
+                            long currentTime = System.currentTimeMillis();
+                            long adjustedEndDate = contractEndDate.getTime() - (24 * 60 * 60 * 1000); // 扣一天
+                            runOnUiThread(() -> mCalendarView.setDateRange(
+                                    currentTime + (24 * 60 * 60 * 1000), // 起始日期：今天+1
+                                    adjustedEndDate, // 結束日期：合約到期日 - 1天
+                                    currentTime // 默認選中日期
+                            ));
+                        }
+                    }
+                    resultSet.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(this, "無法設定日期範圍：" + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+
+
 
         // 如果有選中日期，回填
         if (dateInfoList != null) mCalendarView.setSelectedDateList(dateInfoList);
