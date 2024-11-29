@@ -4,7 +4,9 @@ import static com.NPTUMisStone.gym_app.User_And_Coach.ErrorHints.editHint;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -30,11 +32,14 @@ import androidx.core.view.WindowInsetsCompat;
 import com.NPTUMisStone.gym_app.Main.Identify.Login;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User_And_Coach.CameraActivity;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import com.NPTUMisStone.gym_app.User_And_Coach.PasswordReset;
 import com.NPTUMisStone.gym_app.User_And_Coach.Validator;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -63,7 +68,7 @@ public class UserInfo extends AppCompatActivity {
         ((TextView) findViewById(R.id.UserInfo_idText)).setText(getString(R.string.All_idText, User.getInstance().getUserId()));
         findViewById(R.id.UserInfo_return).setOnClickListener(v -> finish());
         findViewById(R.id.UserInfo_logout).setOnClickListener(v -> logout());
-        findViewById(R.id.UserInfo_upload).setOnClickListener(v -> changeImage());
+        findViewById(R.id.UserInfo_upload).setOnClickListener(v -> showImageSourceDialog());
         findViewById(R.id.UserInfo_resetButton).setOnClickListener(v -> new PasswordReset(this, true, MyConnection).showPasswordResetDialog());
         userinfo_tv = new AutoCompleteTextView[]{
                 findViewById(R.id.UserInfo_nameText),
@@ -257,7 +262,7 @@ public class UserInfo extends AppCompatActivity {
 /*
     private void changeImage() {
         userinfo_image = findViewById(R.id.UserInfo_image);
-        Intent intent = new Intent();   //上傳圖片：https://www.youtube.com/watch?v=9oNujFx_ZaI&ab_channel=ShihFinChen
+        Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -277,38 +282,33 @@ public class UserInfo extends AppCompatActivity {
                 }
             }
     );*/
-    private void changeImage() {
-        showImageSourceDialog();
-    }
 
     private void showImageSourceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("選擇圖片來源")
-                .setItems(new CharSequence[]{"從相簿選擇", "拍照"}, (dialog, which) -> {
-                    if (which == 0) {
-                        chooseFromGallery();
-                    } else {
-                        takePhoto();
+        builder.setTitle("選擇圖片來源").setItems(new CharSequence[]{"從相簿選擇", "拍照"}, (dialog, which) -> {
+                    //上傳圖片：https://www.youtube.com/watch?v=9oNujFx_ZaI&ab_channel=ShihFinChen  //上傳圖片：https://www.youtube.com/watch?v=9oNujFx_ZaI&ab_channel=ShihFinChen
+                    if (which == 0) uploadImage_ActivityResult.launch(new Intent().setType("image/*")
+                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                                .setAction(Intent.ACTION_GET_CONTENT));
+                    else cameraActivityResultLauncher.launch(new Intent(this, CameraActivity.class));
+        }).show();
+    }
+    ActivityResultLauncher<Intent> cameraActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        String imagePath = data.getStringExtra("imagePath");
+                        if (imagePath != null) {
+                            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                            ImageView imageView = findViewById(R.id.UserInfo_image);
+                            imageView.setImageBitmap(bitmap);
+                            updateUserImageInDatabase(bitmap);
+                        }
                     }
-                })
-                .show();
-    }
-
-    private void chooseFromGallery() {
-        Intent intent = new Intent();
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        uploadImage_ActivityResult.launch(intent);
-    }
-
-    private void takePhoto() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            uploadImage_ActivityResult.launch(intent);
-        }
-    }
-
+                }
+            }
+    );
     ActivityResultLauncher<Intent> uploadImage_ActivityResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -316,15 +316,82 @@ public class UserInfo extends AppCompatActivity {
                     Intent data = result.getData();
                     if (data == null) return;
                     uri = data.getData();
+                    Bitmap bitmap = null;
                     if (uri == null && data.getExtras() != null) {
-                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                        userinfo_image.setImageBitmap(bitmap);
+                        bitmap = (Bitmap) data.getExtras().get("data");
                     } else {
-                        userinfo_image.setImageURI(uri);
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                        } catch (IOException e) {
+                            Log.e("Image", "Error getting image from URI", e);
+                        }
+                    }
+                    if (bitmap != null) {
+                        userinfo_image.setImageBitmap(bitmap);
+                        updateUserImageInDatabase(bitmap);
                     }
                 } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                     Toast.makeText(this, "取消圖片上傳", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "圖片上傳失敗", Toast.LENGTH_SHORT).show();
                 }
             }
     );
+    private void updateUserImageInDatabase(Bitmap bitmap) {
+        // Convert Bitmap to byte array
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] imageBytes = stream.toByteArray();
+
+        // Update the database
+        try {
+            PreparedStatement ps = MyConnection.prepareStatement("UPDATE 使用者資料 SET 使用者圖片 = ? WHERE 使用者編號 = ?");
+            ps.setBytes(1, imageBytes);
+            ps.setInt(2, User.getInstance().getUserId());
+            ps.executeUpdate();
+            User.getInstance().setUserImage(imageBytes);
+            Toast.makeText(this, "圖片更新成功", Toast.LENGTH_SHORT).show();
+        } catch (SQLException e) {
+            Log.e("SQL", "Error updating user image", e);
+            Toast.makeText(this, "圖片更新失敗", Toast.LENGTH_SHORT).show();
+        }
+    }
+    /*private void takePhoto() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            uploadImage_ActivityResult.launch(intent);
+        } new AlertDialog.Builder(this).setTitle("錯誤")
+                .setMessage("無法開啟相機，請檢查您的相機應用程式或權限設置。")
+                .setPositiveButton("確定", null).show();
+    }
+*/
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
+    private static final int CAMERA_REQUEST_CODE = 1001;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+            String imagePath = data.getStringExtra("imagePath");
+            if (imagePath != null) {
+                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                ImageView imageView = findViewById(R.id.UserInfo_image);
+                imageView.setImageBitmap(bitmap);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startActivity(new Intent(this, CameraActivity.class));
+            } else {
+                new AlertDialog.Builder(this).setTitle("錯誤")
+                        .setMessage("無法開啟相機，請檢查您的相機應用程式或權限設置。")
+                        .setPositiveButton("確定", null).show();
+            }
+        }
+    }
 }

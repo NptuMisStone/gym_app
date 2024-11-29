@@ -72,7 +72,8 @@ public class ClassDetail extends AppCompatActivity {
                 Manifest.permission.ACCESS_COARSE_LOCATION
         }, 1);
     }
-
+    //【How to Get Current Location Google Map SDK in Android】
+    // ：https://mrappbuilder.medium.com/how-to-get-current-location-google-map-sdk-in-android-993638d17bd1
     private void getCurrentLocation() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (checkLocationPermissions()) {
@@ -98,7 +99,8 @@ public class ClassDetail extends AppCompatActivity {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
-
+    //【How to implement Google Map Navigation in Android】
+    // ：https://www.youtube.com/watch?v=WiMa7nh7rF4
     private void openGoogleMaps(double latitude, double longitude) {
         String currentLocation = latitude + "," + longitude;
         executeQuery("SELECT 縣市,行政區,顯示地點地址 FROM [健身教練課程-有排課的] WHERE 課程編號 = ?", rs -> {

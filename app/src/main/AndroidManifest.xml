@@ -2,9 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +24,7 @@
         android:theme="@style/Theme.Gym_app"
         tools:targetApi="31">
         <activity
-            android:name=".Coach.Scheduled.MainActivity"
+            android:name=".User_And_Coach.CameraActivity"
             android:exported="false" />
         <activity
             android:name=".Coach.Records.Coach_Appointment_Detail"
@@ -62,13 +69,7 @@
             android:name=".User.Main.UserInfo"
             android:exported="false" />
         <activity
-            android:name=".Coach.Scheduled.ScheduledSet"
-            android:exported="false" />
-        <activity
             android:name=".Coach.Main.Achievement"
-            android:exported="false" />
-        <activity
-            android:name=".Coach.Scheduled.ScheduledCheck"
             android:exported="false" />
         <activity
             android:name=".Coach.Class.ClassMain"
