@@ -84,7 +84,7 @@ public class Contact extends AppCompatActivity {
             locationComponentPlugin.setEnabled(true);
             LocationPuck2D locationPuck2D = new LocationPuck2D();
 
-            Drawable drawable = AppCompatResources.getDrawable(this, R.drawable.baseline_location_on_24);
+            Drawable drawable = AppCompatResources.getDrawable(this, R.drawable.all_ic_location);
             Bitmap bitmap = drawableToBitmap(drawable);
             locationPuck2D.setBearingImage(ImageHolder.from(bitmap));
             locationComponentPlugin.setLocationPuck(locationPuck2D);

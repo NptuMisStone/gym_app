@@ -9,7 +9,7 @@
     tools:context=".User.Main.UserHome">
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/CoachHome_linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginTop="15dp"

@@ -300,24 +300,22 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private ImageReader.OnImageAvailableListener createImageAvailableListener(final File file) {
-        return reader -> {
-            mBackgroundHandler.post(() -> {
-                try (Image image = reader.acquireLatestImage()) {
-                    ByteBuffer buffer = image.getPlanes()[0].getBuffer();
-                    byte[] bytes = new byte[buffer.capacity()];
-                    buffer.get(bytes);
-                    saveImage(bytes, file);
-                    runOnUiThread(() -> {
-                        setResult(RESULT_OK, new Intent().putExtra("imagePath", file.getAbsolutePath()));
-                        finish();
-                    });
-                } catch (FileNotFoundException e) {
-                    Log.e("CameraActivity", "File not found", e);
-                } catch (IOException e) {
-                    Log.e("CameraActivity", "Error saving file", e);
-                }
-            });
-        };
+        return reader -> mBackgroundHandler.post(() -> {
+            try (Image image = reader.acquireLatestImage()) {
+                ByteBuffer buffer = image.getPlanes()[0].getBuffer();
+                byte[] bytes = new byte[buffer.capacity()];
+                buffer.get(bytes);
+                saveImage(bytes, file);
+                runOnUiThread(() -> {
+                    setResult(RESULT_OK, new Intent().putExtra("imagePath", file.getAbsolutePath()));
+                    finish();
+                });
+            } catch (FileNotFoundException e) {
+                Log.e("CameraActivity", "File not found", e);
+            } catch (IOException e) {
+                Log.e("CameraActivity", "Error saving file", e);
+            }
+        });
     }
 
     private void saveImage(byte[] bytes, File file) throws IOException {

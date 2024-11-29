@@ -221,6 +221,8 @@ v0.96：新增班表加入合約到期日限制，首頁待修(宇哲)
 
 v0.97：使用者個人資訊拍照功能(侑宸)
 
+v0.98：整理Gradle檔,Manifest,檔案名稱,部分檔案內容、地圖介面初步運作(侑宸)
+
 ## 補充：
 
 ### 圖片：
@@ -245,30 +247,25 @@ R.drawable.main_login_ic_account：預設使用者圖片
    new Handler(Looper.getMainLooper()).post(() -> {
    //UI Thread work here
    }); });`】方法
-
 2. 各個Activity中的ID請注意分別取不同名字，避免互相干擾，建議取名方式為「layout名稱_
    +元件功能+元件類型」，例：忘記密碼介面帳號的輸入框id:「Forget_accountEdit」
    當確認帳密無誤時可發送驗證碼，並將enable關掉，並隱藏帳密欄位顯示重設欄位
-
 3. 要使用google提供的javamail-android發送電子郵件首先需要Google帳戶啟用兩步驟驗證->
    取得應用程式密碼->使用此密碼登入JavaMailAPI
-
 4. 當遇到「It will always be more efficient to use more specific change events if you can. Rely on
    notifyDataSetChanged as a last resort.」問題
    請將目前使用的RecycleView更新方法從`notifyDataSetChanged()`方法，
    改成使用`notifyItemRangeChanged(0, adList.size())`
-
 5. 如果出現「SQL Connection: Network error IOException: Socket closed」，可試試看延長逾期時間
-
 6. 當愈到「The emulator process for AVD Pixel_4_API_30 has terminated.」問題，可嘗試更新NVIDIA驅動程式
-
 7. 如果遇到AGP版本問題，請將專案的AGP版本與Android Studio可支援AGP版本調整至對應
-
 8. 當遇到「'getAdapterPosition()' is deprecated」，把`getAdapterPosition()`
    改成`getBindingAdapterPosition()`
-
 9. 使用Fragment套件時，ID取名不可用中文
-
+10. 當遇到「Call to 'printStackTrace()' should probably be replaced with more robust logging」，請將
+    `e.printStackTrace()`改成`Log.e("MapActivity", "Error fetching directions: " + e.getMessage());`
+11. 如果要使用兩個按鈕評分水平位置，可使用create horizontal chains選項
+12. 如果要使用使頁面可隨大小變化，可使用guideline並設定%比例
 ### Github 部分
 
 1. 準備上傳至Github時，先點擊左上角「main」->「Update Project」，避免覆蓋掉他人部分

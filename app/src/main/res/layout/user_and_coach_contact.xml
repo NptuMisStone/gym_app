@@ -244,7 +244,7 @@
         app:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/Contact_mapView"
         app:layout_constraintEnd_toEndOf="@+id/Contact_mapView"
-        app:srcCompat="@drawable/baseline_my_location_24"
+        app:srcCompat="@drawable/user_and_coach_contact_ic_location"
         tools:visibility="visible" />
 
 

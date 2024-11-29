@@ -55,11 +55,11 @@
 
                 <TextView
                     android:id="@+id/user_detail_coachgender"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
                     android:text="教練性別" />
 
             </LinearLayout>
@@ -85,7 +85,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
                     android:text="教練電話" />
 
             </LinearLayout>
@@ -107,11 +107,11 @@
 
                 <TextView
                     android:id="@+id/user_detail_coachmail"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
                     android:text="教練email" />
 
             </LinearLayout>
@@ -133,11 +133,11 @@
 
                 <TextView
                     android:id="@+id/user_detail_coachtype"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
                     android:text="教練類別" />
 
             </LinearLayout>
@@ -153,7 +153,7 @@
                     android:layout_width="50dp"
                     android:layout_height="2dp"
 
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginStart="30dp"
                     android:layout_marginBottom="5dp"
                     android:background="#FF0000"
                     android:orientation="horizontal" />
@@ -162,6 +162,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -180,11 +181,11 @@
 
                         <TextView
                             android:id="@+id/textView33"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:paddingLeft="5dp"
+                            android:paddingStart="5dp"
                             android:text="服務店家" />
 
                     </LinearLayout>
@@ -201,15 +202,15 @@
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/maps" />
+                            android:src="@drawable/all_ic_location" />
 
                         <TextView
                             android:id="@+id/textView34"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:paddingLeft="5dp"
+                            android:paddingStart="5dp"
                             android:text="店家地址" />
 
                     </LinearLayout>
@@ -227,7 +228,7 @@
                         android:id="@+id/user_detail_coachStoreName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
+                        android:layout_marginStart="30dp"
                         android:layout_weight="1"
                         android:text="TextView" />
 
@@ -235,7 +236,7 @@
                         android:id="@+id/user_detail_coachStoreAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
+                        android:layout_marginStart="30dp"
                         android:layout_weight="1"
                         android:text="TextView" />
 
@@ -245,6 +246,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -263,11 +265,11 @@
 
                         <TextView
                             android:id="@+id/textView37"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:paddingLeft="5dp"
+                            android:paddingStart="5dp"
                             android:text="店家電話" />
 
                     </LinearLayout>
@@ -288,11 +290,11 @@
 
                         <TextView
                             android:id="@+id/textView23"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:paddingLeft="5dp"
+                            android:paddingStart="5dp"
                             android:text="店家郵件" />
 
                     </LinearLayout>
@@ -301,7 +303,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:orientation="horizontal">
@@ -310,7 +312,7 @@
                         android:id="@+id/user_detail_coachStorePhone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
+                        android:layout_marginStart="30dp"
                         android:layout_weight="1"
                         android:text="TextView" />
 
@@ -318,7 +320,7 @@
                         android:id="@+id/user_detail_coachStoreMail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
+                        android:layout_marginStart="30dp"
                         android:layout_weight="1"
                         android:text="TextView" />
                 </LinearLayout>

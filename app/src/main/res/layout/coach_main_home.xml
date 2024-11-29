@@ -7,13 +7,13 @@
     tools:context=".Coach.Main.CoachHome">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main"
+        android:id="@+id/CoachHome_constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#f0f0f0">
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
+            android:id="@+id/CoachHome_linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -27,7 +27,7 @@
 
             <TextView
                 android:id="@+id/CoachHome_nameText"
-                android:layout_width="269dp"
+                android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
@@ -47,18 +47,19 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout9"
+            android:id="@+id/CoachHome_linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="256dp"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:padding="10dp"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/CoachHome_linearLayout1"
             tools:layout_editor_absoluteX="0dp">
 
             <!-- 預約紀錄按鈕 -->
             <LinearLayout
+                android:id="@+id/CoachHome_linearLayout2_1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
@@ -75,6 +76,7 @@
                     app:cardCornerRadius="8dp">
 
                     <LinearLayout
+                        android:id="@+id/CoachHome_linearLayout2_1_1"
                         android:layout_width="160dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -110,6 +112,7 @@
                     app:cardCornerRadius="8dp">
 
                     <LinearLayout
+                        android:id="@+id/CoachHome_linearLayout2_1_2"
                         android:layout_width="160dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -138,6 +141,7 @@
 
             <!-- 課程維護按鈕 -->
             <LinearLayout
+                android:id="@+id/CoachHome_linearLayout2_2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
@@ -243,26 +247,26 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.96" />
 
+        <Button
+            android:id="@+id/CoachHome_testButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="測試1"
+            app:layout_constraintBottom_toTopOf="@+id/CoachHome_linearLayout2"
+            app:layout_constraintEnd_toStartOf="@+id/CoachHome_testButton2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/CoachHome_testButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="測試2"
+            app:layout_constraintBottom_toTopOf="@+id/CoachHome_linearLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/CoachHome_testButton1" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.92" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.17" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline21"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.04" />
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -27,6 +27,8 @@ import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User_And_Coach.Advertisement;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map_Maps;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map_salon;
 import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
 
 import java.sql.Connection;
@@ -37,7 +39,6 @@ import java.util.List;
 
 public class CoachHome extends AppCompatActivity {
     Connection MyConnection;
-    List<Advertisement> adList = new ArrayList<>();
     ProgressBarHandler progressBarHandler;
 
     @Override
@@ -45,15 +46,16 @@ public class CoachHome extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.coach_main_home);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.CoachHome_constraintLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+        MyConnection = new SQLConnection(findViewById(R.id.CoachHome_constraintLayout)).IWantToConnection();
         progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
         init_coachInfo();
-
+        findViewById(R.id.CoachHome_testButton1).setOnClickListener(v -> startActivity(new Intent(this, Map_Maps.class)));
+        findViewById(R.id.CoachHome_testButton2).setOnClickListener(v -> startActivity(new Intent(this, Map_salon.class)));
         // 獲取 SwipeRefreshLayout
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.CoachHome_swipeRefreshLayout);
 
@@ -61,12 +63,10 @@ public class CoachHome extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(() -> {
             // 調用刷新數據的方法
             refreshPageContent();
-
             // 完成刷新後，關閉刷新動畫
             swipeRefreshLayout.setRefreshing(false);
         });
     }
-
     private void refreshPageContent() {
         // 在此處刷新頁面數據，例如：
         // 1. 重新加載教練數據
