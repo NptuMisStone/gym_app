@@ -62,7 +62,7 @@ public class CoachInfo extends AppCompatActivity {
         findViewById(R.id.CoachInfo_return).setOnClickListener(v -> finish());
         findViewById(R.id.CoachInfo_logout).setOnClickListener(v -> logout());
         findViewById(R.id.CoachInfo_upload).setOnClickListener(v -> changeImage());
-        findViewById(R.id.CoachInfo_resetButton).setOnClickListener(v -> new PasswordReset(this, true, MyConnection).showPasswordResetDialog());
+        findViewById(R.id.CoachInfo_resetButton).setOnClickListener(v -> new PasswordReset(this, false, MyConnection).showPasswordResetDialog());
         coachInfo_tv = new AutoCompleteTextView[]{
                 findViewById(R.id.CoachInfo_nameText),
                 findViewById(R.id.CoachInfo_accountText),

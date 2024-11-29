@@ -25,6 +25,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -94,6 +95,7 @@ public class PasswordReset {
             public void onFailure(Exception e) {
                 stopAnimateTextHint();
                 ((Activity) context).runOnUiThread(() -> textHint(statusHint1, "❌ 郵件發送失敗，請再試一次。"));
+                Log.e("EmailSendError", Objects.requireNonNull(e.getMessage()));
             }
         });
     }

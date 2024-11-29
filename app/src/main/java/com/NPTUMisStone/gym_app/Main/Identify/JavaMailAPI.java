@@ -62,6 +62,7 @@ public class JavaMailAPI {
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2"); // Enable TLSv1.2
         return props;
     }
 }
