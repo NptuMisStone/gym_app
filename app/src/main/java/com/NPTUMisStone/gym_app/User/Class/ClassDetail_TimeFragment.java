@@ -2,6 +2,7 @@ package com.NPTUMisStone.gym_app.User.Class;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -80,6 +81,33 @@ public class ClassDetail_TimeFragment extends Fragment {
                 startDate.timeInMillis(),
                 endDate.timeInMillis()
         );
+
+        // 今日之後可點擊日期
+        List<DateInfo> clickableDates = new ArrayList<>();
+        java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
+        for (java.sql.Date date : courseDates) {
+            if (!date.before(today)) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                clickableDates.add(new DateInfo(
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.DAY_OF_MONTH)
+                ));
+            }
+        }
+        // 今日有課可點擊
+        Calendar calendar2 = Calendar.getInstance();
+        DateInfo todayDateInfo = new DateInfo(
+                calendar2.get(Calendar.YEAR),
+                calendar2.get(Calendar.MONTH) + 1,
+                calendar2.get(Calendar.DAY_OF_MONTH)
+        );
+        if (!clickableDates.contains(todayDateInfo)) {
+            clickableDates.add(todayDateInfo);
+        }
+        // 設置可點擊日期列表
+        singleCalendarView.setClickableDateList(clickableDates);
         singleCalendarView.setOnSingleDateSelectedListener((calendar, date) -> {
             fetchTimeInfo(date);
             return null;

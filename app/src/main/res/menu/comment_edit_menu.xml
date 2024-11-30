@@ -6,4 +6,7 @@
     <item
         android:id="@+id/delete_comment"
         android:title="刪除" />
+    <item
+        android:id="@+id/report_comment"
+        android:title="檢舉" />
 </menu>

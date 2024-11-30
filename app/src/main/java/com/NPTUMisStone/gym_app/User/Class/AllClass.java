@@ -615,7 +615,14 @@ public class AllClass extends AppCompatActivity {
 
                 int minMoney = Integer.parseInt(minMoneyText);
                 int maxMoney = Integer.parseInt(maxMoneyText);
-
+                // 檢查最大值是否小於最小值
+                if (minMoney > maxMoney) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        Toast.makeText(AllClass.this, "最小值不能大於最大值，請重新輸入！", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE); // 隱藏進度條
+                    });
+                    return; // 結束篩選
+                }
                 StringBuilder sqlBuilder = new StringBuilder();
                 sqlBuilder.append(
                         "SELECT  * FROM [健身教練課程-有排課的] " +

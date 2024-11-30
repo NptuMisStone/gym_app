@@ -432,13 +432,11 @@ public class CoachDetail_CommentFragment extends Fragment {
             holder.coach_response.setText(item.getCoach_response());
             holder.ratingBar.setRating(item.getRating());
 
-            if (item.getUserId() == User.getInstance().getUserId()) {
-                holder.editcomment.setVisibility(View.VISIBLE);
-            } else {
-                holder.editcomment.setVisibility(View.GONE);
-            }
 
-            holder.editcomment.setOnClickListener(v -> showPopupMenu(holder.editcomment ,item.getReservationID(),position));
+            holder.editcomment.setOnClickListener(v -> {
+                boolean isUserComment = (item.getUserId() == User.getInstance().getUserId());
+                showPopupMenu(holder.editcomment, item.getReservationID(), position, item.getCommentID(), isUserComment);
+            });
             try {
                 MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
                 String SQL = "select 回覆 from 查看評論 where 評論編號= ?";
@@ -482,9 +480,13 @@ public class CoachDetail_CommentFragment extends Fragment {
             }
             return exists;
         }
-        private void showPopupMenu(View view, int reservationID,int position) {
+        private void showPopupMenu(View view, int reservationID,int position,int commentID, boolean isUserComment) {
             PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
             popupMenu.inflate(R.menu.comment_edit_menu);
+            // 根據是否為使用者自己的評論設定選項可見性
+            popupMenu.getMenu().findItem(R.id.edit_comment).setVisible(isUserComment);
+            popupMenu.getMenu().findItem(R.id.delete_comment).setVisible(isUserComment);
+            popupMenu.getMenu().findItem(R.id.report_comment).setVisible(!isUserComment);
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
@@ -531,10 +533,71 @@ public class CoachDetail_CommentFragment extends Fragment {
                         builder.show();
                         return true;
                     }
+                    else if (itemId == R.id.report_comment){
+                        showReportDialog(commentID);
+                        return true;
+                    }
                     return false;
                 }
             });
             popupMenu.show();
+        }
+        public void showReportDialog(int commentId) {
+            String[] reasons = {
+                    "發表仇恨、歧視、具有攻擊性言論",
+                    "成人色情、性騷擾內容",
+                    "血腥、暴力、有害或危險內容",
+                    "違反廣告、或商業內容等定義",
+                    "賭博、或博弈內容",
+                    "其他"
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setTitle("檢舉評論");
+            builder.setSingleChoiceItems(reasons, -1, (dialog, which) -> {
+                String selectedReason = reasons[which];
+                if ("其他".equals(selectedReason)) {
+                    showDetailedReasonDialog(commentId); // 若選擇「其他」，進一步輸入詳細原因
+                } else {
+                    submitReport(commentId, selectedReason); // 提交所選理由
+                }
+                dialog.dismiss();
+            });
+            builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+            builder.show();
+        }
+        private void showDetailedReasonDialog(int commentId) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setTitle("請輸入檢舉原因");
+
+            final EditText input = new EditText(view.getContext());
+            input.setHint("請輸入理由...");
+            builder.setView(input);
+
+            builder.setPositiveButton("提交", (dialog, which) -> {
+                String detailedReason = input.getText().toString().trim();
+                if (detailedReason.isEmpty()) {
+                    Toast.makeText(view.getContext(), "檢舉原因不能為空！", Toast.LENGTH_SHORT).show();
+                } else {
+                    submitReport(commentId, detailedReason); // 提交詳細檢舉原因
+                }
+            });
+            builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+
+            builder.show();
+        }
+        private void submitReport(int commentId, String reason) {
+            try {
+                String query = "Insert Into [評論檢舉] (評論編號,檢舉原因)values(?,?)" ;
+                PreparedStatement Statement = MyConnection.prepareStatement(query);
+                Statement.setInt(1,commentId);
+                Statement.setString(2,reason);
+                Statement.executeQuery();
+                Statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            Toast.makeText(view.getContext(), "檢舉成功，原因：" + reason, Toast.LENGTH_SHORT).show();
         }
         @Override
         public int getItemCount() {
