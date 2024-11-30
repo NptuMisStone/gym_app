@@ -1,5 +1,7 @@
 package com.NPTUMisStone.gym_app.User.Class;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -40,9 +42,8 @@ public class ClassDetail_InfoFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding= UserDetailClassFragmentBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
-        if (getArguments() != null) {
-            classID = getArguments().getInt("classID");
-        }
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        classID = sharedPreferences.getInt("看更多課程ID", 0);
         bindID();
         try {
             MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();

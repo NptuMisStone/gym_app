@@ -225,6 +225,8 @@ v0.98：整理Gradle檔,Manifest,檔案名稱,部分檔案內容、地圖介面�
 
 v0.99：無課程時段禁用日期、檢舉功能、最大最小值判斷皆完成，預計加入SharedPreferences來確保系統崩潰時，不會導致登出(煒楷)
 
+v0.100：修復從google map回來導致的bug，看更多課程ID及看更多教練ID改為SharedPreferences的方式代替intent及bundle(煒楷)
+
 ## 補充：
 
 ### 圖片：

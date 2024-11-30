@@ -1,7 +1,9 @@
 package com.NPTUMisStone.gym_app.User.Class;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -51,7 +53,8 @@ public class ClassDetail extends AppCompatActivity {
     }
 
     private void initializeComponents() {
-        classID = getIntent().getIntExtra("看更多課程ID", 0);
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        classID = sharedPreferences.getInt("看更多課程ID", 0);
         setupFragment();
         setupTabLayout();
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
@@ -131,7 +134,6 @@ public class ClassDetail extends AppCompatActivity {
 
     private void setupFragment() {
         ClassDetail_InfoFragment detailFragment = new ClassDetail_InfoFragment();
-        detailFragment.setArguments(createBundle());
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.ClassDetail_detailFrame, detailFragment).commit();
     }
@@ -142,21 +144,18 @@ public class ClassDetail extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 Fragment fragment = getFragmentForTab(tab.getPosition());
                 if (fragment != null) {
-                    fragment.setArguments(createBundle());
                     getSupportFragmentManager().beginTransaction().replace(R.id.ClassDetail_detailFrame, fragment)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 } else {
-                    Log.e("AppointmentAll", "無法載入 Fragment");
+                    Log.e("ClassDetail", "無法載入 Fragment");
                 }
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
+            public void onTabUnselected(TabLayout.Tab tab) {}
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
     }
 
@@ -168,11 +167,6 @@ public class ClassDetail extends AppCompatActivity {
         };
     }
 
-    private Bundle createBundle() {
-        Bundle bundle = new Bundle();
-        bundle.putInt("classID", classID);
-        return bundle;
-    }
 
     private void loadClassImage() {
         executeQuery("SELECT 課程圖片 FROM 健身教練課程 WHERE 課程編號 = ?", rs -> {

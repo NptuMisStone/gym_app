@@ -2,6 +2,7 @@ package com.NPTUMisStone.gym_app.User.Class;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -58,17 +59,39 @@ public class ClassDetail_TimeFragment extends Fragment {
         binding=UserDetailClassTimeFragmentBinding.inflate(inflater,container,false);
 
 
-        if (getArguments() != null) {
-            classID = getArguments().getInt("classID");
-        }
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        classID = sharedPreferences.getInt("看更多課程ID", 0);
         courseDates =getDate(classID);
 
+        setupCalendar();
+
+
+        return binding.getRoot();
+
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        classID = sharedPreferences.getInt("看更多課程ID", 0);
+        courseDates =getDate(classID);
+        setupCalendar();
+    }
+    private void setupCalendar() {
+        if (courseDates == null || courseDates.isEmpty()) {
+            courseDates = getDate(classID);
+        }
+        if (courseDates.isEmpty()) {
+            Log.e("CourseDates", "沒有課程日期!");
+            return;
+        }
         singleCalendarView = binding.userDetailClassChooseDate;
         DateInfo startDate= new DateInfo();
         Calendar startcalendar = Calendar.getInstance();
         startDate.setYear(startcalendar.get(Calendar.YEAR));
         startDate.setMonth(startcalendar.get(Calendar.MONTH) + 1); // 月份從0開始，故+1
         startDate.setDay(startcalendar.get(Calendar.DAY_OF_MONTH));
+
         // 設置結束日期為courseDates中最大的日期(那個課程的最大日期)
         java.sql.Date maxDate = Collections.max(courseDates);
         Calendar endCalendar = Calendar.getInstance();
@@ -113,10 +136,6 @@ public class ClassDetail_TimeFragment extends Fragment {
             return null;
         });
         singleCalendarView.setSelectedDate(startDate);
-
-
-        return binding.getRoot();
-
     }
     private void fetchTimeInfo(DateInfo date) {
         Executors.newSingleThreadExecutor().execute(() -> {

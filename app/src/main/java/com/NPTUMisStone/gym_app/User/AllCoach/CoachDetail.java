@@ -1,7 +1,9 @@
 package com.NPTUMisStone.gym_app.User.AllCoach;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -51,8 +53,8 @@ public class CoachDetail extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        intent = getIntent();
-        coachID = intent.getIntExtra("看更多教練ID", 0);
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        coachID = sharedPreferences.getInt("看更多教練ID", 0);
 
         frameLayout=(FrameLayout)findViewById(R.id.DetailCoachFrameLayout);
         tabLayout=(TabLayout)findViewById(R.id.DetailCoachTabLayout);

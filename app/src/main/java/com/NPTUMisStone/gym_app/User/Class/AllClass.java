@@ -3,6 +3,7 @@ package com.NPTUMisStone.gym_app.User.Class;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -252,8 +253,11 @@ public class AllClass extends AppCompatActivity {
             holder.class_intro.setText(item.getClassIntro());
             holder.class_people.setText("人數：" + item.getClassPeople() + "人");
             holder.moreindo_btn.setOnClickListener(v -> {
+                SharedPreferences sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("看更多課程ID", item.getClassID());
+                editor.apply(); // 保存
                 Intent intent = new Intent(context, ClassDetail.class);
-                intent.putExtra("看更多課程ID", item.getClassID());
                 startActivity(intent);
             });
             try {

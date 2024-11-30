@@ -2,6 +2,7 @@ package com.NPTUMisStone.gym_app.User.AllCoach;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -167,8 +168,11 @@ public class AllCoach extends AppCompatActivity {
             holder.coach_name.setText(item.getCoachName());
             holder.coach_type.setText(item.getCoachType());
             holder.moreinfo_btn.setOnClickListener(v -> {
+                SharedPreferences sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("看更多教練ID", item.getAll_coachID());
+                editor.apply(); // 保存
                 Intent intent = new Intent(context, CoachDetail.class);
-                intent.putExtra("看更多教練ID", item.getAll_coachID());
                 startActivity(intent);
                 finish();
             });

@@ -4,6 +4,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -211,8 +212,11 @@ public class CoachDetail_ClassFragment extends Fragment {
             holder.class_place.setText("地點"+item.getClassPlace());
             holder.class_item.setText("所需設備："+item.getClassItem());
             holder.seeclassdetail.setOnClickListener(v -> {
+                SharedPreferences sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("看更多課程ID", item.getClassID());
+                editor.apply(); // 保存
                 Intent intent = new Intent(requireActivity(), ClassDetail.class);
-                intent.putExtra("看更多課程ID", item.getClassID());
                 startActivity(intent);
             });
             try {
