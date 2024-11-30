@@ -70,13 +70,13 @@ public class PasswordReset {
         animateTextHint(statusHint1);
         String randomCode = generateRandomNumber();
         Log.d("randomCode", randomCode);
-        String mSubject = "【NPTU GYM】密碼重設通知信";
+        String mSubject = "【屏大Fit-健身預約系統】密碼重設通知信";
         String mMessage = "我們收到您重設密碼的請求。\n\n" +
                 "您的驗證碼：" + randomCode + "\n\n" +
                 "有效期限為3分鐘，請妥善保管驗證碼，勿將其告知他人。\n\n" +
                 "如果這不是您的操作，請忽略這封郵件。\n\n" +
                 "（本郵件是由系統自動寄發，請勿直接回覆，謝謝。）\n\n" +
-                "NPTU GYM 團隊\n" +
+                "屏大Fit 團隊\n" +
                 "NptuMisStone@gmail.com";
         new JavaMailAPI(context, userEmail, mSubject, mMessage).sendMail(new JavaMailAPI.EmailSendResultCallback() {
             @Override

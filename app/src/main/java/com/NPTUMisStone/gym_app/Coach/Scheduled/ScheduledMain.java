@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
 import com.NPTUMisStone.gym_app.Coach.Main.CoachHome;
+import com.NPTUMisStone.gym_app.Main.Identify.JavaMailAPI;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 
@@ -39,6 +40,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -775,51 +778,119 @@ public class ScheduledMain extends AppCompatActivity {
         }
     }
     private void confirmDeleteSchedule(String scheduleId) {
-        // 創建一個刪除確認對話框
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("刪除班表")
-                .setMessage("您確定要刪除此班表嗎？此操作無法撤銷。")
-                .setPositiveButton("刪除", (dialog, which) -> {
-                    // 執行刪除操作
-                    deleteSchedule(scheduleId);
-                })
-                .setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+        // 查詢課程是否有預約人數
+        int reservedCount = getReservedCount(scheduleId);
 
-        // 顯示對話框
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        if (reservedCount > 0) {
+            // 如果有預約人數，提示用戶
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("警告")
+                    .setMessage("該課程已有使用者預約，若要刪除課程將會發送通知給使用者，是否仍要刪除此班表？")
+                    .setPositiveButton("仍要刪除", (dialog, which) -> {
+                        notifyUsersAboutCancellation(scheduleId);
+                        deleteSchedule(scheduleId);
+                    })
+                    .setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
 
-        // 將刪除按鈕設置為紅色
-        Button deleteButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        if (deleteButton != null) {
-            deleteButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+            // 顯示對話框
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+            // 將刪除按鈕設置為紅色
+            Button deleteButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            if (deleteButton != null) {
+                deleteButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+            }
+        } else {
+            // 如果沒有預約人數，直接刪除課表
+            deleteSchedule(scheduleId);
         }
     }
+
+    private int getReservedCount(String scheduleId) {
+        String query = "SELECT 預約人數 FROM 健身教練課表 WHERE 課表編號 = ?";
+        try (PreparedStatement stmt = MyConnection.prepareStatement(query)) {
+            stmt.setString(1, scheduleId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("預約人數");
+            }
+        } catch (SQLException e) {
+            Log.e("DatabaseError", "Error checking reserved count", e);
+        }
+        return 0;
+    }
+
+    private void notifyUsersAboutCancellation(String scheduleId) {
+        // 查詢所有已預約該課程的使用者 Email
+        String query = "SELECT 使用者郵件 FROM [使用者預約-有預約的] WHERE 課表編號 = ?";
+        try (PreparedStatement stmt = MyConnection.prepareStatement(query)) {
+            stmt.setString(1, scheduleId); // 設定課表編號參數
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String userEmail = rs.getString("使用者郵件");
+                sendCancellationNotification(userEmail); // 發送通知給使用者
+            }
+        } catch (SQLException e) {
+            Log.e("DatabaseError", "Error notifying users about cancellation", e);
+        }
+    }
+
+
+    private void sendCancellationNotification(String userEmail) {
+        String subject = "【屏大Fit-健身預約系統】課程取消通知";
+        String message = "您好，\n\n" +
+                "我們遺憾地通知您，您所預約的課程已被教練取消。\n\n" +
+                "若有任何問題，請聯繫相關人員。\n\n" +
+                "屏大Fit 團隊";
+        new JavaMailAPI(this, userEmail, subject, message).sendMail(new JavaMailAPI.EmailSendResultCallback() {
+            @Override
+            public void onSuccess() {
+                Log.d("EmailNotification", "通知已成功發送至：" + userEmail);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("EmailNotificationError", "通知發送失敗：" + userEmail, e);
+            }
+        });
+    }
+
+
     private void deleteSchedule(String scheduleId) {
         if (scheduleId == null || scheduleId.isEmpty()) {
-            // 如果課表編號無效，顯示錯誤訊息
             showToast("❌ 刪除失敗：課表編號無效");
             return;
         }
 
-        String deleteQuery = "DELETE FROM 健身教練課表 WHERE 課表編號 = ?";
-        try (PreparedStatement stmt = MyConnection.prepareStatement(deleteQuery)) {
-            // 設置刪除參數
+        // 檢查是否在課程開始的 24 小時前
+        if (!isDeletable(scheduleId)) {
+            showToast("❌ 無法刪除課表：刪除操作需於課程開始前 24 小時進行");
+            return;
+        }
+
+        // 1. 刪除與該課表編號相關的預約記錄
+        String deleteReservationsQuery = "DELETE FROM 使用者預約 WHERE 課表編號 = ?";
+        try (PreparedStatement stmt = MyConnection.prepareStatement(deleteReservationsQuery)) {
             stmt.setString(1, scheduleId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            Log.e("DatabaseError", "Error deleting reservations", e);
+            showToast("❌ 刪除失敗：無法刪除相關預約，請稍後再試");
+            return;
+        }
 
-            // 執行刪除操作
+        // 2. 刪除課表
+        String deleteScheduleQuery = "DELETE FROM 健身教練課表 WHERE 課表編號 = ?";
+        try (PreparedStatement stmt = MyConnection.prepareStatement(deleteScheduleQuery)) {
+            stmt.setString(1, scheduleId);
             int rowsAffected = stmt.executeUpdate();
-
             if (rowsAffected > 0) {
-                // 刪除成功
                 showToast("✅ 刪除成功：班表已刪除");
-
-                // 刷新課程列表，使用 lastSelectedDay 而非 currentWeekCalendar
                 if (lastSelectedDay != null) {
                     loadScheduleForDay(lastSelectedDay);
                 }
             } else {
-                // 刪除失敗，找不到該課表編號
                 showToast("❌ 刪除失敗：找不到對應的課表編號");
             }
         } catch (SQLException e) {
@@ -827,6 +898,32 @@ public class ScheduledMain extends AppCompatActivity {
             showToast("❌ 刪除失敗：無法刪除課表，請稍後再試");
         }
     }
+
+    // 檢查課表是否可刪除（需在課程開始的 24 小時前）
+    private boolean isDeletable(String scheduleId) {
+        String query = "SELECT 開始時間, 日期 FROM 健身教練課表 WHERE 課表編號 = ?";
+        try (PreparedStatement stmt = MyConnection.prepareStatement(query)) {
+            stmt.setString(1, scheduleId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String date = rs.getString("日期");
+                String startTime = rs.getString("開始時間");
+                LocalDateTime classStart = LocalDateTime.parse(date + "T" + startTime);
+
+                // 獲取當前時間
+                LocalDateTime now = LocalDateTime.now();
+
+                // 比較時間是否超過 24 小時
+                Duration duration = Duration.between(now, classStart);
+                return duration.toHours() >= 24;
+            }
+        } catch (SQLException e) {
+            Log.e("DatabaseError", "Error checking schedule deletability", e);
+        }
+        return false; // 如果查詢失敗或其他錯誤，預設不可刪除
+    }
+
+
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
