@@ -1,13 +1,10 @@
 package com.NPTUMisStone.gym_app.User.Class;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
@@ -15,7 +12,6 @@ import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -27,8 +23,7 @@ import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map.MapHelper;
 import com.google.android.material.tabs.TabLayout;
 
 import java.sql.Connection;
@@ -53,8 +48,7 @@ public class ClassDetail extends AppCompatActivity {
     }
 
     private void initializeComponents() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        classID = sharedPreferences.getInt("看更多課程ID", 0);
+        classID = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE).getInt("看更多課程ID", 0);
         setupFragment();
         setupTabLayout();
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
@@ -66,62 +60,7 @@ public class ClassDetail extends AppCompatActivity {
 
     private void setupListeners() {
         findViewById(R.id.ClassDetail_backButton).setOnClickListener(v -> finish());
-        findViewById(R.id.ClassDetail_directionButton).setOnClickListener(v -> getCurrentLocation());
-    }
-
-    private void requestLocationPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-        }, 1);
-    }
-    //【How to Get Current Location Google Map SDK in Android】
-    // ：https://mrappbuilder.medium.com/how-to-get-current-location-google-map-sdk-in-android-993638d17bd1
-    private void getCurrentLocation() {
-        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        if (checkLocationPermissions()) {
-            try {
-                fusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(this, location -> {
-                            if (location != null) {
-                                openGoogleMaps(location.getLatitude(), location.getLongitude());
-                            } else {
-                                Log.e("User_Class_Detail", "Location data is unavailable");
-                            }
-                        })
-                        .addOnFailureListener(this, e -> Log.e("User_Class_Detail", "Failed to get location", e));
-            } catch (SecurityException e) {
-                Log.e("User_Class_Detail", "Location permission not granted", e);
-            }
-        } else {
-            requestLocationPermission();
-        }
-    }
-
-    private boolean checkLocationPermissions() {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-    }
-    //【How to implement Google Map Navigation in Android】
-    // ：https://www.youtube.com/watch?v=WiMa7nh7rF4
-    private void openGoogleMaps(double latitude, double longitude) {
-        String currentLocation = latitude + "," + longitude;
-        executeQuery("SELECT 縣市,行政區,顯示地點地址 FROM [健身教練課程-有排課的] WHERE 課程編號 = ?", rs -> {
-            try {
-                if (rs.next()) {
-                    String address = rs.getString("縣市") + rs.getString("行政區") + rs.getString("顯示地點地址");
-                    Uri uri = Uri.parse("https://www.google.com/maps/dir/" + currentLocation + "/" + address);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri).setPackage("com.google.android.apps.maps").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    if (intent.resolveActivity(getPackageManager()) != null) {
-                        startActivity(intent);
-                    } else {
-                        startActivity(new Intent(Intent.ACTION_VIEW, uri)); // No Google Maps installed
-                    }
-                }
-            } catch (SQLException e) {
-                Log.e("User_Class_Detail", "SQL error", e);
-            }
-        });
+        findViewById(R.id.ClassDetail_directionButton).setOnClickListener(v -> new MapHelper(this, MyConnection, classID).getCurrentLocation());
     }
 
     private void setupWindowInsets() {
@@ -166,7 +105,6 @@ public class ClassDetail extends AppCompatActivity {
             default -> null;
         };
     }
-
 
     private void loadClassImage() {
         executeQuery("SELECT 課程圖片 FROM 健身教練課程 WHERE 課程編號 = ?", rs -> {

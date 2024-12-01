@@ -25,16 +25,13 @@ import com.NPTUMisStone.gym_app.Coach.Records.Coach_AppointmentsAll;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledMain;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.Advertisement;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.User_And_Coach.Map_Maps;
-import com.NPTUMisStone.gym_app.User_And_Coach.Map_salon;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map.Map_Maps;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map.Map_salon;
 import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 
 public class CoachHome extends AppCompatActivity {

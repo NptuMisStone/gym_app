@@ -1,4 +1,4 @@
-package com.NPTUMisStone.gym_app.User_And_Coach;
+package com.NPTUMisStone.gym_app.User_And_Coach.Map;
 
 import android.Manifest;
 import android.content.Intent;
@@ -36,40 +36,24 @@ public class Map_salon extends AppCompatActivity {
         PermissionGET();
     }
     private void PermissionGET() {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
-            Map_Fragment mapFragment = new Map_Fragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, mapFragment).commit();
-        }
-        else{
-            new AlertDialog.Builder(this)
-                    .setTitle("權限請求")
-                    .setMessage("地圖需使用定位權限，請允許請求")
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED)
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new Map_Fragment()).commit();
+        else new AlertDialog.Builder(this).setTitle("權限請求")
                     .setPositiveButton("確定", (dialog, which) -> ActivityCompat.requestPermissions(Map_salon.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1))
                     .setNegativeButton("取消", (dialog, which) -> finish())
-                    .show();
-        }
+                    .setMessage("地圖需使用定位權限，請允許請求").show();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Map_Fragment mapFragment = new Map_Fragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, mapFragment).commit();
-            } else {
-                new AlertDialog.Builder(this)
-                        .setTitle("權限請求")
-                        .setMessage("已曾被拒絕權限，請自行手動開啟定位權限")
-                        .setPositiveButton("確定", (dialog, which) -> {
-                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            Uri uri = Uri.fromParts("package", getPackageName(), null);
-                            intent.setData(uri);
-                            startActivity(intent);
-                        })
-                        .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
-                        .show();
-            }
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new Map_Fragment()).commit();
+            else new AlertDialog.Builder(this).setTitle("權限請求").setMessage("已曾被拒絕權限，請自行手動開啟定位權限")
+                        .setPositiveButton("確定", (dialog, which) -> startActivity(
+                                new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                        .setData(Uri.fromParts("package", getPackageName(), null))))
+                        .setNegativeButton("取消", (dialog, which) -> dialog.dismiss()).show();
         }
     }
 }

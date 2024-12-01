@@ -1,8 +1,9 @@
-package com.NPTUMisStone.gym_app.User_And_Coach;
+package com.NPTUMisStone.gym_app.User_And_Coach.Map;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -17,13 +18,13 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +32,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.Class.ClassDetail;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,40 +54,52 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class Map_Fragment extends Fragment implements OnMapReadyCallback, OnMapsSdkInitializedCallback {
-    Connection Myconnection;
+    private Connection Myconnection;
     private GoogleMap map;
-    Handler mainHandler = new Handler();
-    LatLng[] myLocation = new LatLng[1];
+    private final Handler mainHandler = new Handler();
+    private final LatLng[] myLocation = new LatLng[1];
     private AutoCompleteTextView editText;
-    Button submit;
-    List<String> tagStoreName = new ArrayList<>();
+    private final List<String> tagStoreName = new ArrayList<>();
     private MapLikeQueryAdapter adapter;
-    List<Marker> salonMarkers = new ArrayList<>();
+    private final List<Marker> salonMarkers = new ArrayList<>();
     private RecyclerView recyclerDesigner;
     private DesignersAdapter designersAdapter;
-    private List<DeItem> designerList = new ArrayList<>();
+    private List<CourseItem> designerList = new ArrayList<>();
+    class SalonAdd extends Thread {
+        @Override
+        public void run() {
+            String sql = "SELECT DISTINCT 地點名稱, 顯示地點地址 FROM [健身教練課程-有排課的]";
+            try {
+                Statement st = Myconnection.createStatement();
+                ResultSet rs = st.executeQuery(sql);
+                SalonItem.clearSalon();
 
+                while (rs.next()) {
+                    SalonItem salonItem = new SalonItem(rs.getString("地點名稱"), rs.getString("顯示地點地址"));
+                    SalonItem.addSalon(salonItem);
+                    Log.d("正在加入的Salon", salonItem.getName() + " " + salonItem.getAddress());
+                }
+                rs.close();
+            } catch (SQLException exception) {
+                Log.e("MapFragment", "Failed to add salon", exception);
+            }
+        }
+    }
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-//        MapsInitializer.initialize(getContext(), MapsInitializer.Renderer.LEGACY, this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.user_and_coach_map_fragment, container, false);
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_map);
         Objects.requireNonNull(supportMapFragment).getMapAsync(this);
         Myconnection = new SQLConnection(view).IWantToConnection();
-
+        new SalonAdd().start();
         editText = view.findViewById(R.id.AutoCompleteTextView);
-        submit = view.findViewById(R.id.submit);
         recyclerDesigner = view.findViewById(R.id.designers);
         setupAutoCompleteTextView();
-//        MapsInitializer.initialize(getContext(), MapsInitializer.Renderer.LATEST, (OnMapsSdkInitializedCallback) this);
-        submit.setOnClickListener(v -> {
+
+        (view.findViewById(R.id.submit)).setOnClickListener(v -> {
             String locationName = editText.getText().toString();
             if (!locationName.isEmpty()) {
-                // 從店家去找地址
                 SalonItem targetSalon = findSalonByName(locationName);
-
                 if (targetSalon != null) {
                     Geocoder geocoder = new Geocoder(requireActivity(), Locale.TRADITIONAL_CHINESE);
                     try {
@@ -95,18 +107,14 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, OnMaps
                         if (addressList != null && !addressList.isEmpty()) {
                             Address address = addressList.get(0);
                             LatLng targetLocation = new LatLng(address.getLatitude(), address.getLongitude());
-
-                            // 移動地圖
                             map.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLocation, 13));
 
                             designerList = getDesignerList(locationName);
                             RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                            Log.e("designerList", String.valueOf(designerList.size()));
                             recyclerDesigner.setLayoutManager(layoutManager1);
                             designersAdapter = new DesignersAdapter(designerList);
                             recyclerDesigner.setAdapter(designersAdapter);
 
-                            // 顯示marker
                             for (Marker marker : salonMarkers) {
                                 if (marker.getPosition().equals(targetLocation)) {
                                     marker.showInfoWindow();
@@ -125,116 +133,58 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, OnMaps
             }
         });
 
-
-        /*startOtherMap.setOnClickListener {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://www.google.com/maps/dir/?api=1&origin=" + myLocation[0] +"&destination=22.5428600000,114.0595600000"));
-            startActivity(intent);
-        }*/
-
         return view;
     }
 
-    static class SalonItem {
-        String name;
-        String address;
-        private static ArrayList<SalonItem> salonItems = new ArrayList<>();
-
-        public SalonItem(String name, String address) {
-            this.name = name;
-            this.address = address;
-        }
-
-        public static void addSalon(SalonItem salonItem) {
-            salonItems.add(salonItem);
-            setSalon(salonItems);
-        }
-
-        // SalonItem
-        public static void clearSalon() {
-            salonItems.clear();
-        }
-
-        public static ArrayList<SalonItem> getSalonObjects() {
-            if (salonItems == null) {
-                return null;
-            }
-            return salonItems;
-        }
-
-        private static void setSalon(ArrayList<SalonItem> salonItems) {
-            SalonItem.salonItems = salonItems;
-        }
-
-        public String getAddress() {
-            return address != null ? address : "";
-        }
-
-        public String getName() {
-            return name != null ? name : "";
-        }
-
-    }
-
-    private SalonItem findSalonByName(String name) {
-        for (SalonItem salonItem : Objects.requireNonNull(SalonItem.getSalonObjects())) {
-            if (salonItem.getName().equalsIgnoreCase(name)) {
-                return salonItem;
-            }
-        }
-        return null;
-    }
-
     private void setupAutoCompleteTextView() {
-        // 設置 AutoCompleteTextView 的適配器
         adapter = new MapLikeQueryAdapter(getContext(), android.R.layout.simple_dropdown_item_1line, tagStoreName);
         editText.setAdapter(adapter);
-        // 設定建議的最小字符數
         editText.setThreshold(0);
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
         map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            Toast.makeText(getActivity(), "Please enable location permission.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         map.setMyLocationEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        //Get Last Location,and catch the success or failed event.
-        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
-        fusedLocationClient.getLastLocation()
+        LocationServices.getFusedLocationProviderClient(requireActivity()).getLastLocation()
                 .addOnSuccessListener(requireActivity(), location -> {
                     if (location != null) {
                         myLocation[0] = new LatLng(location.getLatitude(), location.getLongitude());
-                        //In thw same time，move camera to the current location.
                     } else {
-                        //Taipei 101 LatLng
                         myLocation[0] = new LatLng(25.033964, 121.564468);
-                        Toast.makeText(getActivity(), "Failed to get you location.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Failed to get your location.", Toast.LENGTH_SHORT).show();
                     }
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation[0], 13));
                     new Add_Salon_Marker(SalonItem.getSalonObjects()).start();
-
                 })
-                .addOnCanceledListener(() -> Toast.makeText(getActivity(), "Failed to get currnt last location.", Toast.LENGTH_SHORT).show());
+                .addOnCanceledListener(() -> Toast.makeText(getActivity(), "Failed to get current last location.", Toast.LENGTH_SHORT).show());
     }
 
     @Override
     public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer) {
-        switch (renderer) {
-            case LATEST:
-                Log.d("MapsDemo", "The latest version of the renderer is used.");
-                break;
-            case LEGACY:
-                Log.d("MapsDemo", "The legacy version of the renderer is used.");
-                break;
+        if (renderer == MapsInitializer.Renderer.LATEST) {
+            Log.d("MapsDemo", "The latest version of the renderer is used.");
+        } else {
+            Log.d("MapsDemo", "A deprecated version of the renderer is used.");
         }
     }
 
-    class Add_Salon_Marker extends Thread {
-
-         ArrayList<SalonItem> salonItems;
+    private class Add_Salon_Marker extends Thread {
+        private final ArrayList<SalonItem> salonItems;
 
         public Add_Salon_Marker(ArrayList<SalonItem> salonItems) {
             this.salonItems = salonItems;
@@ -243,33 +193,26 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, OnMaps
         @Override
         public void run() {
             Geocoder geocoder = new Geocoder(requireActivity(), Locale.TRADITIONAL_CHINESE);
+            mainHandler.post(() -> Toast.makeText(getActivity(), "Salon Size: " + salonItems.size(), Toast.LENGTH_SHORT).show());
             for (int i = 0; i < salonItems.size(); i++) {
                 try {
-//                    Log.e("Add_Salon_Marker", salonItems.get(i).getAddress());
                     tagStoreName.add(salonItems.get(i).getName());
                     List<Address> address_LatLon = geocoder.getFromLocationName(salonItems.get(i).getAddress(), 2);
-                    int Index = i;
-                    try {
-                        Address location_LatLon = Objects.requireNonNull(address_LatLon).get(0);
+                    if (address_LatLon != null && !address_LatLon.isEmpty()) {
+                        Address location_LatLon = address_LatLon.get(0);
+                        int index = i;
                         mainHandler.post(() -> {
-                            Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(location_LatLon.getLatitude(),
-                                    location_LatLon.getLongitude())).title(salonItems.get(Index).getName()));
+                            Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(location_LatLon.getLatitude(), location_LatLon.getLongitude())).title(salonItems.get(index).getName()));
                             salonMarkers.add(marker);
                             adapter.notifyDataSetChanged();
-                            // 當標記訊息視窗被點擊時會呼叫此方法
-                            // 點擊infoWindow
-                            map.setOnInfoWindowClickListener(marker1 -> {
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.setData(Uri.parse("https://www.google.com/maps/dir/?api=1&origin=" + myLocation[0].latitude + "," +
-                                        myLocation[0].longitude + "&destination=" + marker1.getPosition().latitude + "," + marker1.getPosition().longitude));
-                                startActivity(intent);
-                            });
-                            // 當標記被點擊時會呼叫此方法
+                            map.setOnInfoWindowClickListener(marker1 -> startActivity(new Intent(Intent.ACTION_VIEW)
+                                    .setData(Uri.parse("https://www.google.com/maps/dir/?api=1&origin="
+                                            + myLocation[0].latitude + "," + myLocation[0].longitude + "&destination="
+                                            + marker1.getPosition().latitude + "," + marker1.getPosition().longitude))));
                             map.setOnMarkerClickListener(marker2 -> {
                                 recyclerDesigner.setVisibility(View.VISIBLE);
                                 designerList = getDesignerList(marker2.getTitle());
                                 RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                                Log.e("designerList", String.valueOf(designerList.size()));
                                 recyclerDesigner.setLayoutManager(layoutManager1);
                                 designersAdapter = new DesignersAdapter(designerList);
                                 recyclerDesigner.setAdapter(designersAdapter);
@@ -277,9 +220,9 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, OnMaps
                             });
                             map.setOnMapClickListener(latLng -> recyclerDesigner.setVisibility(View.GONE));
                         });
-                    } catch (Exception e) {
-                        mainHandler.post(() -> Toast.makeText(getActivity(), "The " + salonItems.get(Index).getName() +
-                                " can not display the marker.", Toast.LENGTH_SHORT).show());
+                    } else {
+                        int finalI = i;
+                        mainHandler.post(() -> Toast.makeText(getActivity(), "The " + salonItems.get(finalI).getName() + " can not display the marker.", Toast.LENGTH_SHORT).show());
                     }
                 } catch (IOException e) {
                     Log.e("MapFragment", "Geocoding failed", e);
@@ -288,76 +231,73 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, OnMaps
         }
     }
 
-    private List<DeItem> getDesignerList(String storeName) {
-        List<DeItem> designerList = new ArrayList<>();
-        try {
-            String query = "SELECT * FROM filter_designer " +
-                    "WHERE 服務店家 = '" + storeName + "' " +
-                    "ORDER BY 評論數量 DESC";
-            Statement stmt = Myconnection.createStatement();
-            ResultSet rs1 = stmt.executeQuery(query);
+    private List<CourseItem> getDesignerList(String storeName) {
+        List<CourseItem> designerList = new ArrayList<>();
+        String query = "SELECT * FROM [健身教練課程-有排課的] WHERE 地點名稱 = '" + storeName + "' ORDER BY 健身教練性別 DESC";
+        Log.d("MapFragment", "Query: " + query); // Log the query
+        try (Statement stmt = Myconnection.createStatement(); ResultSet rs1 = stmt.executeQuery(query)) {
             while (rs1.next()) {
-                int DesignerId = rs1.getInt("設計師編號");
-                byte[] DesignerHead = rs1.getBytes("大頭貼");
-                String DesignerName = rs1.getString("姓名");
-                String rating = rs1.getString("平均評分");
-                DeItem designerItem = new DeItem(DesignerId, DesignerHead, DesignerName, rating);
+                int designerId = rs1.getInt("課程編號");
+                byte[] designerHead = rs1.getBytes("課程圖片");
+                String designerName = rs1.getString("課程名稱");
+                String rating = rs1.getString("健身教練性別");
+                CourseItem designerItem = new CourseItem(designerId, designerHead, designerName, rating);
                 designerList.add(designerItem);
             }
-            stmt.close();
-            rs1.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            Log.e("MapFragment", "Failed to fetch designer list", e);
         }
+        Log.d("MapFragment", "Designer list size: " + designerList.size()); // Log the size of the designer list
         return designerList;
     }
 
+    private List<String> getSuggestions(String trimmedConstraint) {
+        List<String> suggestions = new ArrayList<>();
+        for (String item : tagStoreName) {
+            if (item != null && !item.isEmpty()) {
+                String[] words = trimmedConstraint.toLowerCase().split(" ");
+                boolean allWordsFound = true;
+                for (String word : words) {
+                    if (!item.toLowerCase().contains(word)) {
+                        allWordsFound = false;
+                        break;
+                    }
+                }
+                if (allWordsFound) {
+                    suggestions.add(item);
+                }
+            }
+        }
+        return suggestions;
+    }
+
     private class MapLikeQueryAdapter extends ArrayAdapter<String> {
-        List<String> originalData;
-        List<String> filteredData = new ArrayList<>();
-        Filter filter = new Filter() {
+        private final List<String> filteredData = new ArrayList<>();
+        private final Filter filter = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();
                 if (constraint != null) {
-                    // Trim the input to remove leading and trailing spaces
                     String trimmedConstraint = constraint.toString().trim();
-
-                    // Check if the trimmed input is not empty
                     if (!trimmedConstraint.isEmpty()) {
-                        List<String> suggestions = new ArrayList<>();
-                        for (String item : tagStoreName) {
-                            if (item != null && !item.isEmpty()) {
-                                String[] words = trimmedConstraint.toLowerCase().split(" ");
-                                boolean allWordsFound = true;
-                                for (String word : words) {
-                                    if (!item.toLowerCase().contains(word)) {
-                                        allWordsFound = false;
-                                        break;
-                                    }
-                                }
-                                if (allWordsFound) {
-                                    suggestions.add(item);
-                                }
-                            }
-                        }
-
+                        List<String> suggestions = getSuggestions(trimmedConstraint);
                         results.values = suggestions;
                         results.count = suggestions.size();
-                        Log.e("originalData", originalData.toString());
                     }
                 }
                 return results;
             }
 
-
             @Override
             protected void publishResults(CharSequence constraint, FilterResults filterResults) {
                 filteredData.clear();
                 if (filterResults != null && filterResults.count > 0) {
-                    filteredData.addAll((List<String>) filterResults.values);
+                    if (filterResults.values instanceof List<?> resultsList) {
+                        for (Object result : resultsList)
+                            if (result instanceof String)
+                                filteredData.add((String) result);
+                    }
                     notifyDataSetChanged();
-                    Log.e("filteredData", filteredData.toString());
                 } else {
                     notifyDataSetInvalidated();
                 }
@@ -366,7 +306,6 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, OnMaps
 
         MapLikeQueryAdapter(Context context, int resource, List<String> objects) {
             super(context, resource, objects);
-            this.originalData = objects;
         }
 
         @Override
@@ -384,52 +323,44 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, OnMaps
         @Override
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             View view = super.getView(position, convertView, parent);
-            // 添加点击事件监听器
             view.setOnClickListener(v -> {
                 editText.setText(filteredData.get(position));
-                //關閉提示窗、游標
                 editText.dismissDropDown();
                 editText.clearFocus();
-                // 關閉鍵盤
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
             });
-
-
             ((TextView) view).setText(filteredData.get(position));
             return view;
         }
     }
 
     private static class DesignersAdapter extends RecyclerView.Adapter<DesignersAdapter.DesignerViewHolder> {
-         List<DeItem> designerList;
+        private final List<CourseItem> designerList;
 
-        public DesignersAdapter(List<DeItem> designerList) {
+        public DesignersAdapter(List<CourseItem> designerList) {
             this.designerList = designerList;
         }
 
         @NonNull
         @Override
         public DesignerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.user_and_coach_map_item_salon_designer, parent, false);
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_and_coach_map_item_salon_designer, parent, false);
             return new DesignerViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(@NonNull DesignerViewHolder holder, int position) {
-            DeItem item = designerList.get(position);
-
-            // Designer Head
-            byte[] imageData = item.getDesignerHead();
+            CourseItem item = designerList.get(position);
+            byte[] imageData = item.getCourseImage();
             if (imageData != null && imageData.length > 0) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
                 holder.designer_head.setImageBitmap(bitmap);
             } else {
                 holder.designer_head.setImageResource(R.drawable.all_ic_null_image_account);
             }
-            holder.designer_name.setText(item.getDesignerName());
-            holder.rating.setText(item.getRating());
+            holder.designer_name.setText(item.getCoachName());
+            holder.rating.setText(item.getCoachSex());
         }
 
         @Override
@@ -447,48 +378,101 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback, OnMaps
                 designer_head = itemView.findViewById(R.id.designer_head);
                 designer_name = itemView.findViewById(R.id.designer_name);
                 rating = itemView.findViewById(R.id.textView_rating);
-
                 itemView.setOnClickListener(view -> {
-                    int position = getAdapterPosition();
+                    int position = getBindingAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        DeItem item = designerList.get(position);
-                        Intent intent = new Intent(itemView.getContext(), ClassDetail.class);
-                        intent.putExtra("designer_id", item.getDesignerId());
-                        itemView.getContext().startActivity(intent);
+                        CourseItem courseItem = designerList.get(position);
+                        if (courseItem != null) {
+                            Log.d("DesignersAdapter", "Course ID: " + courseItem.getCourseId());
+                            Context context = itemView.getContext();
+                            context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE).edit().putInt("看更多課程ID", courseItem.getCourseId()).apply();
+                            context.startActivity(new Intent(context, ClassDetail.class));
+                        } else {
+                            Log.e("DesignersAdapter", "CourseItem is null at position: " + position);
+                        }
+                    } else {
+                        Log.e("DesignersAdapter", "Invalid position: " + position);
                     }
                 });
             }
-
         }
     }
 
-    private static class DeItem {
-        int DesignerId;
-        byte[] DesignerHead;
-        String DesignerName;
-        String rating;
+    static class CourseItem {
+        private final int courseId;
+        private final byte[] courseImage;
+        private final String coachName;
+        private final String coachSex;
 
-        private DeItem(int DesignerId, byte[] DesignerHead, String DesignerName, String rating) {
-            this.DesignerId = DesignerId;
-            this.DesignerHead = DesignerHead;
-            this.DesignerName = DesignerName;
-            this.rating = rating;
+        public CourseItem(int courseId, byte[] courseImage, String coachName, String coachSex) {
+            this.courseId = courseId;
+            this.courseImage = courseImage;
+            this.coachName = coachName;
+            this.coachSex = coachSex;
         }
 
-        private int getDesignerId() {
-            return DesignerId;
+        public int getCourseId() {
+            return courseId;
         }
 
-        private byte[] getDesignerHead() {
-            return DesignerHead;
+        public byte[] getCourseImage() {
+            return courseImage;
         }
 
-        private String getDesignerName() {
-            return DesignerName;
+        public String getCoachName() {
+            return coachName;
         }
 
-        private String getRating() {
-            return rating;
+        public String getCoachSex() {
+            return coachSex;
         }
+    }
+
+    static class SalonItem {
+        private final String name;
+        private final String address;
+        private static ArrayList<SalonItem> salonItems = new ArrayList<>();
+
+        public SalonItem(String name, String address) {
+            this.name = name;
+            this.address = address;
+        }
+
+        public static void addSalon(SalonItem salonItem) {
+            salonItems.add(salonItem);
+            setSalon(salonItems);
+        }
+
+        public static void clearSalon() {
+            salonItems.clear();
+        }
+
+        public static ArrayList<SalonItem> getSalonObjects() {
+            return salonItems;
+        }
+
+        private static void setSalon(ArrayList<SalonItem> salonItems) {
+            SalonItem.salonItems = salonItems;
+        }
+
+        public String getAddress() {
+            return address != null ? address : "";
+        }
+
+        public String getName() {
+            return name != null ? name : "";
+        }
+    }
+
+    private SalonItem findSalonByName(String name) {
+        List<SalonItem> salonItems = SalonItem.getSalonObjects();
+        if (salonItems != null) {
+            for (SalonItem salonItem : salonItems) {
+                if (salonItem.getName().equalsIgnoreCase(name)) {
+                    return salonItem;
+                }
+            }
+        }
+        return null;
     }
 }

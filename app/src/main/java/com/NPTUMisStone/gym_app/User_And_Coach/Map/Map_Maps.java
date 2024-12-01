@@ -1,4 +1,4 @@
-package com.NPTUMisStone.gym_app.User_And_Coach;
+package com.NPTUMisStone.gym_app.User_And_Coach.Map;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -74,6 +74,7 @@ public class Map_Maps extends AppCompatActivity implements OnMapReadyCallback {
         findViewById(R.id.MapMaps_backButton).setOnClickListener(v -> finish());
 
         designerId = getIntent().getIntExtra("designerId", 0);
+        Toast.makeText(this, "designerId: " + designerId, Toast.LENGTH_SHORT).show();
         MapsInitializer.initialize(this, MapsInitializer.Renderer.LATEST, renderer -> {});
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -121,14 +122,15 @@ public class Map_Maps extends AppCompatActivity implements OnMapReadyCallback {
 
         mMap.setOnMarkerClickListener(marker -> {
             if (!Objects.requireNonNull(marker.getTitle()).isEmpty()) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
+                /*Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(mapIntent);
                 } else {
                     Toast.makeText(getApplicationContext(), "請安裝Google導航應用程序", Toast.LENGTH_SHORT).show();
-                }
+                }*/
+                new MapHelper(this, MyConnection, designerId).getCurrentLocation();
             }
             return true;
         });
@@ -153,7 +155,7 @@ public class Map_Maps extends AppCompatActivity implements OnMapReadyCallback {
         protected List<LatLng> doInBackground(LatLng... params) {
             LatLng origin = params[0];
             LatLng destination = params[1];
-            String apiKey = "YOUR_API_KEY"; // 請替換為你自己的API金鑰
+            String apiKey = "AIzaSyDVic0YITkggqQsWVA4a3tG4MXC-iIvTeY"; // 請替換為你自己的API金鑰
             String url = "https://maps.googleapis.com/maps/api/directions/json?"
                     + "origin=" + origin.latitude + "," + origin.longitude
                     + "&destination=" + destination.latitude + "," + destination.longitude
