@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +23,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.NPTUMisStone.gym_app.Coach.Class.ClassMain;
 import com.NPTUMisStone.gym_app.Coach.Comments.Coach_Comments;
 
+import com.NPTUMisStone.gym_app.Coach.Records.Coach_AppointmentData;
 import com.NPTUMisStone.gym_app.Coach.Records.Coach_AppointmentsAll;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledMain;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
@@ -31,50 +34,63 @@ import com.NPTUMisStone.gym_app.User_And_Coach.Map.Map_salon;
 import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Objects;
+import java.util.concurrent.Executors;
 
 
 public class CoachHome extends AppCompatActivity {
-    Connection MyConnection;
-    ProgressBarHandler progressBarHandler;
+
+    private Connection MyConnection;
+    private ProgressBarHandler progressBarHandler;
+
+    // UI 元件
+    private View upcomingClassCard;
+    private TextView upcomingClassTitle;
+    private TextView upcomingClassDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.coach_main_home);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.CoachHome_constraintLayout), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        // 初始化 UI 元件
+        upcomingClassCard = findViewById(R.id.CoachHome_upcomingClassCard);
+        upcomingClassTitle = findViewById(R.id.CoachHome_upcomingClassTitle);
+        upcomingClassDetails = findViewById(R.id.CoachHome_upcomingClassDetails);
+
+        // 初始化其他屬性
         MyConnection = new SQLConnection(findViewById(R.id.CoachHome_constraintLayout)).IWantToConnection();
         progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
-        init_coachInfo();
+
+        // 初始化教練資訊
+        initCoachInfo();
+
+        // 設置按鈕點擊事件
         findViewById(R.id.CoachHome_testButton1).setOnClickListener(v -> startActivity(new Intent(this, Map_Maps.class)));
         findViewById(R.id.CoachHome_testButton2).setOnClickListener(v -> startActivity(new Intent(this, Map_salon.class)));
-        // 獲取 SwipeRefreshLayout
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.CoachHome_swipeRefreshLayout);
 
-        // 設置下拉刷新事件
+        // 下拉刷新處理
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.CoachHome_swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            // 調用刷新數據的方法
             refreshPageContent();
-            // 完成刷新後，關閉刷新動畫
             swipeRefreshLayout.setRefreshing(false);
         });
-    }
-    private void refreshPageContent() {
-        // 在此處刷新頁面數據，例如：
-        // 1. 重新加載教練數據
-        // 2. 更新課程內容
-        // 3. 或者其他需要刷新的邏輯
+
+        // 初次載入最近課程
+        fetchClosestUpcomingAppointment();
     }
 
-    private void init_coachInfo() {
+    private void refreshPageContent() {
+        fetchClosestUpcomingAppointment();
+    }
+
+    private void initCoachInfo() {
         ((TextView) findViewById(R.id.CoachHome_nameText)).setText(getGreetingMessage());
         findViewById(R.id.CoachHome_photoImage).setOnClickListener(v -> startActivity(new Intent(this, CoachInfo.class)));
-        registerReceiver(broadcastReceiver, new IntentFilter("com.NPTUMisStone.gym_app.LOGOUT"), Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Context.RECEIVER_NOT_EXPORTED : 0);
         setUserImage();
     }
 
@@ -89,9 +105,10 @@ public class CoachHome extends AppCompatActivity {
     }
 
     private void setUserImage() {
-        byte[] image = Coach.getInstance().getCoachImage(); //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
-        if (image != null)
+        byte[] image = Coach.getInstance().getCoachImage();
+        if (image != null) {
             ((ImageView) findViewById(R.id.CoachHome_photoImage)).setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+        }
     }
 
     public void onClick(View view) {
@@ -111,56 +128,65 @@ public class CoachHome extends AppCompatActivity {
             Log.e("Button", "Button click error", e);
         }
     }
+    private void fetchClosestUpcomingAppointment() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                // 修改後的 SQL 查詢語句
+                String sql = "SELECT TOP 1 * FROM 健身教練課表課程合併 " +
+                        "WHERE 健身教練編號 = ? AND 結束時間 > ? " +
+                        "ORDER BY 開始時間";
+                PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
 
-    //為了要在登出時關閉Home頁面，註冊廣播器
-    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(android.content.Context context, Intent intent) {
-            finish();
-        }
-    };
+                // 設定查詢參數
+                searchStatement.setInt(1, Coach.getInstance().getCoachId());
+                java.sql.Time currentTime = new java.sql.Time(System.currentTimeMillis());
+                searchStatement.setTime(2, currentTime);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        progressBarHandler.hideProgressBar();
-        init_coachInfo();
-        Log.d("ActivityState", "Activity resumed, progress bar hidden.");
-    }
+                ResultSet rs = searchStatement.executeQuery();
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(broadcastReceiver);
-    }/*
-    private void getString() { //API連接測試
-        String url = "https://webapplication320240825010511.azurewebsites.net/api/MyApi/" + Coach.getInstance().getCoachId();
+                if (rs.next()) {
+                    // 從 SQL 結果集中直接取得資料
+                    String courseName = rs.getString("課程名稱");
+                    String date = rs.getDate("日期").toString();
+                    String dayOfWeek = rs.getString("星期幾");
+                    String startTime = rs.getString("開始時間");
+                    String endTime = rs.getString("結束時間");
+                    String locationName = rs.getString("地點名稱");
+                    String locationType = rs.getString("地點類型");
 
-        // Use an HTTP client library like OkHttp to make the request
-        new OkHttpClient().newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e("ScheduledCheck", "Error loading tasks from API", e);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String responseBody = response.body() != null ? response.body().string() : null;
-                    try {
-                        // 解析 JSON 字串
-                        JSONObject jsonObject = new JSONObject(responseBody);
-                        // 讀取分類名稱的值
-                        String categoryName = jsonObject.getString("Value");
-                        // 在 UI 執行緒中顯示分類名稱
-                        runOnUiThread(() -> Toast.makeText(CoachHome.this, categoryName, Toast.LENGTH_SHORT).show());
-                    } catch (JSONException e) {
-                        Log.e("CoachHome", "Error parsing JSON response", e);
-                    }
+                    // 更新 UI
+                    new Handler(Looper.getMainLooper()).post(() -> updateUIWithClosestAppointment(
+                            courseName, date, dayOfWeek, startTime, endTime, locationName, locationType
+                    ));
                 } else {
-                    Log.e("CoachHome", "Unsuccessful response from API");
+                    // 沒有課程時更新 UI
+                    new Handler(Looper.getMainLooper()).post(() -> updateUIWithNoAppointment());
                 }
+
+                rs.close();
+                searchStatement.close();
+            } catch (SQLException e) {
+                Log.e("SQL", Objects.requireNonNull(e.getMessage()));
+                new Handler(Looper.getMainLooper()).post(() -> progressBarHandler.hideProgressBar());
             }
         });
-    }*/
+    }
+
+    private void updateUIWithClosestAppointment(String courseName, String date, String dayOfWeek,
+                                                String startTime, String endTime, String locationName,
+                                                String locationType) {
+        upcomingClassCard.setVisibility(View.VISIBLE);
+        upcomingClassTitle.setText("即將到來的課程");
+        upcomingClassDetails.setText(String.format(
+                "課程名稱: %s\n日期: %s (%s)\n時間: %s - %s\n地點: %s (%s)",
+                courseName, date, dayOfWeek, startTime, endTime, locationName, locationType
+        ));
+    }
+
+    private void updateUIWithNoAppointment() {
+        upcomingClassCard.setVisibility(View.VISIBLE);
+        upcomingClassTitle.setText("沒有即將到來的課程");
+        upcomingClassDetails.setText("未來沒有課程安排");
+    }
+
 }

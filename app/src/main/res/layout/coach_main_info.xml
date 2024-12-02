@@ -117,7 +117,7 @@
                         android:id="@+id/CoachInfo_accountText"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:cursorVisible="false"
+                        android:cursorVisible="true"
                         android:focusable="false"
                         android:hint="@string/Info_accountHint"
                         android:inputType="none"
