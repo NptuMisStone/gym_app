@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -27,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
+import com.NPTUMisStone.gym_app.Main.Identify.JavaMailAPI;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
@@ -35,6 +37,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -216,26 +223,36 @@ public class Coach_Appointment_Detail extends AppCompatActivity {
             }
             holder.cancelApBtn.setOnClickListener(v -> {
                 try {
-                    MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-                    String sql = "UPDATE 使用者預約 SET 預約狀態 = 5 WHERE 預約編號 = ? ";
-                    PreparedStatement Statement = MyConnection.prepareStatement(sql);
-                    Statement.setInt(1, detail_ap_data.get(position).getAppointmentID());
-                    int rowsAffected = Statement.executeUpdate();
-                    if (rowsAffected > 0) {
-                        UpdatePeople(detail_ap_data.get(position).getScheduleID());
-                        detail_ap_data.remove(position);
-                        new Handler(Looper.getMainLooper()).post(this::notifyDataSetChanged);
+                    if (!isCancelable(detail_ap_data.get(position).getScheduleID())) {
+                        // 如果無法取消，顯示提示
                         new Handler(Looper.getMainLooper()).post(() ->
-                                Toast.makeText(context, "已取消", Toast.LENGTH_SHORT).show());
-                        fetchAp();
+                                Toast.makeText(context, "❌ 無法取消：需於課程開始 24 小時前取消", Toast.LENGTH_SHORT).show());
+                        return;
                     }
-                    Statement.close();
-                } catch (SQLException e) {
-                    Log.e("SQL", "預約狀態=5", e);
+
+                    // 彈出確認對話框
+                    new AlertDialog.Builder(context)
+                            .setTitle("確認取消")
+                            .setMessage("您確定要取消此課程嗎？")
+                            .setPositiveButton("確認", (dialog, which) -> cancelAppointment(position))
+                            .setNegativeButton("取消", null)
+                            .show();
+                } catch (Exception e) {
+                    Log.e("SQL", "Error during cancellation logic", e);
                 }
             });
+
+
             holder.finishApBtn.setOnClickListener(v -> {
                 try {
+                    if (!isCompletable(detail_ap_data.get(position).getScheduleID())) {
+                        // 如果課程尚未結束，顯示提示
+                        new Handler(Looper.getMainLooper()).post(() ->
+                                Toast.makeText(context, "❌ 課程尚未結束，無法標記為完成", Toast.LENGTH_SHORT).show());
+                        return;
+                    }
+
+                    // 更新預約狀態為完成
                     MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
                     String sql = "UPDATE 使用者預約 SET 預約狀態 = 2 WHERE 預約編號 = ? ";
                     PreparedStatement Statement = MyConnection.prepareStatement(sql);
@@ -253,6 +270,91 @@ public class Coach_Appointment_Detail extends AppCompatActivity {
                     Log.e("SQL", "預約狀態=2", e);
                 }
             });
+
+        }
+        private boolean isCancelable(int scheduleId) {
+            String query = "SELECT 開始時間, 日期 FROM 健身教練課表 WHERE 課表編號 = ?";
+            try (PreparedStatement stmt = MyConnection.prepareStatement(query)) {
+                stmt.setInt(1, scheduleId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    String date = rs.getString("日期");
+                    String startTime = rs.getString("開始時間");
+
+                    // 解析課程開始時間
+                    LocalDateTime classStart = LocalDateTime.parse(date + "T" + startTime);
+
+                    // 獲取當前時間
+                    LocalDateTime now = LocalDateTime.now();
+
+                    // 判斷是否大於等於 24 小時
+                    Duration duration = Duration.between(now, classStart);
+                    return duration.toHours() >= 24;
+                }
+            } catch (SQLException e) {
+                Log.e("DatabaseError", "Error checking cancelability", e);
+            }
+            return false; // 如果查詢失敗或其他錯誤，預設不可取消
+        }
+        private boolean isCompletable(int scheduleId) {
+            String query = "SELECT 結束時間, 日期 FROM 健身教練課表 WHERE 課表編號 = ?";
+            try (PreparedStatement stmt = MyConnection.prepareStatement(query)) {
+                stmt.setInt(1, scheduleId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    String date = rs.getString("日期"); // 假設格式為 yyyy-MM-dd
+                    String endTime = rs.getString("結束時間"); // 假設格式為 HH:mm:ss
+
+                    // 解析課程結束時間
+                    LocalDate courseDate = LocalDate.parse(date);
+                    LocalTime courseEndTime = LocalTime.parse(endTime);
+                    LocalDateTime classEnd = LocalDateTime.of(courseDate, courseEndTime);
+
+                    // 獲取當前時間
+                    LocalDateTime now = LocalDateTime.now();
+
+                    // 日誌記錄
+                    Log.d("TimeCheck", "現在時間：" + now);
+                    Log.d("TimeCheck", "課程結束時間：" + classEnd);
+
+                    // 判斷是否已超過結束時間
+                    return now.isAfter(classEnd);
+                }
+            } catch (SQLException e) {
+                Log.e("DatabaseError", "Error checking completable status", e);
+            } catch (DateTimeParseException e) {
+                Log.e("TimeParseError", "Error parsing date or time", e);
+            }
+            return false; // 如果查詢失敗或其他錯誤，預設不可完成
+        }
+
+        private void cancelAppointment(int position) {
+            try {
+                String sql = "UPDATE 使用者預約 SET 預約狀態 = 5 WHERE 預約編號 = ?";
+                PreparedStatement Statement = MyConnection.prepareStatement(sql);
+                Statement.setInt(1, detail_ap_data.get(position).getAppointmentID());
+                int rowsAffected = Statement.executeUpdate();
+                if (rowsAffected > 0) {
+                    // 更新課表人數
+                    UpdatePeople(detail_ap_data.get(position).getScheduleID());
+
+                    // 發送取消通知給使用者
+                    sendCancellationNotificationToUser(
+                            detail_ap_data.get(position).getScheduleID(),
+                            detail_ap_data.get(position).getUser_mail()
+                    );
+
+                    // 更新資料
+                    detail_ap_data.remove(position);
+                    new Handler(Looper.getMainLooper()).post(this::notifyDataSetChanged);
+                    new Handler(Looper.getMainLooper()).post(() ->
+                            Toast.makeText(context, "已取消", Toast.LENGTH_SHORT).show());
+                    fetchAp();
+                }
+                Statement.close();
+            } catch (SQLException e) {
+                Log.e("SQL", "Error during appointment cancellation", e);
+            }
         }
         private void UpdatePeople(int scheduleID) {
             Executors.newSingleThreadExecutor().execute(() -> {
@@ -288,6 +390,50 @@ public class Coach_Appointment_Detail extends AppCompatActivity {
         public int getItemCount() {
             return detail_ap_data.size();
         }
+        private void sendCancellationNotificationToUser(int scheduleId, String userEmail) {
+            String query = "SELECT 課程名稱, 日期, 開始時間, 結束時間, 健身教練姓名 " +
+                    "FROM [使用者預約-有預約的] WHERE 課表編號 = ?";
+            try (PreparedStatement stmt = MyConnection.prepareStatement(query)) {
+                stmt.setInt(1, scheduleId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    String courseDate = rs.getString("日期");
+                    String startTime = rs.getString("開始時間");
+                    String endTime = rs.getString("結束時間");
+                    String courseName = rs.getString("課程名稱");
+                    String coachName = rs.getString("健身教練姓名");
+
+                    // 發送通知
+                    sendCancellationNotification(userEmail, courseDate, startTime, endTime, courseName, coachName);
+                }
+            } catch (SQLException e) {
+                Log.e("DatabaseError", "Error sending cancellation notification", e);
+            }
+        }
+        private void sendCancellationNotification(String userEmail, String courseDate, String startTime, String endTime, String courseName, String coachName) {
+            String subject = "【屏大Fit-健身預約系統】課程取消通知";
+            String message = "您好，\n\n" +
+                    "我們遺憾地通知您，您所預約的課程已被教練取消。\n\n" +
+                    "課程詳細資訊如下：\n" +
+                    "課程名稱：" + courseName + "\n" +
+                    "課程日期：" + courseDate + "\n" +
+                    "課程時間：" + startTime + " ~ " + endTime + "\n" +
+                    "教練名稱：" + coachName + "\n\n" +
+                    "若有任何問題，請聯繫教練或客服人員。\n\n" +
+                    "屏大Fit 團隊";
+            new JavaMailAPI(context, userEmail, subject, message).sendMail(new JavaMailAPI.EmailSendResultCallback() {
+                @Override
+                public void onSuccess() {
+                    Log.d("EmailNotification", "通知已成功發送至：" + userEmail);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("EmailNotificationError", "通知發送失敗：" + userEmail, e);
+                }
+            });
+        }
+
     }
     public  void coach_Appointment_detail_goback(View view){
         Intent resultIntent = new Intent();

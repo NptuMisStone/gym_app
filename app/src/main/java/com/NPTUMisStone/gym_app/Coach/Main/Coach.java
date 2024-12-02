@@ -9,6 +9,7 @@ public class Coach {
     private String CoachPhone;
     private int CoachSex;
     private String CoachMail;
+    private String coachIntro; // 個人介紹
     private byte[] CoachImage;
     private static volatile Coach coach = null;
     private Coach(int id) {
@@ -21,7 +22,7 @@ public class Coach {
         }
         return coach;
     }
-    public static void setInstance(int id, String coachAccount, String coachName, String coachPhone, int coachSex, String coachMail,byte[] coachImage) {
+    public static void setInstance(int id, String coachAccount, String coachName, String coachPhone, int coachSex, String coachMail, byte[] coachImage, String coachIntro) {
         if (coach == null) {
             coach = new Coach(id);
             coach.setCoachAccount(coachAccount);
@@ -30,6 +31,7 @@ public class Coach {
             coach.setCoachSex(coachSex);
             coach.setCoachMail(coachMail);
             coach.setCoachImage(coachImage);
+            coach.setCoachIntro(coachIntro); // 添加個人介紹的初始化
             Log.e("coach", "注意，已經創建了一個新的coach實例。");
         } else {
             coach.setCoachId(id);
@@ -39,8 +41,10 @@ public class Coach {
             coach.setCoachSex(coachSex);
             coach.setCoachMail(coachMail);
             coach.setCoachImage(coachImage);
+            coach.setCoachIntro(coachIntro); // 更新個人介紹
         }
     }
+
     public void setCoachId(int id) {     this.CoachId = id;   }
     public void setCoachAccount(String coachAccount) {    this.CoachAccount = coachAccount;  }
     public void setCoachName(String coachName) {    this.CoachName = coachName;  }
@@ -48,6 +52,7 @@ public class Coach {
     public void setCoachSex(int coachSex) {    this.CoachSex = coachSex;  }
     public void setCoachMail(String coachMail) {    this.CoachMail = coachMail;  }
     public void setCoachImage(byte[] coachImage) {    this.CoachImage = coachImage;  }
+    public void setCoachIntro(String coachIntro) { this.coachIntro = coachIntro; }
     public int getCoachId() {    return CoachId;  }
     public String getCoachAccount() {    return CoachAccount;  }
     public String getCoachName() {    return CoachName;  }
@@ -55,4 +60,5 @@ public class Coach {
     public int getCoachSex() {    return CoachSex;  }
     public String getCoachMail() {    return CoachMail;  }
     public byte[] getCoachImage() {    return CoachImage;  }
+    public String getCoachIntro() { return coachIntro;  }
 }

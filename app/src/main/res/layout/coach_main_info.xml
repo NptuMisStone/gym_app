@@ -1,280 +1,379 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_black"
+    android:background="#f0f0f0"
     tools:context=".Coach.Main.CoachInfo">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/CoachInfo_topConstraint"
+    <!-- 標頭 -->
+    <RelativeLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/red"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/CoachInfo_return"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
             android:background="@drawable/all_effect_ripple"
-            android:contentDescription="@string/goBack"
-            android:src="@drawable/all_ic_arrow_back2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            android:contentDescription="返回上一頁"
+            android:scaleType="centerInside"
+            android:src="@drawable/back" />
 
         <TextView
-            android:id="@+id/CoachInfo_title"
+            android:id="@+id/ClassMain_titleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_Info"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="個人資料"
+            android:textColor="#808080"
+            android:textSize="20sp" />
 
-        <ImageView
-            android:id="@+id/CoachInfo_logout"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="8dp"
-            android:background="#1A000000"
-            android:contentDescription="@string/logOut"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/main_login_ic_arrow" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/coachEdit"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="編輯個人資料"
+            android:scaleType="centerInside"
+            android:src="@drawable/edit" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#d3d3d3" />
+    </RelativeLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.28" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/CoachInfo_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:civ_border_color="@color/dark_gray"
-        app:civ_border_width="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:srcCompat="@drawable/all_ic_null_image_account" />
-
-    <Button
-        android:id="@+id/CoachInfo_upload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableEnd="@android:drawable/ic_menu_upload"
-        android:text="@string/Info_uploadDescription"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/CoachInfo_image"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.07" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.93" />
-
+    <!-- 滾動區域 -->
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline8"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toTopOf="@+id/guideline2">
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        app:layout_constraintBottom_toTopOf="@+id/actionButtons"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- ScrollView 的唯一子佈局 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center_horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/CoachInfo_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginBottom="16dp"
+                app:civ_border_color="@color/dark_gray"
+                app:civ_border_width="1dp"
+                app:srcCompat="@drawable/all_ic_null_image_account" />
+
+            <Button
+                android:id="@+id/CoachInfo_upload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@android:drawable/ic_menu_upload"
+                android:text="@string/Info_uploadDescription"
+                android:visibility="gone" />
+
+            <!-- 個人資料 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- 帳號 -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/CoachInfo_accountLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    app:boxStrokeColor="@color/dark_teal"
+                    app:hintEnabled="true"
+                    app:hintTextColor="@color/dark_teal">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/CoachInfo_accountText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:hint="@string/Info_accountHint"
+                        android:inputType="none"
+                        android:padding="12dp"
+                        android:text="@string/Info_accountHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- 姓名 -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/CoachInfo_nameLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    app:boxStrokeColor="@color/dark_teal"
+                    app:hintEnabled="true"
+                    app:hintTextColor="@color/dark_teal">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/CoachInfo_nameText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:hint="@string/Info_nameHint"
+                        android:text="@string/Info_nameHint"
+                        android:inputType="none"
+                        android:padding="12dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- 電話 -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/CoachInfo_phoneLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    app:boxStrokeColor="@color/dark_teal"
+                    app:hintEnabled="true"
+                    app:hintTextColor="@color/dark_teal">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/CoachInfo_phoneText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:hint="@string/Info_phoneHint"
+                        android:text="@string/Info_phoneHint"
+                        android:inputType="none"
+                        android:padding="12dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- 電子郵件 -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/CoachInfo_emailLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    app:boxStrokeColor="@color/dark_teal"
+                    app:hintEnabled="true"
+                    app:hintTextColor="@color/dark_teal">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/CoachInfo_emailText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:hint="@string/Info_emailHint"
+                        android:text="@string/Info_emailHint"
+                        android:inputType="none"
+                        android:padding="12dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- 性別 -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/CoachInfo_identifyLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    app:boxStrokeColor="@color/dark_teal"
+                    app:hintEnabled="true"
+                    app:hintTextColor="@color/dark_teal">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/CoachInfo_sexText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:hint="@string/Info_sexCoachHint"
+                        android:text="@string/Info_sexCoachHint"
+                        android:inputType="none"
+                        android:padding="12dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- 個人介紹 -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/CoachInfo_introLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    app:boxStrokeColor="@color/dark_teal"
+                    app:hintEnabled="true"
+                    app:hintTextColor="@color/dark_teal">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/CoachInfo_introText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:cursorVisible="true"
+                        android:focusable="true"
+                        android:hint="個人介紹"
+                        android:text="個人介紹"
+                        android:inputType="textMultiLine"
+                        android:lines="4"
+                        android:padding="12dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <!-- 儲存與取消按鈕 -->
+            <LinearLayout
+                android:id="@+id/saveCancelButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="8dp"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/CoachInfo_saveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:text="儲存" />
+
+                <Button
+                    android:id="@+id/CoachInfo_cancelButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="取消" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 底部按鈕 -->
+    <FrameLayout
+        android:id="@+id/actionButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="top"
+            android:background="#d3d3d3" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:alpha="0.8"
-            android:background="@color/white"
-            android:orientation="vertical">
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/CoachInfo_idLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                app:hintEnabled="true"
-                app:passwordToggleEnabled="false">
-
-                <AutoCompleteTextView
-                    android:id="@+id/CoachInfo_idText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:hint="@string/Info_idCoachHint"
-                    android:inputType="none"
-                    android:text="@string/All_idText" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/CoachInfo_accountLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                app:hintEnabled="true"
-                app:passwordToggleEnabled="false">
-
-                <AutoCompleteTextView
-                    android:id="@+id/CoachInfo_accountText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:hint="@string/Info_accountHint"
-                    android:inputType="none"
-                    android:text="@string/Info_accountHint" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/CoachInfo_nameLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                app:hintEnabled="true"
-                app:passwordToggleEnabled="false">
-
-                <AutoCompleteTextView
-                    android:id="@+id/CoachInfo_nameText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:hint="@string/Info_nameHint"
-                    android:inputType="none"
-                    android:text="@string/Info_nameHint" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/CoachInfo_phoneLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                app:hintEnabled="true"
-                app:passwordToggleEnabled="false">
-
-                <AutoCompleteTextView
-                    android:id="@+id/CoachInfo_phoneText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:hint="@string/Info_phoneHint"
-                    android:inputType="none"
-                    android:text="@string/Info_phoneHint" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/CoachInfo_emailLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                app:hintEnabled="true"
-                app:passwordToggleEnabled="false">
-
-                <AutoCompleteTextView
-                    android:id="@+id/CoachInfo_emailText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:hint="@string/Info_emailHint"
-                    android:inputType="none"
-                    android:text="@string/Info_emailHint" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/CoachInfo_identifyLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                app:hintEnabled="true"
-                app:passwordToggleEnabled="false">
-
-                <AutoCompleteTextView
-                    android:id="@+id/CoachInfo_sexText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:hint="@string/Info_sexCoachHint"
-                    android:inputType="none"
-                    android:text="@string/Info_sexCoachHint" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/CoachInfo_resetButton"
-                android:layout_width="match_parent"
+            <!-- 刪除帳號 -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="@string/Info_resetDescription" />
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/CoachInfo_delete"
-                android:layout_width="match_parent"
+                <ImageButton
+                    android:id="@+id/CoachInfo_delete"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/all_effect_ripple"
+                    android:contentDescription="刪除帳號"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/userdelete" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="刪除帳號"
+                    android:textColor="#808080"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- 更改密碼 -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/Info_deleteDescription" />
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/CoachInfo_resetButton"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/all_effect_ripple"
+                    android:contentDescription="更改密碼"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/useredit" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="更改密碼"
+                    android:textColor="#808080"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- 登出 -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/CoachInfo_logout"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/all_effect_ripple"
+                    android:contentDescription="登出"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/logout" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="登出"
+                    android:textColor="#808080"
+                    android:textSize="14sp" />
+            </LinearLayout>
         </LinearLayout>
-    </ScrollView>
-
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

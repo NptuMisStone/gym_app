@@ -822,14 +822,21 @@ public class ScheduledMain extends AppCompatActivity {
     }
 
     private void notifyUsersAboutCancellation(String scheduleId) {
-        // 查詢所有已預約該課程的使用者 Email
-        String query = "SELECT 使用者郵件 FROM [使用者預約-有預約的] WHERE 課表編號 = ?";
+        String query = "SELECT 使用者郵件, 課程名稱, 日期, 開始時間, 結束時間, 健身教練姓名 " +
+                "FROM [使用者預約-有預約的] WHERE 課表編號 = ?";
         try (PreparedStatement stmt = MyConnection.prepareStatement(query)) {
             stmt.setString(1, scheduleId); // 設定課表編號參數
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 String userEmail = rs.getString("使用者郵件");
-                sendCancellationNotification(userEmail); // 發送通知給使用者
+                String courseName = rs.getString("課程名稱");
+                String courseDate = rs.getString("日期");
+                String startTime = rs.getString("開始時間");
+                String endTime = rs.getString("結束時間");
+                String coachName = rs.getString("健身教練姓名");
+
+                // 發送通知給使用者
+                sendCancellationNotification(userEmail, courseDate, startTime, endTime, courseName, coachName);
             }
         } catch (SQLException e) {
             Log.e("DatabaseError", "Error notifying users about cancellation", e);
@@ -837,11 +844,17 @@ public class ScheduledMain extends AppCompatActivity {
     }
 
 
-    private void sendCancellationNotification(String userEmail) {
-        String subject = "【屏大Fit-健身預約系統】課程取消通知";
+
+    private void sendCancellationNotification(String userEmail, String courseDate, String startTime, String endTime, String courseName, String coachName) {
+        String subject = "【屏大Fit-健身預約系統】取消開課通知";
         String message = "您好，\n\n" +
-                "我們遺憾地通知您，您所預約的課程已被教練取消。\n\n" +
-                "若有任何問題，請聯繫相關人員。\n\n" +
+                "我們遺憾地通知您，您所預約的課程已被教練取消開課。\n\n" +
+                "課程詳細資訊如下：\n" +
+                "課程名稱：" + courseName + "\n" +
+                "課程日期：" + courseDate + "\n" +
+                "課程時間：" + startTime + " ~ " + endTime + "\n" +
+                "教練名稱：" + coachName + "\n\n" +
+                "若有任何問題，請聯繫教練或客服人員。\n\n" +
                 "屏大Fit 團隊";
         new JavaMailAPI(this, userEmail, subject, message).sendMail(new JavaMailAPI.EmailSendResultCallback() {
             @Override
@@ -855,6 +868,7 @@ public class ScheduledMain extends AppCompatActivity {
             }
         });
     }
+
 
 
     private void deleteSchedule(String scheduleId) {

@@ -34,7 +34,7 @@
             android:layout_centerInParent="true"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="評論管理"
+            android:text="評價管理"
             android:textColor="#808080"
             android:textSize="20sp" />
 
