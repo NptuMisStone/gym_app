@@ -58,7 +58,7 @@ public class ClassDetail extends AppCompatActivity {
 
     private void setupListeners() {
         findViewById(R.id.ClassDetail_backButton).setOnClickListener(v -> finish());
-        findViewById(R.id.ClassDetail_directionButton).setOnClickListener(v -> new MapHelper(this, MapHelper.getLocationName(MyConnection,classID)).getCurrentLocation());
+        findViewById(R.id.ClassDetail_directionButton).setOnClickListener(v -> new MapHelper(this, MapHelper.getLocationAddress(MyConnection,classID)).getCurrentLocation());
     }
 
     private void setupWindowInsets() {

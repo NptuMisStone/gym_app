@@ -40,9 +40,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -56,13 +53,12 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationClient;
     LatLng currentLocation;
     String address;
-    private int designerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.user_and_coach_map_maps); // 使用一般的 Activity 佈局
+        setContentView(R.layout.user_and_coach_map_maps);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -71,8 +67,8 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
         findViewById(R.id.MapMaps_backButton).setOnClickListener(v -> finish());
 
-        designerId = getIntent().getIntExtra("designerId", 0);
-        Toast.makeText(this, "designerId: " + designerId, Toast.LENGTH_SHORT).show();
+        address = getIntent().getStringExtra("address");
+        Toast.makeText(this, "Address: " + address, Toast.LENGTH_SHORT).show();
         MapsInitializer.initialize(this, MapsInitializer.Renderer.LATEST, renderer -> {});
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -108,8 +104,11 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
                             mMap.addMarker(new MarkerOptions().position(currentLocation).title("My Location"));
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
 
-                            address = getAddressFromDb();
-                            geocodeAddress(address);
+                            if (address != null && !address.isEmpty()) {
+                                geocodeAddress(address);
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Invalid address.", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
                             Toast.makeText(getApplicationContext(), "Failed to get your location.", Toast.LENGTH_SHORT).show();
                         }
@@ -120,33 +119,12 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
         mMap.setOnMarkerClickListener(marker -> {
             if (!Objects.requireNonNull(marker.getTitle()).isEmpty()) {
-                /*Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(mapIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), "請安裝Google導航應用程序", Toast.LENGTH_SHORT).show();
-                }*/
-                new MapHelper(this, MapHelper.getLocationName(MyConnection,designerId)).getCurrentLocation();
+                new MapHelper(this, address).getCurrentLocation();
             }
             return true;
         });
     }
 
-    private String getAddressFromDb() {
-        try {
-            Statement stmt = MyConnection.createStatement();
-            String query = "SELECT 課程編號,縣市,行政區,顯示地點地址, 顯示地點名稱 FROM [健身教練課程-有排課的] WHERE 健身教練編號 = " + designerId;
-            ResultSet rs = stmt.executeQuery(query);
-            if (rs.next()) {
-                return rs.getString("顯示地點地址");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return "error";
-    }
 
     private class FetchDirectionsTask extends AsyncTask<LatLng, Void, List<LatLng>> {
         @Override
@@ -158,7 +136,6 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
                     + "origin=" + origin.latitude + "," + origin.longitude
                     + "&destination=" + destination.latitude + "," + destination.longitude
                     + "&key=" + apiKey;
-
             try {
                 String jsonResponse = getJsonResponse(url);
                 if (jsonResponse != null) {
@@ -177,6 +154,8 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
                 PolylineOptions polylineOptions = new PolylineOptions()
                         .addAll(simplifiedRoutePoints).width(5).color(Color.RED);
                 mMap.addPolyline(polylineOptions);
+            } else {
+                Toast.makeText(Maps.this, "No routes found between the specified locations.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -204,7 +183,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
     private List<LatLng> parseJsonResponse(String jsonResponse) throws Exception {
         JSONObject jsonObject = new JSONObject(jsonResponse);
-        if (jsonObject.has("routes")) {
+        if (jsonObject.has("routes") && jsonObject.getJSONArray("routes").length() > 0) {
             JSONObject route = jsonObject.getJSONArray("routes").getJSONObject(0);
             JSONObject polyline = route.getJSONObject("overview_polyline");
             String encodedPolyline = polyline.getString("points");
@@ -228,9 +207,10 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
                 new FetchDirectionsTask().execute(latLng, currentLocation);
             } else {
                 Toast.makeText(getApplicationContext(), "地址無效，請檢查輸入的地址。", Toast.LENGTH_SHORT).show();
+                Log.e("MapActivity", "地址無效: " + address);
             }
         } catch (IOException e) {
-            Log.e("MapActivity", "Error geocoding address: " + e.getMessage());
+            Log.e("MapActivity", "地理編碼錯誤: " + e.getMessage());
         }
     }
 }

@@ -179,7 +179,7 @@ public class Appointment_Confirm extends AppCompatActivity {
                     new AlertDialog.Builder(this)
                             .setTitle("時間衝突")
                             .setMessage("預約時段衝突")
-                            .setIcon(R.drawable.warning)
+                            .setIcon(R.drawable.user_appointment_confirm_ic_warning)
                             .show();
                     return false;
                 }

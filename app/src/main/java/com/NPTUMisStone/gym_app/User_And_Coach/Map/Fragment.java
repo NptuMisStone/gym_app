@@ -204,7 +204,7 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
                                             + myLocation[0].latitude + "," + myLocation[0].longitude + "&destination="
                                             + marker1.getPosition().latitude + "," + marker1.getPosition().longitude)))*/
                                 Toast.makeText(getActivity(), "導航至" + marker.getTitle(), Toast.LENGTH_SHORT).show();
-                                new MapHelper(requireContext(), marker.getTitle()).getCurrentLocation();
+                                startActivity(new Intent(getActivity(), Maps.class).putExtra("address", marker.getTitle()));
                             });
                             map.setOnMarkerClickListener(marker2 -> {
                                 recyclerDesigner.setVisibility(View.VISIBLE);

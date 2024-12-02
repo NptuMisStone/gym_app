@@ -70,7 +70,7 @@ public class MapHelper {
         }
     }
 
-    public static String getLocationName(Connection connection,int courseId) {
+    public static String getLocationAddress(Connection connection, int courseId) {
         String address = null;
         try (PreparedStatement statement = connection.prepareStatement("SELECT 縣市,行政區,顯示地點地址 FROM [健身教練課程-有排課的] WHERE 課程編號 = ?")) {
             statement.setInt(1, courseId);
