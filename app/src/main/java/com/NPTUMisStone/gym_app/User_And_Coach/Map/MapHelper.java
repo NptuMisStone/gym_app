@@ -20,17 +20,12 @@ import java.sql.SQLException;
 
 public class MapHelper {
     private final Context context;
-    private final Connection connection;
-    private final int classID;
+    private final String locationName;
 
-    public MapHelper(Context context, Connection connection, int classID) {
+    public MapHelper(Context context, String locationName) {
         this.context = context;
-        this.connection = connection;
-        this.classID = classID;
+        this.locationName = locationName;
     }
-
-    //【How to Get Current Location Google Map SDK in Android】
-    // ：https://mrappbuilder.medium.com/how-to-get-current-location-google-map-sdk-in-android-993638d17bd1
     public void getCurrentLocation() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         if (checkLocationPermissions()) {
@@ -38,7 +33,7 @@ public class MapHelper {
                 fusedLocationClient.getLastLocation()
                         .addOnSuccessListener(location -> {
                             if (location != null) {
-                                openGoogleMaps(location.getLatitude(), location.getLongitude());
+                                openGoogleMaps(location.getLatitude(), location.getLongitude(), locationName);
                             } else {
                                 Log.e("MapHelper", "Location data is unavailable");
                             }
@@ -64,41 +59,30 @@ public class MapHelper {
         }, 1);
     }
 
-    //【How to implement Google Map Navigation in Android】
-    // ：https://www.youtube.com/watch?v=WiMa7nh7rF4
-    private void openGoogleMaps(double latitude, double longitude) {
+    private void openGoogleMaps(double latitude, double longitude, String address) {
         String currentLocation = latitude + "," + longitude;
-        executeQuery(rs -> {
-            try {
-                if (rs.next()) {
-                    String address = rs.getString("縣市") + rs.getString("行政區") + rs.getString("顯示地點地址");
-                    Uri uri = Uri.parse("https://www.google.com/maps/dir/" + currentLocation + "/" + address);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri).setPackage("com.google.android.apps.maps").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    if (intent.resolveActivity(context.getPackageManager()) != null) {
-                        context.startActivity(intent);
-                    } else {
-                        context.startActivity(new Intent(Intent.ACTION_VIEW, uri)); // No Google Maps installed
-                    }
-                }
-            } catch (SQLException e) {
-                Log.e("MapHelper", "SQL error", e);
-            }
-        });
+        Uri uri = Uri.parse("https://www.google.com/maps/dir/" + currentLocation + "/" + address);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri).setPackage("com.google.android.apps.maps").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        } else {
+            context.startActivity(new Intent(Intent.ACTION_VIEW, uri)); // No Google Maps installed
+        }
     }
 
-    private void executeQuery(ResultSetHandler handler) {
+    public static String getLocationName(Connection connection,int courseId) {
+        String address = null;
         try (PreparedStatement statement = connection.prepareStatement("SELECT 縣市,行政區,顯示地點地址 FROM [健身教練課程-有排課的] WHERE 課程編號 = ?")) {
-            statement.setInt(1, classID);
+            statement.setInt(1, courseId);
             try (ResultSet rs = statement.executeQuery()) {
-                handler.handle(rs);
+                if (rs.next()) {
+                    address = rs.getString("縣市") + rs.getString("行政區") + rs.getString("顯示地點地址");
+                }
             }
         } catch (SQLException e) {
             Log.e("MapHelper", "SQL error", e);
         }
+        return address;
     }
 
-    @FunctionalInterface
-    private interface ResultSetHandler {
-        void handle(ResultSet rs) throws SQLException;
-    }
 }

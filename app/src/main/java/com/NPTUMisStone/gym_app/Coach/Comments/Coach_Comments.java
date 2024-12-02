@@ -1,8 +1,6 @@
 package com.NPTUMisStone.gym_app.Coach.Comments;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -30,13 +27,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
-import com.NPTUMisStone.gym_app.Coach.Main.CoachHome;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.Main.User;
-import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
-import com.NPTUMisStone.gym_app.User.Records.NowAppointment.NowAppointmentFragment;
-import com.NPTUMisStone.gym_app.User.Records.User_AppointmentData;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

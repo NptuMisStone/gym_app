@@ -63,7 +63,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginEnd="4dp"
-                android:src="@drawable/clock" />
+                android:src="@drawable/coach_appointment_item_ic_clock" />
 
             <TextView
                 android:id="@+id/coach_appointment_time"
@@ -114,7 +114,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="4dp"
-                android:src="@drawable/courses" />
+                android:src="@drawable/all_ic_course" />
 
             <TextView
                 android:id="@+id/coach_appointment_people"

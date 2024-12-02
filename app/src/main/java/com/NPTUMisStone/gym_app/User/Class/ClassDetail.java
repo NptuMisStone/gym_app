@@ -1,8 +1,6 @@
 package com.NPTUMisStone.gym_app.User.Class;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -60,7 +58,7 @@ public class ClassDetail extends AppCompatActivity {
 
     private void setupListeners() {
         findViewById(R.id.ClassDetail_backButton).setOnClickListener(v -> finish());
-        findViewById(R.id.ClassDetail_directionButton).setOnClickListener(v -> new MapHelper(this, MyConnection, classID).getCurrentLocation());
+        findViewById(R.id.ClassDetail_directionButton).setOnClickListener(v -> new MapHelper(this, MapHelper.getLocationName(MyConnection,classID)).getCurrentLocation());
     }
 
     private void setupWindowInsets() {

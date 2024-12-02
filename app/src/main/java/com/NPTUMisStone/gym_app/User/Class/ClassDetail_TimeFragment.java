@@ -3,7 +3,6 @@ package com.NPTUMisStone.gym_app.User.Class;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +22,7 @@ import android.widget.TextView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User.Records.Appointment_Confirm;
 import com.NPTUMisStone.gym_app.databinding.UserDetailClassTimeFragmentBinding;
 import com.hdev.calendar.bean.DateInfo;
 import com.hdev.calendar.view.SingleCalendarView;
@@ -298,7 +298,7 @@ public class ClassDetail_TimeFragment extends Fragment {
                 e.printStackTrace();
             }
             holder.to_ap_btn.setOnClickListener(v -> {
-                Intent intent = new Intent(requireActivity(), ConfirmAppointment.class);
+                Intent intent = new Intent(requireActivity(), Appointment_Confirm.class);
                 intent.putExtra("預約課表ID", item.getScheduleID());
                 startActivity(intent);
             });

@@ -29,7 +29,7 @@
             android:contentDescription="返回上一頁"
             android:onClick="coach_Appointment_detail_goback"
             android:scaleType="centerInside"
-            android:src="@drawable/back" />
+            android:src="@drawable/all_ic_arrow_back3" />
 
         <!-- 標頭標題 -->
         <TextView

@@ -177,7 +177,7 @@
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/home" />
+                            android:src="@drawable/user_and_coach_detail_info_ic_home" />
 
                         <TextView
                             android:id="@+id/textView33"

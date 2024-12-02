@@ -27,11 +27,11 @@ import com.NPTUMisStone.gym_app.User.Class.ClassDetail;
 import com.NPTUMisStone.gym_app.User.Class.AllClass;
 import com.NPTUMisStone.gym_app.User.AllCoach.AllCoach;
 import com.NPTUMisStone.gym_app.User.Like.UserLike;
-import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
+import com.NPTUMisStone.gym_app.User.Records.Appointment;
 import com.NPTUMisStone.gym_app.User_And_Coach.AdHelper;
 import com.NPTUMisStone.gym_app.User_And_Coach.Contact;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.User_And_Coach.Map.Map_salon;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map.Class;
 import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
 
 import java.sql.Connection;
@@ -106,9 +106,9 @@ public class UserHome extends AppCompatActivity {
             if (id == R.id.UserHome_classButton) startActivity(new Intent(this, AllClass.class));
             else if (id == R.id.UserHome_coachButton) startActivity(new Intent(this, AllCoach.class));
             else if (id == R.id.UserHome_loveButton) startActivity(new Intent(this, UserLike.class));
-            else if (id == R.id.UserHome_historyButton) startActivity(new Intent(this, AppointmentAll.class));
+            else if (id == R.id.UserHome_historyButton) startActivity(new Intent(this, Appointment.class));
             //else if (id == R.id.UserHome_gymButton) startNavigationActivity();
-            else if (id == R.id.UserHome_gymButton) startActivity(new Intent(this, Map_salon.class));
+            else if (id == R.id.UserHome_gymButton) startActivity(new Intent(this, Class.class));
             else if (id == R.id.UserHome_contactButton) startActivity(new Intent(this, Contact.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);

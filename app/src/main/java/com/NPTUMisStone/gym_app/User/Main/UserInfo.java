@@ -102,14 +102,14 @@ public class UserInfo extends AppCompatActivity {
         ViewGroup parent = findViewById(android.R.id.content); // Get the parent view group
 
         if (index < 4) {
-            dialogView = getLayoutInflater().inflate(R.layout.info_edit_layout, parent, false);
+            dialogView = getLayoutInflater().inflate(R.layout.user_and_coach_info_edit_layout, parent, false);
             TextInputLayout textInputLayout1 = dialogView.findViewById(R.id.InfoEdit_Layout);
             textInputLayout1.setHint(textInputLayout.getHint());
             AutoCompleteTextView autoCompleteTextView1 = dialogView.findViewById(R.id.InfoEdit_Text);
             autoCompleteTextView1.setText(autoCompleteTextView.getText().toString());
             showEditDialog(index, autoCompleteTextView, autoCompleteTextView1, validator, dialogView);
         } else {
-            dialogView = getLayoutInflater().inflate(R.layout.info_sex_layout, parent, false);
+            dialogView = getLayoutInflater().inflate(R.layout.user_and_coach_info_sex_layout, parent, false);
             RadioButton[] radioButtons = new RadioButton[]{
                     dialogView.findViewById(R.id.InfoSex_sexRadio1),
                     dialogView.findViewById(R.id.InfoSex_sexRadio2),

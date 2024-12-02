@@ -10,8 +10,10 @@
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#FFFFFF">
+        android:layout_height="0dp"
+        android:background="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/guideline22"
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- 返回按鈕 -->
         <ImageButton
@@ -24,7 +26,7 @@
             android:background="@drawable/all_effect_ripple"
             android:contentDescription="返回上一頁"
             android:scaleType="centerInside"
-            android:src="@drawable/back" />
+            android:src="@drawable/all_ic_arrow_back3" />
 
         <!-- 標頭標題 -->
         <TextView

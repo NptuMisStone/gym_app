@@ -1,10 +1,6 @@
 package com.NPTUMisStone.gym_app.Coach.Main;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,24 +9,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.NPTUMisStone.gym_app.Coach.Class.ClassMain;
 import com.NPTUMisStone.gym_app.Coach.Comments.Coach_Comments;
 
-import com.NPTUMisStone.gym_app.Coach.Records.Coach_AppointmentData;
 import com.NPTUMisStone.gym_app.Coach.Records.Coach_AppointmentsAll;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledMain;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.User_And_Coach.Map.Map_Maps;
-import com.NPTUMisStone.gym_app.User_And_Coach.Map.Map_salon;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map.Maps;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map.Class;
 import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
 
 import java.sql.Connection;
@@ -70,8 +61,8 @@ public class CoachHome extends AppCompatActivity {
         initCoachInfo();
 
         // 設置按鈕點擊事件
-        findViewById(R.id.CoachHome_testButton1).setOnClickListener(v -> startActivity(new Intent(this, Map_Maps.class)));
-        findViewById(R.id.CoachHome_testButton2).setOnClickListener(v -> startActivity(new Intent(this, Map_salon.class)));
+        findViewById(R.id.CoachHome_testButton1).setOnClickListener(v -> startActivity(new Intent(this, Maps.class)));
+        findViewById(R.id.CoachHome_testButton2).setOnClickListener(v -> startActivity(new Intent(this, Class.class)));
 
         // 下拉刷新處理
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.CoachHome_swipeRefreshLayout);
@@ -160,7 +151,7 @@ public class CoachHome extends AppCompatActivity {
                     ));
                 } else {
                     // 沒有課程時更新 UI
-                    new Handler(Looper.getMainLooper()).post(() -> updateUIWithNoAppointment());
+                    new Handler(Looper.getMainLooper()).post(this::updateUIWithNoAppointment);
                 }
 
                 rs.close();

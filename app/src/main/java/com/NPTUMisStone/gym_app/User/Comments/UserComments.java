@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.Main.User;
-import com.NPTUMisStone.gym_app.User.Records.AppointmentAll;
+import com.NPTUMisStone.gym_app.User.Records.Appointment;
 import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
 
 import java.sql.Connection;
@@ -136,7 +136,7 @@ public class UserComments extends AppCompatActivity {
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
                 if(wherefrom.equals("完成預約頁")){
-                    Intent it = new Intent(this,AppointmentAll.class);
+                    Intent it = new Intent(this, Appointment.class);
                     it.putExtra("是否是評論",1);
                     startActivity(it);
                     finish();
@@ -165,7 +165,7 @@ public class UserComments extends AppCompatActivity {
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
                 if(wherefrom.equals("完成預約頁")){
-                    Intent it = new Intent(this,AppointmentAll.class);
+                    Intent it = new Intent(this, Appointment.class);
                     it.putExtra("是否是評論",1);
                     startActivity(it);
                     finish();
@@ -182,7 +182,7 @@ public class UserComments extends AppCompatActivity {
 
     public  void user_Comment_goback(View view){
         if(wherefrom.equals("完成預約頁")){
-            Intent it = new Intent(this,AppointmentAll.class);
+            Intent it = new Intent(this, Appointment.class);
             it.putExtra("是否是評論",1);
             startActivity(it);
             finish();

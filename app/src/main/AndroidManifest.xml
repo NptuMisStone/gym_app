@@ -28,10 +28,10 @@
 
         <!-- User and Coach Activities -->
         <activity
-            android:name=".User_And_Coach.Map.Map_Maps"
+            android:name=".User_And_Coach.Map.Maps"
             android:exported="false" />
         <activity
-            android:name=".User_And_Coach.Map.Map_salon"
+            android:name=".User_And_Coach.Map.Class"
             android:exported="false" />
         <activity
             android:name=".User_And_Coach.CameraActivity"
@@ -86,7 +86,7 @@
             android:name=".User.AllCoach.AllCoach"
             android:exported="false" />
         <activity
-            android:name=".User.Class.ConfirmAppointment"
+            android:name=".User.Records.Appointment_Confirm"
             android:exported="false" />
         <activity
             android:name=".User.Class.ClassDetail"
@@ -101,22 +101,10 @@
             android:name=".User.Comments.UserComments"
             android:exported="false" />
         <activity
-            android:name=".User.Search.Coach.CoachDetail"
-            android:exported="false" />
-        <activity
             android:name=".User.Main.UserInfo"
             android:exported="false" />
         <activity
-            android:name=".User.Search.GymList"
-            android:exported="false" />
-        <activity
-            android:name=".User.Records.AppointmentAll"
-            android:exported="false" />
-        <activity
-            android:name=".User.Search.CoachLove"
-            android:exported="false" />
-        <activity
-            android:name=".User.Search.Search"
+            android:name=".User.Records.Appointment"
             android:exported="false" />
         <activity
             android:name=".User.Main.UserHome"

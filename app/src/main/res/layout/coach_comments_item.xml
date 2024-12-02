@@ -111,7 +111,7 @@
                     android:id="@+id/coach_comments_showEditPanel"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    app:srcCompat="@drawable/comment_edit" />
+                    app:srcCompat="@drawable/coach_comment_ic_edit" />
             </LinearLayout>
 
         </LinearLayout>
