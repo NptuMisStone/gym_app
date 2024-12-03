@@ -90,13 +90,8 @@ public class Login extends AppCompatActivity {
         remember_output();
         findViewById(R.id.login_register).setOnClickListener(v -> register());
         findViewById(R.id.login_button).setOnClickListener(v -> checkLogin(et_account.getText().toString(), et_password.getText().toString()));
-        findViewById(R.id.login_anonymous).setOnClickListener(v -> anonymousLogin());
-        findViewById(R.id.login_forgot).setOnClickListener(v -> new PasswordReset(this, isUser, MyConnection).showPasswordResetDialog());
-        Button login_user = findViewById(R.id.login_user);
-        Button login_coach = findViewById(R.id.login_coach);
-        login_user.setOnClickListener(v -> change_toUser(login_user, login_coach));
-        login_coach.setOnClickListener(v -> change_toCoach(login_user, login_coach));
-        set_status(login_user, login_coach);
+        findViewById(R.id.login_forgot).setOnClickListener(v -> new PasswordReset(this, false, MyConnection).showPasswordResetDialog());
+
     }
 
     private void change_password_visibility(ImageView ivShowPassword) {
@@ -275,19 +270,38 @@ public class Login extends AppCompatActivity {
     private boolean validateCredentials(String account, String password) throws SQLException {
         if (MyConnection == null || MyConnection.isClosed())
             MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-        String searchQuery = isUser ? "SELECT * FROM [使用者資料] WHERE ([使用者帳號] = ? OR [使用者郵件] = ?) AND [使用者密碼] = ?"
-                :"SELECT * FROM [健身教練資料] WHERE ([健身教練帳號] = ? OR [健身教練郵件] = ?) AND [健身教練密碼] = ?";
-        PreparedStatement searchStatement = MyConnection.prepareStatement(searchQuery);
-        searchStatement.setString(1, account);
-        searchStatement.setString(2, account);
-        searchStatement.setString(3, password);
-        ResultSet rs = searchStatement.executeQuery();
-        if (rs.next()) {
-            setUserOrCoachInstance(rs);
+
+        // 檢查是否為使用者
+        String userQuery = "SELECT * FROM [使用者資料] WHERE ([使用者帳號] = ? OR [使用者郵件] = ?) AND [使用者密碼] = ?";
+        PreparedStatement userStatement = MyConnection.prepareStatement(userQuery);
+        userStatement.setString(1, account);
+        userStatement.setString(2, account);
+        userStatement.setString(3, password);
+        ResultSet userResultSet = userStatement.executeQuery();
+
+        if (userResultSet.next()) {
+            isUser = true;
+            setUserOrCoachInstance(userResultSet);
             return true;
         }
-        return false;
+
+        // 檢查是否為教練
+        String coachQuery = "SELECT * FROM [健身教練資料] WHERE ([健身教練帳號] = ? OR [健身教練郵件] = ?) AND [健身教練密碼] = ?";
+        PreparedStatement coachStatement = MyConnection.prepareStatement(coachQuery);
+        coachStatement.setString(1, account);
+        coachStatement.setString(2, account);
+        coachStatement.setString(3, password);
+        ResultSet coachResultSet = coachStatement.executeQuery();
+
+        if (coachResultSet.next()) {
+            isUser = false;
+            setUserOrCoachInstance(coachResultSet);
+            return true;
+        }
+
+        return false; // 帳號密碼都不正確
     }
+
 
     private void setUserOrCoachInstance(ResultSet rs) throws SQLException {
         if (isUser)
@@ -306,20 +320,6 @@ public class Login extends AppCompatActivity {
     private void remember_output() {
         et_account.setText(user.getString("Remember_account", "")); //若沒取得就是沒任何東西 ，有取到則顯示在帳號上
         cb_remember.setChecked(user.getBoolean("isCheck", false));  //取得上次Input的Remember狀態   //顯示上次Remember狀態
-    }
-
-    private void change_toUser(Button login_user, Button login_coach) {
-        isUser = true;
-        set_status(login_user, login_coach);
-    }
-    private void change_toCoach(Button login_user, Button login_coach) {
-        isUser = false;
-        set_status(login_user, login_coach);
-    }
-
-    private void set_status(Button login_user, Button login_coach) {
-        login_user.setSelected(isUser);
-        login_coach.setSelected(!isUser);
     }
 
         //Android 驗證碼輸入框的實現：https://www.jianshu.com/p/3238a5afc21c

@@ -69,7 +69,7 @@ public class UserInfo extends AppCompatActivity {
         findViewById(R.id.UserInfo_return).setOnClickListener(v -> finish());
         findViewById(R.id.UserInfo_logout).setOnClickListener(v -> logout());
         findViewById(R.id.UserInfo_upload).setOnClickListener(v -> showImageSourceDialog());
-        findViewById(R.id.UserInfo_resetButton).setOnClickListener(v -> new PasswordReset(this, true, MyConnection).showPasswordResetDialog());
+        findViewById(R.id.UserInfo_resetButton).setOnClickListener(v -> new PasswordReset(this, false, MyConnection).showPasswordResetDialog());
         userinfo_tv = new AutoCompleteTextView[]{
                 findViewById(R.id.UserInfo_nameText),
                 findViewById(R.id.UserInfo_accountText),
