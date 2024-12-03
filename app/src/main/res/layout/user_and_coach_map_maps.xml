@@ -26,7 +26,6 @@
         android:layout_marginEnd="100dp"
         android:layout_marginBottom="612dp"
         android:background="@drawable/user_and_coach_map_background_textview"
-        android:gravity="center_horizontal|center_vertical"
         android:letterSpacing=".1"
         android:paddingTop="7dp"
         android:paddingBottom="7dp"
