@@ -109,6 +109,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:textColorHint="@color/default_text_color"
                     app:boxStrokeColor="@color/dark_teal"
                     app:hintEnabled="true"
                     app:hintTextColor="@color/dark_teal">
@@ -122,7 +123,8 @@
                         android:hint="@string/Info_accountHint"
                         android:inputType="none"
                         android:padding="12dp"
-                        android:text="@string/Info_accountHint" />
+                        android:text="@string/Info_accountHint"
+                        android:textColor="@color/dark_gray" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- 姓名 -->
@@ -132,6 +134,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:textColorHint="@color/default_text_color"
                     app:boxStrokeColor="@color/dark_teal"
                     app:hintEnabled="true"
                     app:hintTextColor="@color/dark_teal">
@@ -143,9 +146,10 @@
                         android:cursorVisible="false"
                         android:focusable="false"
                         android:hint="@string/Info_nameHint"
-                        android:text="@string/Info_nameHint"
                         android:inputType="none"
-                        android:padding="12dp" />
+                        android:padding="12dp"
+                        android:text="@string/Info_nameHint"
+                        android:textColor="@color/dark_gray" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- 電話 -->
@@ -155,6 +159,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:textColorHint="@color/default_text_color"
                     app:boxStrokeColor="@color/dark_teal"
                     app:hintEnabled="true"
                     app:hintTextColor="@color/dark_teal">
@@ -166,9 +171,10 @@
                         android:cursorVisible="false"
                         android:focusable="false"
                         android:hint="@string/Info_phoneHint"
-                        android:text="@string/Info_phoneHint"
                         android:inputType="none"
-                        android:padding="12dp" />
+                        android:padding="12dp"
+                        android:text="@string/Info_phoneHint"
+                        android:textColor="@color/dark_gray" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- 電子郵件 -->
@@ -178,6 +184,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:textColorHint="@color/default_text_color"
                     app:boxStrokeColor="@color/dark_teal"
                     app:hintEnabled="true"
                     app:hintTextColor="@color/dark_teal">
@@ -189,9 +196,10 @@
                         android:cursorVisible="false"
                         android:focusable="false"
                         android:hint="@string/Info_emailHint"
-                        android:text="@string/Info_emailHint"
                         android:inputType="none"
-                        android:padding="12dp" />
+                        android:padding="12dp"
+                        android:text="@string/Info_emailHint"
+                        android:textColor="@color/dark_gray" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- 性別 -->
@@ -201,6 +209,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:textColorHint="@color/default_text_color"
                     app:boxStrokeColor="@color/dark_teal"
                     app:hintEnabled="true"
                     app:hintTextColor="@color/dark_teal">
@@ -212,9 +221,10 @@
                         android:cursorVisible="false"
                         android:focusable="false"
                         android:hint="@string/Info_sexCoachHint"
-                        android:text="@string/Info_sexCoachHint"
                         android:inputType="none"
-                        android:padding="12dp" />
+                        android:padding="12dp"
+                        android:text="@string/Info_sexCoachHint"
+                        android:textColor="@color/dark_gray" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- 個人介紹 -->
@@ -224,6 +234,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:textColorHint="@color/default_text_color"
                     app:boxStrokeColor="@color/dark_teal"
                     app:hintEnabled="true"
                     app:hintTextColor="@color/dark_teal">
@@ -235,10 +246,11 @@
                         android:cursorVisible="true"
                         android:focusable="true"
                         android:hint="個人介紹"
-                        android:text="個人介紹"
                         android:inputType="textMultiLine"
                         android:lines="4"
-                        android:padding="12dp" />
+                        android:padding="12dp"
+                        android:text="個人介紹"
+                        android:textColor="@color/dark_gray" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 

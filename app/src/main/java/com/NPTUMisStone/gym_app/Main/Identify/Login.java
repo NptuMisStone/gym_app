@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -141,20 +142,40 @@ public class Login extends AppCompatActivity {
     }
 
     private void checkLogin(String account, String password) {
-        if(isLoginIn) return;
+        if (isLoginIn) return;
         isLoginIn = true;
+
         if (account.isEmpty() || password.isEmpty()) {
             if (password.isEmpty()) editHint(et_password, "請輸入密碼");
             if (account.isEmpty()) editHint(et_account, "請輸入帳號");
             isLoginIn = false;
             return;
         }
+
         runOnUiThread(() -> {
             ProgressBarHandler progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
             progressBarHandler.showProgressBar();
             Executors.newSingleThreadExecutor().execute(() -> {
                 try {
+                    // 驗證帳號密碼
                     boolean isValid = validateCredentials(account, password);
+
+                    if (isValid && !isUser) {
+                        // 如果是教練，執行合約檢查
+                        int coachId = Coach.getInstance().getCoachId();
+                        boolean isContractValid = checkCoachDateDuringLogin(coachId);
+
+                        // 如果合約檢查失敗，退出
+                        if (!isContractValid) {
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                progressBarHandler.hideProgressBar();
+                                isLoginIn = false;
+                            });
+                            return;
+                        }
+                    }
+
+                    // 登入完成，進入主頁面
                     new Handler(Looper.getMainLooper()).post(() -> {
                         progressBarHandler.hideProgressBar();
                         isLoginIn = false;
@@ -171,6 +192,73 @@ public class Login extends AppCompatActivity {
             });
         });
     }
+    private boolean checkCoachDateDuringLogin(int coachId) {
+        try {
+            if (MyConnection == null || MyConnection.isClosed()) {
+                MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+            }
+
+            String query = "SELECT 合約到期日, 審核狀態 FROM 健身教練審核 WHERE 健身教練編號 = ?";
+            PreparedStatement checkStatement = MyConnection.prepareStatement(query);
+            checkStatement.setInt(1, coachId);
+
+            ResultSet rs = checkStatement.executeQuery();
+            if (rs.next()) {
+                java.sql.Date contractEndDate = rs.getDate("合約到期日");
+                int currentStatus = rs.getInt("審核狀態");
+                rs.close();
+                checkStatement.close();
+
+                if (contractEndDate == null || currentStatus==0) {
+                    Log.d("CheckCoachDate", "合約到期日為空，代表有資料未審核");
+                    showDialog("審核中", "我們正在處理您的教練身分審核，這可能需要一些時間，審核通過將會發送電子郵件至您的電子郵件信箱！感謝您的耐心等候！如有任何問題，請聯繫我們。");
+                    return false;
+                }
+
+                java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
+                if (contractEndDate.before(today) || contractEndDate.equals(today)) {
+                    if (currentStatus == 1) {
+                        String updateQuery = "UPDATE 健身教練審核 SET 審核狀態 = ? WHERE 健身教練編號 = ?";
+                        PreparedStatement updateStatement = MyConnection.prepareStatement(updateQuery);
+                        updateStatement.setInt(1, 3);
+                        updateStatement.setInt(2, coachId);
+                        updateStatement.executeUpdate();
+                        updateStatement.close();
+                        showDialog("合約已過期", "您的合約已過期，請使用電腦網頁版重新提出審核！");
+                        return false;
+                    } else {
+                        Log.d("CheckCoachDate", "合約已過期但審核狀態不變");
+                        showDialog("合約已過期", "您的合約已過期，請使用電腦網頁版重新提出審核！");
+                        return false;
+                    }
+                } else {
+                    Log.d("CheckCoachDate", "合約有效");
+                    return true; // 合約有效
+                }
+            } else {
+                rs.close();
+                checkStatement.close();
+                showDialog("立即驗證健身教練身分！", "提醒您，為了保障平台使用者的安全與信任，教練必須先完成身分驗證才能在平台上被用戶搜尋及預約。如未驗證，您的資訊將不會被上架顯示。\n\n請使用電腦網頁版進行審核！");
+                return false;
+            }
+        } catch (SQLException e) {
+            Log.e("CheckCoachDate", "資料庫查詢失敗", e);
+            showDialog("錯誤", "無法檢查您的合約狀態，請稍後再試或聯絡管理員。");
+            return false;
+        }
+    }
+    private void showDialog(String title, String message) {
+        runOnUiThread(() -> {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setCancelable(false)
+                    .setPositiveButton("確定", (dialog, which) -> dialog.dismiss())
+                    .show();
+        });
+    }
+
+
     private void anonymousLogin() {
         User.setInstance(-1, "Anonymous", "Anonymous", "Anonymous", 0, "Anonymous", null);
         startActivity(new Intent(this, UserHome.class));

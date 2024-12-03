@@ -131,6 +131,18 @@ public class CoachInfo extends AppCompatActivity {
         init_image();
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
     }
+    private void init_image() {
+        coachInfo_image = findViewById(R.id.CoachInfo_image);
+        byte[] image = Coach.getInstance().getCoachImage();
+        if (image != null && image.length > 0) {
+            // 將圖片轉換為 Bitmap 並設置
+            coachInfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+        } else {
+            // 設置默認圖片
+            coachInfo_image.setImageResource(R.drawable.coach_default);
+        }
+    }
+
 
     private void refreshFields() {
         for (int i = 0; i < coachInfo_tv.length; i++) {
@@ -139,12 +151,15 @@ public class CoachInfo extends AppCompatActivity {
         refreshImage(); // 刷新圖片
     }
     private void refreshImage() {
-        byte[] image = Coach.getInstance().getCoachImage(); // 從本地緩存獲取圖片
-        if (image != null) {
-            coachInfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image))); // 更新圖片顯示
+        byte[] image = Coach.getInstance().getCoachImage();
+        if (image != null && image.length > 0) {
+            coachInfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+        } else {
+            coachInfo_image.setImageResource(R.drawable.coach_default);
         }
         uri = null; // 重置 URI
     }
+
 
     private void toggleEditMode(boolean isCancel) {
         isEditMode = !isEditMode;
@@ -155,6 +170,11 @@ public class CoachInfo extends AppCompatActivity {
             refreshImage(); // 刷新圖片
         }
 
+        // 根據模式切換文字顏色
+        int editModeColor = getResources().getColor(R.color.dark_black); // 編輯模式顏色
+        int viewModeColor = getResources().getColor(R.color.dark_gray); // 查看模式顏色
+        int textColor = isEditMode ? editModeColor : viewModeColor;
+
         // 切換所有欄位的編輯狀態
         for (int i = 0; i < coachInfo_tv.length; i++) {
             if (i == 1) continue; // 跳過帳號欄位
@@ -162,6 +182,7 @@ public class CoachInfo extends AppCompatActivity {
             textView.setEnabled(isEditMode); // 切換編輯模式
             textView.setFocusable(isEditMode);
             textView.setFocusableInTouchMode(isEditMode);
+            textView.setTextColor(textColor); // 動態設置文字顏色
         }
 
         // 隱藏或顯示編輯圖示
@@ -173,6 +194,7 @@ public class CoachInfo extends AppCompatActivity {
         // 顯示或隱藏 CoachInfo_upload
         findViewById(R.id.CoachInfo_upload).setVisibility(isEditMode ? View.VISIBLE : View.GONE);
     }
+
 
     private void refreshCoachInfo() {
         for (int i = 0; i < coachInfo_tv.length; i++) {
@@ -250,7 +272,11 @@ public class CoachInfo extends AppCompatActivity {
                 Toast.makeText(this, "圖片更新失敗", Toast.LENGTH_SHORT).show();
                 return;
             }
+        } else if (Coach.getInstance().getCoachImage() == null || Coach.getInstance().getCoachImage().length == 0) {
+            // 如果沒有新圖片且當前圖片為空，設置默認圖片
+            coachInfo_image.setImageResource(R.drawable.coach_default);
         }
+
         // 處理個人介紹欄位
         if (coachInfo_tv[5].isEnabled()) { // 如果可編輯
             String introText = coachInfo_tv[5].getText().toString().trim();
@@ -369,16 +395,6 @@ public class CoachInfo extends AppCompatActivity {
             default -> "";
         };
     }
-
-
-    private void init_image() {
-        coachInfo_image = findViewById(R.id.CoachInfo_image);
-        //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
-        byte[] image = Coach.getInstance().getCoachImage();
-        if (image != null)
-            coachInfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
-    }
-
     private void logout() {
         Coach.setInstance(0, "", "", "", 0, "", null,"");
         //Delete SharedPreferences Data：https://stackoverflow.com/questions/3687315/how-to-delete-shared-preferences-data-from-app-in-android
@@ -478,13 +494,20 @@ public class CoachInfo extends AppCompatActivity {
 
     private void performDeleteAccount() {
         try {
-            String deleteQuery = "DELETE FROM 健身教練資料 WHERE 健身教練編號 = ?";
-            PreparedStatement ps = MyConnection.prepareStatement(deleteQuery);
-            ps.setInt(1, Coach.getInstance().getCoachId());
-            ps.executeUpdate();
+            // 刪除相關聯的健身教練審核記錄
+            String deleteAuditQuery = "DELETE FROM 健身教練審核 WHERE 健身教練編號 = ?";
+            PreparedStatement auditStatement = MyConnection.prepareStatement(deleteAuditQuery);
+            auditStatement.setInt(1, Coach.getInstance().getCoachId());
+            auditStatement.executeUpdate();
+
+            // 刪除健身教練主記錄
+            String deleteCoachQuery = "DELETE FROM 健身教練資料 WHERE 健身教練編號 = ?";
+            PreparedStatement coachStatement = MyConnection.prepareStatement(deleteCoachQuery);
+            coachStatement.setInt(1, Coach.getInstance().getCoachId());
+            coachStatement.executeUpdate();
 
             // 清除本地 Coach 實例
-            Coach.setInstance(0, "", "", "", 0, "", null,"");
+            Coach.setInstance(0, "", "", "", 0, "", null, "");
 
             // 跳轉到登錄頁面
             Toast.makeText(this, "帳號已刪除。", Toast.LENGTH_SHORT).show();
@@ -495,5 +518,6 @@ public class CoachInfo extends AppCompatActivity {
             Toast.makeText(this, "刪除帳號時發生錯誤，請稍後再試。", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 }

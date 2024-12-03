@@ -61,32 +61,59 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/CoachHome_upcomingClassTitle"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/detailsLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:text="即將到來的課程..."
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/viewAppointmentListButton"
+                    android:paddingBottom="16dp">
 
-                <TextView
-                    android:id="@+id/CoachHome_upcomingClassDetails"
-                    android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/CoachHome_upcomingClassTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="8dp"
+                        android:text="LOADING..."
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/CoachHome_upcomingClassDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="4dp"
+                        android:text="課程名稱: LOADING...\n時間: LOADING...\n地點: LOADING..."
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/viewAppointmentListButton"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:lineSpacingExtra="4dp"
-                    android:text="課程名稱: 瑜伽基礎班\n時間: 2024年12月5日 18:00\n地點: 第三教室"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:text="查看預約名單"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/blue"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/detailsLayout" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.cardview.widget.CardView>
+
 
 
         <LinearLayout

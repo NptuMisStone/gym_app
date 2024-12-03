@@ -68,8 +68,22 @@ public class CoachTodayAppointment extends Fragment {
                 java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
                 searchStatement.setDate(2, today);
                 ResultSet rs = searchStatement.executeQuery();
-                while (rs.next())
 
+                while (rs.next()) {
+                    int locationType = rs.getInt("地點類型");
+                    String city = rs.getString("縣市");
+                    String district = rs.getString("行政區");
+                    String locationName = rs.getString("地點名稱");
+
+                    // 設置地點
+                    String locationText;
+                    if (locationType == 2) { // 到府服務
+                        locationText = "到府 (" + city + district + ")";
+                    } else { // 固定地點
+                        locationText = locationName;
+                    }
+
+                    // 將資料添加到 appointmentData 列表
                     appointmentData.add(new Coach_AppointmentData(
                             rs.getInt("課表編號"),
                             rs.getDate("日期"),
@@ -79,9 +93,12 @@ public class CoachTodayAppointment extends Fragment {
                             rs.getString("課程名稱"),
                             rs.getInt("預約人數"),
                             rs.getInt("上課人數"),
-                            rs.getString("地點名稱"),
-                            rs.getString("地點類型")
+                            locationText,   // 使用組合後的 locationText
+                            rs.getString("地點類型"),
+                            city,
+                            district
                     ));
+                }
                 rs.close();
                 searchStatement.close();
             } catch (SQLException e) {
@@ -89,8 +106,8 @@ public class CoachTodayAppointment extends Fragment {
             }
             new Handler(Looper.getMainLooper()).post(this::updateUI);
         });
-
     }
+
     private void updateUI() {
         if (getActivity() != null && isAdded()) {
             Coach_Appointment_Adapter coachAppointmentAdapter = new Coach_Appointment_Adapter(this,appointmentData);

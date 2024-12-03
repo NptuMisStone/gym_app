@@ -85,6 +85,22 @@ public class CoachHome extends AppCompatActivity {
         setUserImage();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (MyConnection == null) {
+            MyConnection = new SQLConnection(findViewById(R.id.CoachHome_constraintLayout)).IWantToConnection();
+            if (MyConnection == null) {
+                Log.e("Database", "資料庫連線失敗");
+                progressBarHandler.hideProgressBar();
+                return;
+            }
+        }
+        setUserImage(); // 確保刷新時設置圖片
+        fetchClosestUpcomingAppointment();
+    }
+
+
     private String getGreetingMessage() {
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         String greeting;
@@ -97,10 +113,17 @@ public class CoachHome extends AppCompatActivity {
 
     private void setUserImage() {
         byte[] image = Coach.getInstance().getCoachImage();
-        if (image != null) {
-            ((ImageView) findViewById(R.id.CoachHome_photoImage)).setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+        ImageView photoImageView = findViewById(R.id.CoachHome_photoImage);
+
+        if (image != null && image.length > 0) {
+            // 將圖片轉換為 Bitmap 並設置
+            photoImageView.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+        } else {
+            // 如果圖片為空，設置默認圖片
+            photoImageView.setImageResource(R.drawable.coach_default);
         }
     }
+
 
     public void onClick(View view) {
         if (progressBarHandler.isLoading()) return;
@@ -119,62 +142,110 @@ public class CoachHome extends AppCompatActivity {
             Log.e("Button", "Button click error", e);
         }
     }
+    private boolean isLoading = false;
+
     private void fetchClosestUpcomingAppointment() {
+        if (isLoading) {
+            return;
+        }
+        isLoading = true;
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                // 修改後的 SQL 查詢語句
                 String sql = "SELECT TOP 1 * FROM 健身教練課表課程合併 " +
-                        "WHERE 健身教練編號 = ? AND 結束時間 > ? " +
-                        "ORDER BY 開始時間";
-                PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
+                        "WHERE 健身教練編號 = ? AND " +
+                        "(日期 > ? OR (日期 = ? AND 結束時間 > ?)) " +
+                        "ORDER BY 日期 ASC, 開始時間 ASC";
 
-                // 設定查詢參數
-                searchStatement.setInt(1, Coach.getInstance().getCoachId());
+                if (MyConnection == null || MyConnection.isClosed()) {
+                    Log.e("Database", "資料庫連線失敗");
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        progressBarHandler.hideProgressBar();
+                        isLoading = false;
+                    });
+                    return;
+                }
+
+                PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
+                java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
                 java.sql.Time currentTime = new java.sql.Time(System.currentTimeMillis());
-                searchStatement.setTime(2, currentTime);
+                searchStatement.setInt(1, Coach.getInstance().getCoachId());
+                searchStatement.setDate(2, today);
+                searchStatement.setDate(3, today);
+                searchStatement.setTime(4, currentTime);
 
                 ResultSet rs = searchStatement.executeQuery();
 
                 if (rs.next()) {
-                    // 從 SQL 結果集中直接取得資料
                     String courseName = rs.getString("課程名稱");
                     String date = rs.getDate("日期").toString();
                     String dayOfWeek = rs.getString("星期幾");
                     String startTime = rs.getString("開始時間");
                     String endTime = rs.getString("結束時間");
                     String locationName = rs.getString("地點名稱");
-                    String locationType = rs.getString("地點類型");
+                    int locationType = rs.getInt("地點類型");
+                    String city = rs.getString("縣市");
+                    String district = rs.getString("行政區");
 
-                    // 更新 UI
-                    new Handler(Looper.getMainLooper()).post(() -> updateUIWithClosestAppointment(
-                            courseName, date, dayOfWeek, startTime, endTime, locationName, locationType
-                    ));
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        updateUIWithClosestUpcomingAppointment(courseName, date, dayOfWeek, startTime, endTime, locationName, locationType, city, district);
+                        progressBarHandler.hideProgressBar();
+                        isLoading = false;
+                    });
                 } else {
-                    // 沒有課程時更新 UI
-                    new Handler(Looper.getMainLooper()).post(this::updateUIWithNoAppointment);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        updateUIWithNoUpcomingAppointment();
+                        progressBarHandler.hideProgressBar();
+                        isLoading = false;
+                    });
                 }
 
                 rs.close();
                 searchStatement.close();
             } catch (SQLException e) {
-                Log.e("SQL", Objects.requireNonNull(e.getMessage()));
-                new Handler(Looper.getMainLooper()).post(() -> progressBarHandler.hideProgressBar());
+                Log.e("SQL", "資料庫查詢失敗", e);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    progressBarHandler.hideProgressBar();
+                    isLoading = false;
+                });
+            } catch (Exception e) {
+                Log.e("Exception", "發生意外錯誤", e);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    progressBarHandler.hideProgressBar();
+                    isLoading = false;
+                });
             }
         });
     }
 
-    private void updateUIWithClosestAppointment(String courseName, String date, String dayOfWeek,
-                                                String startTime, String endTime, String locationName,
-                                                String locationType) {
+    private void updateUIWithClosestUpcomingAppointment(String courseName, String date, String dayOfWeek,
+                                                        String startTime, String endTime, String locationName,
+                                                        int locationType, String city, String district) {
+        // 設置地點
+        String locationText;
+        if (locationType == 2) { // 到府服務
+            locationText = "到府 (" + city + district + ")";
+        } else { // 固定地點
+            locationText = locationName;
+        }
+
+        // 更新 UI 顯示
         upcomingClassCard.setVisibility(View.VISIBLE);
         upcomingClassTitle.setText("即將到來的課程");
         upcomingClassDetails.setText(String.format(
-                "課程名稱: %s\n日期: %s (%s)\n時間: %s - %s\n地點: %s (%s)",
-                courseName, date, dayOfWeek, startTime, endTime, locationName, locationType
+                "課程名稱: %s\n日期: %s (%s)\n時間: %s - %s\n地點: %s",
+                courseName, date, dayOfWeek, startTime, endTime, locationText
         ));
+
+        // 根據地點類型設置背景顏色
+        if (locationType == 2) { // 到府服務
+            upcomingClassCard.setBackgroundResource(R.drawable.course_card_blue);
+        } else { // 固定地點
+            upcomingClassCard.setBackgroundResource(R.drawable.course_card_red);
+        }
     }
 
-    private void updateUIWithNoAppointment() {
+
+    private void updateUIWithNoUpcomingAppointment() {
         upcomingClassCard.setVisibility(View.VISIBLE);
         upcomingClassTitle.setText("沒有即將到來的課程");
         upcomingClassDetails.setText("未來沒有課程安排");
