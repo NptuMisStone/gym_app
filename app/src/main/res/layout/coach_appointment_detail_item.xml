@@ -8,6 +8,7 @@
     android:orientation="vertical"
     android:padding="10dp">
     <!--預約資訊卡片-->
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -88,6 +89,15 @@
                     android:gravity="right"
                     android:orientation="horizontal"
                     android:padding="5px">
+
+                    <ImageButton
+                        android:id="@+id/CoachAppointment_directionButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/all_effect_ripple"
+                        android:contentDescription="@string/goBack"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/user_class_detail_ic_direction" />
 
                     <Button
                         android:id="@+id/coach_ap_detail_cancelApButton"
