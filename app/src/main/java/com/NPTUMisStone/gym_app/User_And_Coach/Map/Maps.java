@@ -123,15 +123,18 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
             }
             return true;
         });
-    }
 
+        mMap.setOnPolylineClickListener(polyline -> {
+            // Handle polyline click if needed
+        });
+    }
 
     private class FetchDirectionsTask extends AsyncTask<LatLng, Void, List<LatLng>> {
         @Override
         protected List<LatLng> doInBackground(LatLng... params) {
             LatLng origin = params[0];
             LatLng destination = params[1];
-            String apiKey = "AIzaSyDVic0YITkggqQsWVA4a3tG4MXC-iIvTeY"; // 請替換為你自己的API金鑰
+            String apiKey = "AIzaSyDVic0YITkggqQsWVA4a3tG4MXC"; // Replace with your own API key
             String url = "https://maps.googleapis.com/maps/api/directions/json?"
                     + "origin=" + origin.latitude + "," + origin.longitude
                     + "&destination=" + destination.latitude + "," + destination.longitude
@@ -152,7 +155,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
             if (!routePoints.isEmpty()) {
                 List<LatLng> simplifiedRoutePoints = PolyUtil.simplify(routePoints, 0.1);
                 PolylineOptions polylineOptions = new PolylineOptions()
-                        .addAll(simplifiedRoutePoints).width(5).color(Color.RED);
+                        .addAll(simplifiedRoutePoints).width(5).color(Color.RED).clickable(true);
                 mMap.addPolyline(polylineOptions);
             } else {
                 Toast.makeText(Maps.this, "No routes found between the specified locations.", Toast.LENGTH_SHORT).show();
@@ -201,16 +204,16 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
                 Address location = addresses.get(0);
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 Marker myMarker = mMap.addMarker(new MarkerOptions()
-                        .position(latLng).title("我家").snippet("我家")
+                        .position(latLng).title("Destination").snippet("Destination")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                new FetchDirectionsTask().execute(latLng, currentLocation);
+                new FetchDirectionsTask().execute(currentLocation, latLng);
             } else {
-                Toast.makeText(getApplicationContext(), "地址無效，請檢查輸入的地址。", Toast.LENGTH_SHORT).show();
-                Log.e("MapActivity", "地址無效: " + address);
+                Toast.makeText(getApplicationContext(), "Invalid address, please check the input address.", Toast.LENGTH_SHORT).show();
+                Log.e("MapActivity", "Invalid address: " + address);
             }
         } catch (IOException e) {
-            Log.e("MapActivity", "地理編碼錯誤: " + e.getMessage());
+            Log.e("MapActivity", "Geocoding error: " + e.getMessage());
         }
     }
 }

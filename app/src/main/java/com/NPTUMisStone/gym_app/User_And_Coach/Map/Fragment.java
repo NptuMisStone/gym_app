@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
@@ -67,14 +66,14 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
     class SalonAdd extends Thread {
         @Override
         public void run() {
-            String sql = "SELECT DISTINCT 地點名稱, 顯示地點地址 FROM [健身教練課程-有排課的]";
+            String sql = "SELECT DISTINCT 地點名稱, 課程編號 FROM [健身教練課程-有排課的]";
             try {
                 Statement st = Myconnection.createStatement();
                 ResultSet rs = st.executeQuery(sql);
                 SalonItem.clearSalon();
 
                 while (rs.next()) {
-                    SalonItem salonItem = new SalonItem(rs.getString("地點名稱"), rs.getString("顯示地點地址"));
+                    SalonItem salonItem = new SalonItem(rs.getString("地點名稱"), MapHelper.getLocationAddress(Myconnection,rs.getInt("課程編號")));
                     SalonItem.addSalon(salonItem);
                     Log.d("正在加入的Salon", salonItem.getName() + " " + salonItem.getAddress());
                 }
@@ -191,6 +190,7 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
             for (int i = 0; i < salonItems.size(); i++) {
                 try {
                     tagStoreName.add(salonItems.get(i).getName());
+
                     List<Address> address_LatLon = geocoder.getFromLocationName(salonItems.get(i).getAddress(), 2);
                     if (address_LatLon != null && !address_LatLon.isEmpty()) {
                         Address location_LatLon = address_LatLon.get(0);
@@ -204,8 +204,16 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
                                     .setData(Uri.parse("https://www.google.com/maps/dir/?api=1&origin="
                                             + myLocation[0].latitude + "," + myLocation[0].longitude + "&destination="
                                             + marker1.getPosition().latitude + "," + marker1.getPosition().longitude)))*/
-                                Toast.makeText(getActivity(), "導航至" + Objects.requireNonNull(marker).getTitle(), Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getActivity(), Maps.class).putExtra("address", marker.getTitle()));
+                                for (SalonItem salonItem : SalonItem.getSalonObjects()) {
+                                    if (salonItem.getName().equals(marker1.getTitle())) {
+                                        String address = salonItem.getAddress();
+                                        Toast.makeText(getActivity(), "導航至" + marker1.getTitle(), Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(getActivity(), Maps.class).putExtra("address", address));
+                                        break;
+                                    }
+                                }
+                                //Toast.makeText(getActivity(), "導航至" + Objects.requireNonNull(marker).getTitle(), Toast.LENGTH_SHORT).show();
+                                //startActivity(new Intent(getActivity(), Maps.class).putExtra("address", 59));
                             });
                             map.setOnMarkerClickListener(marker2 -> {
                                 recyclerDesigner.setVisibility(View.VISIBLE);
@@ -220,6 +228,8 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
                         });
                     } else {
                         int finalI = i;
+                        Log.e("MapFragment", "Failed to find location for address: " + salonItems.get(finalI).getAddress());
+                        mainHandler.post(() -> Toast.makeText(getActivity(), "Failed to find location for address: " + salonItems.get(finalI).getAddress(), Toast.LENGTH_SHORT).show());
                         mainHandler.post(() -> Toast.makeText(getActivity(), "The " + salonItems.get(finalI).getName() + " can not display the marker.", Toast.LENGTH_SHORT).show());
                     }
                 } catch (IOException e) {
@@ -228,7 +238,6 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
             }
         }
     }
-
     private List<CourseItem> getDesignerList(String storeName) {
         List<CourseItem> designerList = new ArrayList<>();
         String query = "SELECT * FROM [健身教練課程-有排課的] WHERE 地點名稱 = '" + storeName + "' ORDER BY 健身教練性別 DESC";
@@ -350,12 +359,10 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
         public void onBindViewHolder(@NonNull DesignerViewHolder holder, int position) {
             CourseItem item = designerList.get(position);
             byte[] imageData = item.getCourseImage();
-            if (imageData != null && imageData.length > 0) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-                holder.designer_head.setImageBitmap(bitmap);
-            } else {
+            if (imageData != null && imageData.length > 0)
+                holder.designer_head.setImageBitmap(BitmapFactory.decodeByteArray(imageData, 0, imageData.length));
+            else
                 holder.designer_head.setImageResource(R.drawable.all_ic_null_image_account);
-            }
             holder.designer_name.setText(item.getCoachName());
             holder.rating.setText(item.getCoachSex());
         }
@@ -367,8 +374,7 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
 
         public class DesignerViewHolder extends RecyclerView.ViewHolder {
             ImageView designer_head;
-            TextView designer_name;
-            TextView rating;
+            TextView designer_name, rating;
 
             public DesignerViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -471,5 +477,17 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
             }
         }
         return null;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            if (Myconnection == null || Myconnection.isClosed()) {
+                Myconnection = new SQLConnection(getView()).IWantToConnection();
+                new SalonAdd().start();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
