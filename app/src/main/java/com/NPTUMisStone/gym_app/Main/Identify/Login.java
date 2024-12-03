@@ -90,7 +90,7 @@ public class Login extends AppCompatActivity {
         remember_output();
         findViewById(R.id.login_register).setOnClickListener(v -> register());
         findViewById(R.id.login_button).setOnClickListener(v -> checkLogin(et_account.getText().toString(), et_password.getText().toString()));
-        findViewById(R.id.login_forgot).setOnClickListener(v -> new PasswordReset(this, false, MyConnection).showPasswordResetDialog());
+        findViewById(R.id.login_forgot).setOnClickListener(v -> new PasswordReset(this,  MyConnection).showPasswordResetDialog());
 
     }
 
@@ -111,9 +111,7 @@ public class Login extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK)
-                    Toast.makeText(this, "快用新帳號登入吧", Toast.LENGTH_SHORT).show();    //LENGTH_SHORT and LENGTH_LONG：https://stackoverflow.com/questions/50422727/what-is-different-between-toast-lengthlong-and-lengthshort?noredirect=1&lq=1
-                else if (result.getResultCode() == Activity.RESULT_CANCELED)
-                    Toast.makeText(this, "取消註冊", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "註冊成功！快用新帳號登入吧", Toast.LENGTH_SHORT).show();    //LENGTH_SHORT and LENGTH_LONG：https://stackoverflow.com/questions/50422727/what-is-different-between-toast-lengthlong-and-lengthshort?noredirect=1&lq=1
             }
     );
 
@@ -251,13 +249,6 @@ public class Login extends AppCompatActivity {
                     .setPositiveButton("確定", (dialog, which) -> dialog.dismiss())
                     .show();
         });
-    }
-
-
-    private void anonymousLogin() {
-        User.setInstance(-1, "Anonymous", "Anonymous", "Anonymous", 0, "Anonymous", null);
-        startActivity(new Intent(this, UserHome.class));
-        finish();
     }
     private void goHome() {
         remember_input();

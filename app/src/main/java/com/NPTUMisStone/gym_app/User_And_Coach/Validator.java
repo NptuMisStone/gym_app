@@ -9,6 +9,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -20,25 +21,38 @@ public class Validator {
     public Validator(Connection MyConnection) {
         this.MyConnection = MyConnection;
     }
-    public String validateEmailAndAccount(EditText account, EditText email, boolean isUser, TextView statusHint) {
-        String result = validateEmailAndAccount(account, email, isUser);
+
+    public String validateEmailAndAccount(EditText account, EditText email, TextView statusHint) {
+        String result = validateEmailAndAccount(account, email);
         return addPrefixIfTextView(result, statusHint);
     }
-    private String validateEmailAndAccount(EditText account, EditText email, boolean isUser) {
+
+    private String validateEmailAndAccount(EditText account, EditText email) {
         String validateResult = checkInput(account, "帳號", 20);
         if (validateResult != null) return validateResult;
         validateResult = checkEmail(email);
         if (validateResult != null) return validateResult;
-        return checkAccountExists(account.getText().toString(), email.getText().toString(), isUser);
+
+        // 更新查詢邏輯
+        return checkAccountExists(account.getText().toString(), email.getText().toString());
     }
-    private String checkAccountExists(String account, String email, boolean isUser) {
-        String searchQuery = isUser ? "SELECT * FROM [使用者資料] WHERE [使用者帳號] = '" + account + "' AND [使用者郵件] = '" + email + "'" : "SELECT * FROM [健身教練資料] WHERE [健身教練帳號] = '" + account + "' AND [健身教練郵件] = '" + email + "'";
+
+    private String checkAccountExists(String account, String email) {
+        String searchQuery =
+                "SELECT 1 FROM [使用者資料] WHERE [使用者帳號] = ? AND [使用者郵件] = ? " +
+                        "UNION " +
+                        "SELECT 1 FROM [健身教練資料] WHERE [健身教練帳號] = ? AND [健身教練郵件] = ?";
         try {
-            ResultSet rs = MyConnection.createStatement().executeQuery(searchQuery);
-            if (rs.next()) return null;
-            else return "找不到此帳號。請確認您輸入的帳號是否正確。";
+            PreparedStatement statement = MyConnection.prepareStatement(searchQuery);
+            statement.setString(1, account);
+            statement.setString(2, email);
+            statement.setString(3, account);
+            statement.setString(4, email);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) return null; // 資料存在
+            else return "找不到此帳號，請確認輸入是否正確。";
         } catch (SQLException e) {
-            return "資料庫錯誤";
+            return "資料庫錯誤，請稍後再試。";
         }
     }
     public String validatePasswords(EditText newPass, TextView statusHint) {

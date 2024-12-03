@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_green"
+    android:background="#3BAFBF"
     tools:context=".Main.Identify.Register">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,6 +13,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="90dp"
         android:background="@drawable/main_register_shape_background"
+        android:backgroundTint="@color/selected_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +42,7 @@
             android:layout_marginTop="60dp"
             android:layout_marginBottom="16dp"
             android:gravity="center"
-            android:text="註冊"
+            android:text="使用者註冊"
             android:textColor="@color/dark_green"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -92,7 +93,7 @@
                         android:layout_height="54dp"
                         android:autofillHints=""
                         android:background="@drawable/main_register_shape_edittext"
-                        android:hint="請輸入帳號名稱"
+                        android:hint="請輸入您的姓名"
                         android:inputType="textPersonName"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
@@ -127,7 +128,7 @@
                         android:layout_height="54dp"
                         android:autofillHints=""
                         android:background="@drawable/main_register_shape_edittext"
-                        android:hint="請輸入登入帳號"
+                        android:hint="請輸入您的帳號"
                         android:inputType="textPersonName"
                         android:paddingHorizontal="10dp"
                         android:textColor="@color/dark_green" />
@@ -248,7 +249,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
-                    android:text="電子郵件"
+                    android:text="電子郵件 *"
                     android:textColor="@color/dark_green"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -277,6 +278,42 @@
                         android:textColor="@color/dark_green" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <TextView
+                    android:id="@+id/textView31"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    android:text="性別 *"
+                    android:textColor="@color/dark_green"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginBottom="8dp"
+                    app:hintEnabled="false"
+                    app:passwordToggleEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:autofillHints=""
+                        android:background="@drawable/main_register_shape_edittext"
+                        android:hint="選擇性別"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textColor="@color/dark_green" />
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <Button
                     android:id="@+id/register_ok"
                     android:layout_width="200dp"
@@ -293,20 +330,20 @@
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_coach_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="32dp"
+                    android:text="如要加入健身教練行列，請使用電腦版 web 進行申請"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </ScrollView>
         <!--SwitchCompat add thumb and track：https://appcircle.io/blog/how-to-customize-the-switch-button-in-android-->
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/register_change_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:minHeight="48dp"
-            android:thumb="@drawable/main_register_layer_list_thumb"
-            app:layout_constraintBottom_toBottomOf="@+id/toLogin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/toLogin"
-            app:track="@drawable/main_register_selector_track_backgrounds" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

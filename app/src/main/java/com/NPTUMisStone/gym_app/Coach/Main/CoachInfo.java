@@ -76,7 +76,7 @@ public class CoachInfo extends AppCompatActivity {
         findViewById(R.id.CoachInfo_return).setOnClickListener(v -> finish());
         findViewById(R.id.CoachInfo_logout).setOnClickListener(v -> logout());
         findViewById(R.id.CoachInfo_upload).setOnClickListener(v -> changeImage());
-        findViewById(R.id.CoachInfo_resetButton).setOnClickListener(v -> new PasswordReset(this, false, MyConnection).showPasswordResetDialog());
+        findViewById(R.id.CoachInfo_resetButton).setOnClickListener(v -> new PasswordReset(this, MyConnection).showPasswordResetDialog());
         findViewById(R.id.CoachInfo_saveButton).setOnClickListener(v -> {
             saveUpdatedInfo();
         });

@@ -20,6 +20,7 @@ import com.NPTUMisStone.gym_app.R;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -32,15 +33,14 @@ import java.util.stream.Collectors;
 public class PasswordReset {
     Context context;
     Connection MyConnection;
-    boolean isUser,isDialogShow = false;
+    boolean isDialogShow = false;
     Validator validator;
     CountDownTimer countDownTimer;
     Handler handler;
     Runnable runnable;
 
-    public PasswordReset(Context context, boolean isUser, Connection MyConnection) {
+    public PasswordReset(Context context, Connection MyConnection) {
         this.context = context;
-        this.isUser = isUser;
         this.MyConnection = MyConnection;
         this.validator = new Validator(MyConnection);
     }
@@ -49,7 +49,6 @@ public class PasswordReset {
         if (isDialogShow) return;
         isDialogShow = true;
         View dialogView = ((Activity) context).getLayoutInflater().inflate(R.layout.main_login_forget, null);
-        ((TextView) dialogView.findViewById(R.id.forget_title)).setText(isUser ? "用戶密碼重設" : "教練密碼重設");
         AlertDialog dialog = new AlertDialog.Builder(context).setView(dialogView).create();
         dialogView.findViewById(R.id.forget_getButton).setOnClickListener(v -> handleGetCodeClick(dialogView, dialog));
         dialog.setOnDismissListener(dialogInterface -> isDialogShow = false);
@@ -59,15 +58,39 @@ public class PasswordReset {
     private void handleGetCodeClick(View dialogView, AlertDialog dialog) {
         EditText editAccount = dialogView.findViewById(R.id.forget_accountEdit);
         EditText editEmail = dialogView.findViewById(R.id.forget_emailEdit);
-        TextView statusHint1 = dialogView.findViewById(R.id.forget_statusHint1);
+        TextView statusHint = dialogView.findViewById(R.id.forget_statusHint);
         Button getCode = dialogView.findViewById(R.id.forget_getButton);
-        String validationError = validator.validateEmailAndAccount(editAccount, editEmail, isUser, statusHint1);
-        if (validationError == null) sendVerificationEmail(editEmail.getText().toString(), statusHint1, getCode, dialogView, dialog);
-        else textHint(statusHint1, validationError);
+
+        String validationError = validator.validateEmailAndAccount(editAccount, editEmail, statusHint);
+        if (validationError == null) {
+            if (isUserOrCoachExists(editAccount.getText().toString(), editEmail.getText().toString())) {
+                sendVerificationEmail(editEmail.getText().toString(), statusHint, getCode, dialogView, dialog);
+            } else {
+                textHint(statusHint, "❌ 帳號或 Email 不存在，請確認後再試。");
+            }
+        } else {
+            textHint(statusHint, validationError);
+        }
+    }
+    private boolean isUserOrCoachExists(String account, String email) {
+        try {
+            String query = "SELECT 1 FROM [使用者資料] WHERE [使用者帳號] = ? OR [使用者郵件] = ? " +
+                    "UNION SELECT 1 FROM [健身教練資料] WHERE [健身教練帳號] = ? OR [健身教練郵件] = ?";
+            PreparedStatement statement = MyConnection.prepareStatement(query);
+            statement.setString(1, account);
+            statement.setString(2, email);
+            statement.setString(3, account);
+            statement.setString(4, email);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next(); // 如果有結果，說明存在
+        } catch (SQLException e) {
+            Log.e("PasswordReset", "查詢帳號或 Email 發生錯誤", e);
+            return false;
+        }
     }
 
-    private void sendVerificationEmail(String userEmail, TextView statusHint1, Button getCode, View dialogView, AlertDialog dialog) {
-        animateTextHint(statusHint1);
+    private void sendVerificationEmail(String userEmail, TextView statusHint, Button getCode, View dialogView, AlertDialog dialog) {
+        animateTextHint(statusHint);
         String randomCode = generateRandomNumber();
         Log.d("randomCode", randomCode);
         String mSubject = "【屏大Fit-健身預約系統】密碼重設通知信";
@@ -83,7 +106,7 @@ public class PasswordReset {
             public void onSuccess() {
                 ((Activity) context).runOnUiThread(() -> {
                     stopAnimateTextHint();
-                    textHint(statusHint1, "✔ 驗證碼已成功寄送，請前往您的信箱查看");
+                    textHint(statusHint, "✔ 驗證碼已成功寄送，請前往您的信箱查看");
                     LocalTime sendTime = LocalTime.now(ZoneId.of("Asia/Taipei"));
                     if (countDownTimer != null) countDownTimer.cancel();
                     countDownTimer = startCountdown(getCode);
@@ -94,7 +117,7 @@ public class PasswordReset {
             @Override
             public void onFailure(Exception e) {
                 stopAnimateTextHint();
-                ((Activity) context).runOnUiThread(() -> textHint(statusHint1, "❌ 郵件發送失敗，請再試一次。"));
+                ((Activity) context).runOnUiThread(() -> textHint(statusHint, "❌ 郵件發送失敗，請再試一次。"));
                 Log.e("EmailSendError", Objects.requireNonNull(e.getMessage()));
             }
         });
@@ -125,7 +148,7 @@ public class PasswordReset {
         EditText editCode = dialogView.findViewById(R.id.forget_codeEdit);
         checkButton.setVisibility(View.VISIBLE);
         checkButton.setOnClickListener(v -> {
-            if (validateCode(randomCode, editCode.getText().toString(), dialogView.findViewById(R.id.forget_statusHint1), sendTime)) {
+            if (validateCode(randomCode, editCode.getText().toString(), dialogView.findViewById(R.id.forget_statusHint), sendTime)) {
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     dialogView.findViewById(R.id.forget_linear1).setVisibility(View.GONE);
                     dialogView.findViewById(R.id.forget_linear2).setVisibility(View.VISIBLE);
@@ -186,11 +209,17 @@ public class PasswordReset {
 
     private boolean updatePassword(String account, String newPassword, TextView statusHint) {
         try {
-            String updateQuery = isUser ? "UPDATE [使用者資料] SET [使用者密碼] = ? WHERE [使用者帳號] = ?" : "UPDATE [健身教練資料] SET [健身教練密碼] = ? WHERE [健身教練帳號] = ?";
-            PreparedStatement updateStatement = MyConnection.prepareStatement(updateQuery);
-            updateStatement.setString(1, newPassword);
-            updateStatement.setString(2, account);
-            if (updateStatement.executeUpdate() > 0) {
+            String query = "UPDATE [使用者資料] SET [使用者密碼] = ? WHERE [使用者帳號] = ? OR [使用者郵件] = ? " +
+                    "UNION ALL " +
+                    "UPDATE [健身教練資料] SET [健身教練密碼] = ? WHERE [健身教練帳號] = ? OR [健身教練郵件] = ?";
+            PreparedStatement statement = MyConnection.prepareStatement(query);
+            statement.setString(1, newPassword);
+            statement.setString(2, account);
+            statement.setString(3, account);
+            statement.setString(4, newPassword);
+            statement.setString(5, account);
+            statement.setString(6, account);
+            if (statement.executeUpdate() > 0) {
                 textHint(statusHint, "✔ 密碼已成功重置");
                 return true;
             } else {
