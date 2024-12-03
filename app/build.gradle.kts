@@ -9,8 +9,8 @@ android { //rename package:https://stackoverflow.com/questions/16804093/rename-p
         applicationId = "com.NPTUMisStone.gym_app"
         minSdk = 28
         targetSdk = 34
-        versionCode = 111
-        versionName = "0.111"
+        versionCode = 1111
+        versionName = "1.111"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
