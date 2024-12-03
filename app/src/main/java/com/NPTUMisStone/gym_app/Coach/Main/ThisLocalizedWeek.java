@@ -1,5 +1,7 @@
 package com.NPTUMisStone.gym_app.Coach.Main;
 
+import androidx.annotation.NonNull;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -28,6 +30,7 @@ public class ThisLocalizedWeek {
         return LocalDate.now(TZ).with(TemporalAdjusters.nextOrSame(this.lastDayOfWeek));
     }
 
+    @NonNull
     @Override
     public String toString() {
         return String.format("The %s week starts on %s and ends on %s",

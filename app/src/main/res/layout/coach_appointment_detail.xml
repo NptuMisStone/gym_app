@@ -5,11 +5,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Coach.Records.Coach_Appointment_Detail">
+    tools:context=".Coach.Records.Detail">
 
     <!-- 標頭容器 -->
     <RelativeLayout
-        android:id="@+id/header"
+        android:id="@+id/AppointmentDetail_header"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/white"
@@ -19,21 +19,21 @@
 
         <!-- 返回按鈕 -->
         <ImageButton
-            android:id="@+id/coach_Appointment_detail_back"
+            android:id="@+id/AppointmentDetail_backButton"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:background="@drawable/all_effect_ripple"
-            android:contentDescription="返回上一頁"
-            android:onClick="coach_Appointment_detail_goback"
+            android:contentDescription="@string/goBack"
+            android:onClick="coach_Appointment_detail_goBack"
             android:scaleType="centerInside"
             android:src="@drawable/all_ic_arrow_back3" />
 
         <!-- 標頭標題 -->
         <TextView
-            android:id="@+id/page_title"
+            android:id="@+id/AppointmentDetail_titleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -45,6 +45,7 @@
 
         <!-- 底部細線 -->
         <View
+            android:id="@+id/AppointmentDetail_View"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
@@ -53,18 +54,18 @@
 
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/coach_appopintment_detail_Recycleview"
+        android:id="@+id/AppointmentDetail_detailRecycleView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header"
-        app:layout_constraintBottom_toTopOf="@+id/nodata_coach_ap_detail" />
+        app:layout_constraintTop_toBottomOf="@+id/AppointmentDetail_header"
+        app:layout_constraintBottom_toTopOf="@+id/AppointmentDetail_detailText" />
 
     <!-- 無數據提示 -->
     <TextView
-        android:id="@+id/nodata_coach_ap_detail"
+        android:id="@+id/AppointmentDetail_detailText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -74,6 +75,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coach_appopintment_detail_Recycleview" />
+        app:layout_constraintTop_toBottomOf="@+id/AppointmentDetail_detailRecycleView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

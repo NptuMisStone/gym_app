@@ -15,7 +15,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.NPTUMisStone.gym_app.Coach.Class.ClassMain;
 import com.NPTUMisStone.gym_app.Coach.Comments.Coach_Comments;
 
-import com.NPTUMisStone.gym_app.Coach.Records.Coach_AppointmentsAll;
+import com.NPTUMisStone.gym_app.Coach.Records.All;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledMain;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
@@ -29,7 +29,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 
 
@@ -59,11 +58,6 @@ public class CoachHome extends AppCompatActivity {
 
         // 初始化教練資訊
         initCoachInfo();
-
-        // 設置按鈕點擊事件
-        findViewById(R.id.CoachHome_testButton1).setOnClickListener(v -> startActivity(new Intent(this, Maps.class)));
-        findViewById(R.id.CoachHome_testButton2).setOnClickListener(v -> startActivity(new Intent(this, Class.class)));
-
         // 下拉刷新處理
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.CoachHome_swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -131,7 +125,7 @@ public class CoachHome extends AppCompatActivity {
         int id = view.getId();
         try {
             if (id == R.id.CoachHome_viewAppointmentsCard)
-                startActivity(new Intent(this, Coach_AppointmentsAll.class));
+                startActivity(new Intent(this, All.class));
             else if (id == R.id.CoachHome_viewScheduleCard)
                 startActivity(new Intent(this, ScheduledMain.class));
             else if (id == R.id.CoachHome_classMaintenanceCard)

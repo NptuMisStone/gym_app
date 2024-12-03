@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Coach.Records.Coach_AppointmentsAll">
+    tools:context=".Coach.Records.All">
 
     <!-- 標頭容器 -->
     <RelativeLayout
@@ -32,7 +32,7 @@
 
         <!-- 標頭標題 -->
         <TextView
-            android:id="@+id/page_title"
+            android:id="@+id/AppointmentDetail_titleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

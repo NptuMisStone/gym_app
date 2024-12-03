@@ -3,30 +3,31 @@ package com.NPTUMisStone.gym_app.Coach.Records;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Coach_AppointmentData {
-    private Date date;
-    private int scheduleID, appeople, classpeople;
-    private String className, week, stTime, edTime, place, placeType, city, district; // 修正字段命名
-    private static ArrayList<Coach_AppointmentData> appointments = new ArrayList<>();
+public class Data {
+    private final Date date;
+    private final int scheduleID, apPeople, classPeople;
+    private final String className, week, stTime, edTime, place, placeType;
+    private String city, district; // 修正字段命名
+    private static final ArrayList<Data> appointments = new ArrayList<>();
 
-    public Coach_AppointmentData(int scheduleID, Date date, String week, String stTime, String edTime,
-                                 String className, int appeople, int classpeople,
-                                 String place, String placeType, String city, String district) {
+    public Data(int scheduleID, Date date, String week, String stTime, String edTime,
+                String className, int apPeople, int classPeople,
+                String place, String placeType, String city, String district) {
         this.scheduleID = scheduleID;
         this.date = date;
         this.week = week;
         this.stTime = stTime;
         this.edTime = edTime;
         this.className = className;
-        this.appeople = appeople;
-        this.classpeople = classpeople;
+        this.apPeople = apPeople;
+        this.classPeople = classPeople;
         this.place = place;
         this.placeType = placeType;
         this.city = city;
         this.district = district;
     }
 
-    public static ArrayList<Coach_AppointmentData> getAppointments() {
+    public static ArrayList<Data> getAppointments() {
         return appointments;
     }
 
@@ -54,12 +55,12 @@ public class Coach_AppointmentData {
         return className;
     }
 
-    public int getAppeople() {
-        return appeople;
+    public int getApPeople() {
+        return apPeople;
     }
 
-    public int getClasspeople() {
-        return classpeople;
+    public int getClassPeople() {
+        return classPeople;
     }
 
     public String getPlace() {

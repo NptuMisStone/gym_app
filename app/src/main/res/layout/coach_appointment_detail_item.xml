@@ -22,7 +22,7 @@
 
 
             <ImageView
-                android:id="@+id/coach_ap_detail_userimg"
+                android:id="@+id/AppointmentDetail_classImage"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
 
@@ -49,38 +49,45 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/coach_ap_detail_username"
+                    android:id="@+id/AppointmentDetail_nameText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="會員名稱"
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/coach_ap_detail_usergender"
+                    android:id="@+id/AppointmentDetail_sexText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="性別"
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/coach_ap_detail_phone"
+                    android:id="@+id/AppointmentDetail_phoneText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="電話"
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/coach_ap_detail_mail"
+                    android:id="@+id/AppointmentDetail_mailText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="信箱"
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/coach_ap_detail_note"
+                    android:id="@+id/AppointmentDetail_noteText"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="備註"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/AppointmentDetail_locationText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="地址名稱"
                     android:textSize="12sp" />
 
                 <LinearLayout
@@ -91,7 +98,7 @@
                     android:padding="5px">
 
                     <ImageButton
-                        android:id="@+id/CoachAppointment_directionButton"
+                        android:id="@+id/AppointmentDetail_directionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/all_effect_ripple"
@@ -100,7 +107,7 @@
                         android:src="@drawable/user_class_detail_ic_direction" />
 
                     <Button
-                        android:id="@+id/coach_ap_detail_cancelApButton"
+                        android:id="@+id/AppointmentDetail_cancelButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
@@ -109,7 +116,7 @@
                         android:textColor="#FFFFFF" />
 
                     <Button
-                        android:id="@+id/coach_ap_detail_finishApButton"
+                        android:id="@+id/AppointmentDetail_finishButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"

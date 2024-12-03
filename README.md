@@ -14,10 +14,6 @@
         + [Github 部分](#github-部分)
         + [補充參考資料](#補充參考資料)
 
-！已知問題！：
-
-(待處理)當沒有課程時，點擊物件ScheduledSet中的RecyclerView會閃退!
-
 ## 規劃方向：
 
 [參考](https://play.google.com/store/apps/details?id=com.jb.gms.admin&hl=zh_TW)
@@ -246,6 +242,8 @@ v0.108：微修登入版面(宇哲)
 v0.109：版面覆蓋問題(煒楷)
 
 v0.110：登入版面/忘記密碼/註冊 完成(宇哲)
+
+v0.111：教練預約部分整理、新增教練預約導航按鈕(侑宸)
 
 ## 補充：
 

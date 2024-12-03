@@ -1,9 +1,7 @@
-package com.NPTUMisStone.gym_app.Coach.Records.CoachFutureAppointment;
+package com.NPTUMisStone.gym_app.Coach.Records;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -23,13 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
-import com.NPTUMisStone.gym_app.Coach.Records.Coach_AppointmentData;
-import com.NPTUMisStone.gym_app.Coach.Records.Coach_Appointment_Adapter;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
-import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.databinding.CoachFutureAppointmentFragmentBinding;
-import com.NPTUMisStone.gym_app.databinding.CoachPastAppointmentFragmentBinding;
-import com.NPTUMisStone.gym_app.databinding.CoachTodayAppointmentFragmentBinding;
+import com.NPTUMisStone.gym_app.databinding.CoachAppointmentFutureBinding;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,22 +32,22 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
-public class CoachFutureAppointment extends Fragment {
+public class FutureFragment extends Fragment {
 
-    private CoachFutureAppointmentFragmentBinding binding;
+    private CoachAppointmentFutureBinding binding;
     private Connection MyConnection;
-    ArrayList<Coach_AppointmentData> appointmentData = new ArrayList<>();
+    ArrayList<Data> appointmentData = new ArrayList<>();
     private ProgressBar progressBar;
     TextView nodata;
 
-    public static CoachFutureAppointment newInstance() {
-        return new CoachFutureAppointment();
+    public static FutureFragment newInstance() {
+        return new FutureFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding= CoachFutureAppointmentFragmentBinding.inflate(inflater,container,false);
+        binding= CoachAppointmentFutureBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
         nodata=binding.coachApNodata;
         nodata.setVisibility(View.GONE);
@@ -89,7 +82,7 @@ public class CoachFutureAppointment extends Fragment {
                     }
 
                     // 將資料添加到 appointmentData 列表
-                    appointmentData.add(new Coach_AppointmentData(
+                    appointmentData.add(new Data(
                             rs.getInt("課表編號"),
                             rs.getDate("日期"),
                             rs.getString("星期幾"),
@@ -115,8 +108,8 @@ public class CoachFutureAppointment extends Fragment {
     }
     private void updateUI() {
         if (getActivity() != null && isAdded()) {
-            Coach_Appointment_Adapter coachAppointmentAdapter = new Coach_Appointment_Adapter(this,appointmentData);
-            RecyclerView coachApFutureRecycleview   = binding.coachApFutureRecycleview;
+            Adapter coachAppointmentAdapter = new Adapter(this,appointmentData);
+            RecyclerView coachApFutureRecycleview = binding.coachApFutureRecycleview;
             coachApFutureRecycleview.setLayoutManager(new LinearLayoutManager(getActivity()));
             coachApFutureRecycleview.setAdapter(coachAppointmentAdapter);
             progressBar.setVisibility(View.GONE);

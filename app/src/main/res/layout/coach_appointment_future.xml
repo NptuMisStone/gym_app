@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Coach.Records.CoachPastAppointment.CoachPastAppointment">
+    tools:context=".Coach.Records.FutureFragment">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/coach_ap_past_recycleview"
+        android:id="@+id/coach_ap_future_recycleview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <TextView

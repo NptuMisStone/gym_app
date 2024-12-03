@@ -1,6 +1,7 @@
 package com.NPTUMisStone.gym_app.User_And_Coach.Map;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,7 +41,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.collections.MarkerManager;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -183,6 +183,7 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
             this.salonItems = salonItems;
         }
 
+        @SuppressLint("PotentialBehaviorOverride")  //TODO 暫時放棄處理
         @Override
         public void run() {
             Geocoder geocoder = new Geocoder(requireActivity(), Locale.TRADITIONAL_CHINESE);
@@ -203,7 +204,7 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
                                     .setData(Uri.parse("https://www.google.com/maps/dir/?api=1&origin="
                                             + myLocation[0].latitude + "," + myLocation[0].longitude + "&destination="
                                             + marker1.getPosition().latitude + "," + marker1.getPosition().longitude)))*/
-                                Toast.makeText(getActivity(), "導航至" + marker.getTitle(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "導航至" + Objects.requireNonNull(marker).getTitle(), Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(getActivity(), Maps.class).putExtra("address", marker.getTitle()));
                             });
                             map.setOnMarkerClickListener(marker2 -> {
@@ -395,10 +396,10 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
     }
 
     static class CourseItem {
-        private final int courseId;
-        private final byte[] courseImage;
-        private final String coachName;
-        private final String coachSex;
+        int courseId;
+        byte[] courseImage;
+        String coachName;
+        String coachSex;
 
         public CourseItem(int courseId, byte[] courseImage, String coachName, String coachSex) {
             this.courseId = courseId;
@@ -425,8 +426,8 @@ public class Fragment extends androidx.fragment.app.Fragment implements OnMapRea
     }
 
     static class SalonItem {
-        private final String name;
-        private final String address;
+        String name;
+        String address;
         private static ArrayList<SalonItem> salonItems = new ArrayList<>();
 
         public SalonItem(String name, String address) {

@@ -1,9 +1,7 @@
-package com.NPTUMisStone.gym_app.Coach.Records.CoachPastAppointment;
+package com.NPTUMisStone.gym_app.Coach.Records;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -23,12 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
-import com.NPTUMisStone.gym_app.Coach.Records.Coach_AppointmentData;
-import com.NPTUMisStone.gym_app.Coach.Records.Coach_Appointment_Adapter;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
-import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.databinding.CoachPastAppointmentFragmentBinding;
-import com.NPTUMisStone.gym_app.databinding.CoachTodayAppointmentFragmentBinding;
+import com.NPTUMisStone.gym_app.databinding.CoachAppointmentTodayBinding;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,41 +32,41 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
-public class CoachPastAppointment extends Fragment {
+public class TodayFragment extends Fragment {
 
-    private CoachPastAppointmentFragmentBinding binding;
+    private CoachAppointmentTodayBinding binding;
     private Connection MyConnection;
-    ArrayList<Coach_AppointmentData> appointmentData = new ArrayList<>();
+    ArrayList<Data> appointmentData = new ArrayList<>();
     private ProgressBar progressBar;
     TextView nodata;
-
-    public static CoachPastAppointment newInstance() {
-        return new CoachPastAppointment();
+    public static TodayFragment newInstance() {
+        return new TodayFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding= CoachPastAppointmentFragmentBinding.inflate(inflater,container,false);
+        binding= CoachAppointmentTodayBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
         nodata=binding.coachApNodata;
         nodata.setVisibility(View.GONE);
         progressBar = binding.progressBar;
         progressBar.setVisibility(View.VISIBLE);
-        fetchPastAppointments();
+        fetchTodayAppointments();
         return root;
     }
-    private void fetchPastAppointments() {
+    private void fetchTodayAppointments() {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
                 appointmentData.clear();
-                String sql = "SELECT * FROM 健身教練課表課程合併 WHERE 健身教練編號= ? AND 日期 < ? ORDER BY 日期 DESC, 開始時間 ASC";
+                String sql = "SELECT * FROM 健身教練課表課程合併 WHERE 健身教練編號= ? AND 日期 = ? ORDER BY 開始時間";
                 PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
                 searchStatement.setInt(1, Coach.getInstance().getCoachId());
                 java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
                 searchStatement.setDate(2, today);
                 ResultSet rs = searchStatement.executeQuery();
+
                 while (rs.next()) {
                     int locationType = rs.getInt("地點類型");
                     String city = rs.getString("縣市");
@@ -88,7 +82,7 @@ public class CoachPastAppointment extends Fragment {
                     }
 
                     // 將資料添加到 appointmentData 列表
-                    appointmentData.add(new Coach_AppointmentData(
+                    appointmentData.add(new Data(
                             rs.getInt("課表編號"),
                             rs.getDate("日期"),
                             rs.getString("星期幾"),
@@ -110,14 +104,14 @@ public class CoachPastAppointment extends Fragment {
             }
             new Handler(Looper.getMainLooper()).post(this::updateUI);
         });
-
     }
+
     private void updateUI() {
         if (getActivity() != null && isAdded()) {
-            Coach_Appointment_Adapter coachAppointmentAdapter = new Coach_Appointment_Adapter(this,appointmentData);
-            RecyclerView coachApPastRecycleview   = binding.coachApPastRecycleview;
-            coachApPastRecycleview.setLayoutManager(new LinearLayoutManager(getActivity()));
-            coachApPastRecycleview.setAdapter(coachAppointmentAdapter);
+            Adapter coachAppointmentAdapter = new Adapter(this,appointmentData);
+            RecyclerView coachApTodayRecycleview   = binding.coachApTodayRecycleview;
+            coachApTodayRecycleview.setLayoutManager(new LinearLayoutManager(getActivity()));
+            coachApTodayRecycleview.setAdapter(coachAppointmentAdapter);
             progressBar.setVisibility(View.GONE);
             if (appointmentData.isEmpty()) {
                 nodata.setVisibility(View.VISIBLE);
@@ -131,14 +125,14 @@ public class CoachPastAppointment extends Fragment {
         super.onDestroyView();
         binding = null; // 避免内存泄漏
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1001 && resultCode == AppCompatActivity.RESULT_OK) {
             if (data != null && data.getBooleanExtra("刷新數據", false)) {
-                fetchPastAppointments();
+                fetchTodayAppointments();
             }
         }
     }
-
 }

@@ -45,10 +45,10 @@
 
         <!-- Coach Activities -->
         <activity
-            android:name=".Coach.Records.Coach_Appointment_Detail"
+            android:name=".Coach.Records.Detail"
             android:exported="false" />
         <activity
-            android:name=".Coach.Records.Coach_AppointmentsAll"
+            android:name=".Coach.Records.All"
             android:exported="false" />
         <activity
             android:name=".Coach.Comments.Coach_Comments"

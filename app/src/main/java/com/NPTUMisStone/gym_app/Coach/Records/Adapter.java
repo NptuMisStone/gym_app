@@ -1,6 +1,4 @@
 package com.NPTUMisStone.gym_app.Coach.Records;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,21 +23,19 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-public class Coach_Appointment_Adapter extends RecyclerView.Adapter<Coach_Appointment_Adapter.ViewHolder> {
+public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     Fragment parentFragment;
-    List<Coach_AppointmentData> appointmentDataList;
-    Context context;
+    List<Data> appointmentDataList;
     Connection MyConnection;
-    public Coach_Appointment_Adapter(Fragment parentFragment, List<Coach_AppointmentData> appointmentList) {
+    public Adapter(Fragment parentFragment, List<Data> appointmentList) {
         this.parentFragment = parentFragment;
-        this.context = context;
         this.appointmentDataList = appointmentList;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView ap_date,ap_week,ap_className,ap_time,ap_place,ap_people;
         Button detailBtn;
-        LinearLayout placetype;
+        LinearLayout placeType;
         public ViewHolder(View itemView) {
             super(itemView);
             ap_date = itemView.findViewById(R.id.coach_appointment_date);
@@ -49,7 +45,7 @@ public class Coach_Appointment_Adapter extends RecyclerView.Adapter<Coach_Appoin
             ap_place=itemView.findViewById(R.id.coach_appointment_place);
             ap_people=itemView.findViewById(R.id.coach_appointment_people);
             detailBtn=itemView.findViewById(R.id.coach_appointment_detailBtn);
-            placetype=itemView.findViewById(R.id.coach_appointment_placetype);
+            placeType =itemView.findViewById(R.id.coach_appointment_placetype);
         }
     }
 
@@ -62,14 +58,14 @@ public class Coach_Appointment_Adapter extends RecyclerView.Adapter<Coach_Appoin
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Coach_AppointmentData item = appointmentDataList.get(position);
+        Data item = appointmentDataList.get(position);
         Log.i("Adapter", "正在綁定數據: " + item.getClassName());
         holder.ap_date.setText(item.getDate().toString());
         holder.ap_week.setText(item.getWeek());
         holder.ap_className.setText(item.getClassName());
         holder.ap_time.setText(item.getStTime().trim()+" ~ "+item.getEdTime().trim());
         holder.ap_place.setText(item.getPlace());
-        holder.ap_people.setText(String.valueOf(item.getAppeople()).trim() +" / " + String.valueOf(item.getClasspeople()).trim());
+        holder.ap_people.setText(String.valueOf(item.getApPeople()).trim() +" / " + String.valueOf(item.getClassPeople()).trim());
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 MyConnection = new SQLConnection(holder.itemView).IWantToConnection();
@@ -80,10 +76,9 @@ public class Coach_Appointment_Adapter extends RecyclerView.Adapter<Coach_Appoin
                 ResultSet rs = Statement.executeQuery();
                 if (rs.next()) {
                     if (rs.getString("地點類型").trim().equals("2")) {
-                        holder.placetype.setBackgroundResource(R.drawable.course_time_blue);
+                        holder.itemView.post(() -> holder.placeType.setBackgroundResource(R.drawable.course_time_blue));
                     } else {
-                        holder.placetype.setBackgroundResource(R.drawable.course_time_red);
-                    }
+                        holder.itemView.post(() -> holder.placeType.setBackgroundResource(R.drawable.course_time_red));                    }
                 }
                 rs.close();
                 Statement.close();
@@ -92,7 +87,7 @@ public class Coach_Appointment_Adapter extends RecyclerView.Adapter<Coach_Appoin
             }
         });
         holder.detailBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(parentFragment.getContext(), Coach_Appointment_Detail.class);
+            Intent intent = new Intent(parentFragment.getContext(), Detail.class);
             intent.putExtra("看預約名單ID", item.getScheduleID());
             parentFragment.startActivityForResult(intent, 1001);
         });

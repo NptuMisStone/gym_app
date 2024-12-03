@@ -31,7 +31,7 @@
 
         <!-- 標頭標題 -->
         <TextView
-            android:id="@+id/page_title"
+            android:id="@+id/AppointmentDetail_titleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
