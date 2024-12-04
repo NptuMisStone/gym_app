@@ -10,7 +10,7 @@
         android:id="@+id/CoachHome_constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/all_background1">
+        android:background="@drawable/coach_bg">
 
         <LinearLayout
             android:id="@+id/CoachHome_linearLayout1"
