@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
-import com.NPTUMisStone.gym_app.databinding.UserDetailClassFragmentBinding;
+import com.NPTUMisStone.gym_app.databinding.UserClassDetailFragmentBinding;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,9 +27,8 @@ import java.sql.SQLException;
 
 public class ClassDetail_InfoFragment extends Fragment {
 
-    private UserDetailClassFragmentBinding binding;
+    private UserClassDetailFragmentBinding binding;
     Connection MyConnection;
-    private int classID;
     private TextView classname,classintro,classprice,classpeople,classtimelong,classplace,classitem,coachname,coachintro,coachgender,coachphone,coachemail;
     private ImageView coachImage;
 
@@ -40,16 +39,16 @@ public class ClassDetail_InfoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding= UserDetailClassFragmentBinding.inflate(inflater,container,false);
+        binding= UserClassDetailFragmentBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        classID = sharedPreferences.getInt("看更多課程ID", 0);
+        int classID = sharedPreferences.getInt("看更多課程ID", 0);
         bindID();
         try {
             MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
             String query = "SELECT * FROM [健身教練課程-有排課的] WHERE 課程編號 = ? " ;
             PreparedStatement Statement = MyConnection.prepareStatement(query);
-            Statement.setInt(1,classID);
+            Statement.setInt(1, classID);
             ResultSet rs = Statement.executeQuery();
             while (rs.next()) {
                 classname.setText(rs.getString("課程名稱"));
