@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.Records.Confirm;
-import com.NPTUMisStone.gym_app.databinding.UserDetailClassTimeFragmentBinding;
+import com.NPTUMisStone.gym_app.databinding.UserClassDetailTimeFragmentBinding;
 import com.hdev.calendar.bean.DateInfo;
 import com.hdev.calendar.view.SingleCalendarView;
 
@@ -31,21 +31,23 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
 public class ClassDetail_TimeFragment extends Fragment {
 
-    private UserDetailClassTimeFragmentBinding binding;
+    private UserClassDetailTimeFragmentBinding binding;
     Connection MyConnection;
     private int classID;
-    private List<java.sql.Date> courseDates;
+    private List<Date> courseDates;
     SingleCalendarView singleCalendarView;
     ArrayList<ClassDetail_TimeFragment.User_Detail_Class_Time_Data> detailClassTimeData = new ArrayList<>();
 
@@ -56,7 +58,7 @@ public class ClassDetail_TimeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding=UserDetailClassTimeFragmentBinding.inflate(inflater,container,false);
+        binding=UserClassDetailTimeFragmentBinding.inflate(inflater,container,false);
 
 
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
@@ -93,7 +95,7 @@ public class ClassDetail_TimeFragment extends Fragment {
         startDate.setDay(startcalendar.get(Calendar.DAY_OF_MONTH));
 
         // 設置結束日期為courseDates中最大的日期(那個課程的最大日期)
-        java.sql.Date maxDate = Collections.max(courseDates);
+        Date maxDate = Collections.max(courseDates);
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.setTime(maxDate);
         DateInfo endDate = new DateInfo(endCalendar.get(Calendar.YEAR),
@@ -107,8 +109,8 @@ public class ClassDetail_TimeFragment extends Fragment {
 
         // 今日之後可點擊日期
         List<DateInfo> clickableDates = new ArrayList<>();
-        java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
-        for (java.sql.Date date : courseDates) {
+        Date today = new Date(System.currentTimeMillis());
+        for (Date date : courseDates) {
             if (!date.before(today)) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
@@ -175,8 +177,8 @@ public class ClassDetail_TimeFragment extends Fragment {
 
         }
     }
-    public List<java.sql.Date> getDate(int classId) {
-        List<java.sql.Date> courseDates = new ArrayList<>();
+    public List<Date> getDate(int classId) {
+        List<Date> courseDates = new ArrayList<>();
 
         try {
             MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
@@ -185,11 +187,11 @@ public class ClassDetail_TimeFragment extends Fragment {
             preparedStatement.setInt(1, classId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                java.sql.Date date = resultSet.getDate("日期");
+                Date date = resultSet.getDate("日期");
                 courseDates.add(date);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e("SQL", Objects.requireNonNull(e.getMessage()));
         }
         return courseDates;
     }
@@ -197,7 +199,6 @@ public class ClassDetail_TimeFragment extends Fragment {
         Date date;
         String week,sttime,edtime;
         int appeople,classpeople,scheduleID;
-        static ArrayList<User_Detail_Class_Time_Data> detailClassTimeData = new ArrayList<>();
 
         public User_Detail_Class_Time_Data(Date date,String week,String sttime,String edtime,int appeople,int classpeople,int scheduleID) {
             this.date = date;
@@ -207,12 +208,6 @@ public class ClassDetail_TimeFragment extends Fragment {
             this.appeople=appeople;
             this.classpeople=classpeople;
             this.scheduleID=scheduleID;
-        }
-        public static ArrayList<User_Detail_Class_Time_Data> getdata() {
-            if (detailClassTimeData == null) {
-                return null;
-            }
-            return detailClassTimeData;
         }
 
         private Date getDate() {
@@ -272,30 +267,28 @@ public class ClassDetail_TimeFragment extends Fragment {
                 Statement.setInt(1, classID);
 
                 ResultSet rs = Statement.executeQuery();
-                java.sql.Time currentTime = new java.sql.Time(System.currentTimeMillis());
+                Time currentTime = new Time(System.currentTimeMillis());
 
                 while (rs.next()) {
-                    java.sql.Time startTime = java.sql.Time.valueOf(rs.getString("開始時間") + ":00");
+                    Time startTime = Time.valueOf(rs.getString("開始時間") + ":00");
 
                     if (item.getAppeople()>=item.getClasspeople()) {
                         holder.to_ap_btn.setText("額滿");
                         holder.to_ap_btn.setEnabled(false);
                         continue;
                     }
-                    String systemDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                    String systemDate = new SimpleDateFormat("yyyy-MM-dd", Locale.TAIWAN).format(new Date());
                     if(systemDate.equals(item.getDate().toString())){
                         if (startTime.before(currentTime)) {
                             holder.to_ap_btn.setText("已逾時");
                             holder.to_ap_btn.setEnabled(false);
-                            continue;
                         }
-                        continue;
                     }
                 }
                 rs.close();
                 Statement.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                Log.e("SQL", Objects.requireNonNull(e.getMessage()));
             }
             holder.to_ap_btn.setOnClickListener(v -> {
                 Intent intent = new Intent(requireActivity(), Confirm.class);
