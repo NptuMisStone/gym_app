@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.Records.Appointment_Confirm">
+    tools:context=".User.Records.Confirm">
     <ImageButton
         android:id="@+id/user_confirm_back"
         android:layout_width="35dp"

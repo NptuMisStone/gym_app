@@ -16,6 +16,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User.Records.Fragment.CancelFragment;
+import com.NPTUMisStone.gym_app.User.Records.Fragment.CoachCancelFragment;
+import com.NPTUMisStone.gym_app.User.Records.Fragment.FinishFragment;
+import com.NPTUMisStone.gym_app.User.Records.Fragment.NowFragment;
+import com.NPTUMisStone.gym_app.User.Records.Fragment.PastFragment;
 import com.google.android.material.tabs.TabLayout;
 
 public class Appointment extends AppCompatActivity {
@@ -41,9 +46,9 @@ public class Appointment extends AppCompatActivity {
         if (index == 1) {
             // 從評論回來
             tabLayout.selectTab(tabLayout.getTabAt(1));
-            getSupportFragmentManager().beginTransaction().replace(R.id.AppointmentFrameLayout,new Appointment_FinishFragment()).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.AppointmentFrameLayout,new FinishFragment()).addToBackStack(null).commit();
         } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.AppointmentFrameLayout,new Appointment_NowFragment()).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.AppointmentFrameLayout,new NowFragment()).addToBackStack(null).commit();
         }
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -52,19 +57,19 @@ public class Appointment extends AppCompatActivity {
                 Fragment fragment = null;
                 switch (tab.getPosition()) {
                     case 0:
-                        fragment = new Appointment_NowFragment();
+                        fragment = new NowFragment();
                         break;
                     case 1:
-                        fragment = new Appointment_FinishFragment();
+                        fragment = new FinishFragment();
                         break;
                     case 2:
-                        fragment = new Appointment_CancelFragment();
+                        fragment = new CancelFragment();
                         break;
                     case 3:
-                        fragment = new Appointment_PastFragment();
+                        fragment = new PastFragment();
                         break;
                     case 4:
-                        fragment = new Appointment_CoachCancelFragment();
+                        fragment = new CoachCancelFragment();
                         break;
                 }
                 if (fragment != null) {

@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User.Like.Fragment.UserLike_ClassFragment;
+import com.NPTUMisStone.gym_app.User.Like.Fragment.UserLike_CoachFragment;
 import com.google.android.material.tabs.TabLayout;
 
 public class UserLike extends AppCompatActivity {

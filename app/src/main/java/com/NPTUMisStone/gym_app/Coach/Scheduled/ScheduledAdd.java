@@ -1,23 +1,13 @@
 package com.NPTUMisStone.gym_app.Coach.Scheduled;
 
-import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -214,7 +204,7 @@ public class ScheduledAdd extends AppCompatActivity {
         isDialogShow = true;
 
         // 加載自定義佈局
-        View dialogView = getLayoutInflater().inflate(R.layout.custom_time_picker, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.coach_scheduled_add_ic_time_picker, null);
 
         NumberPicker npHour = dialogView.findViewById(R.id.npHour);
         NumberPicker npMinute = dialogView.findViewById(R.id.npMinute);

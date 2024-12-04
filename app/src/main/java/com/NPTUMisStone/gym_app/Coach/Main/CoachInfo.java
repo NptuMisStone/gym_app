@@ -1,6 +1,6 @@
 package com.NPTUMisStone.gym_app.Coach.Main;
 
-import static com.NPTUMisStone.gym_app.User_And_Coach.ErrorHints.editHint;
+import static com.NPTUMisStone.gym_app.User_And_Coach.Helper.ErrorHints.editHint;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,13 +12,9 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -34,9 +30,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.NPTUMisStone.gym_app.Main.Identify.Login;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.User_And_Coach.PasswordReset;
-import com.NPTUMisStone.gym_app.User_And_Coach.Validator;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.PasswordReset;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.Validator;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.ByteArrayOutputStream;
@@ -45,8 +41,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
 
 public class CoachInfo extends AppCompatActivity {
     Connection MyConnection;
@@ -77,9 +71,7 @@ public class CoachInfo extends AppCompatActivity {
         findViewById(R.id.CoachInfo_logout).setOnClickListener(v -> logout());
         findViewById(R.id.CoachInfo_upload).setOnClickListener(v -> changeImage());
         findViewById(R.id.CoachInfo_resetButton).setOnClickListener(v -> new PasswordReset(this, MyConnection).showPasswordResetDialog());
-        findViewById(R.id.CoachInfo_saveButton).setOnClickListener(v -> {
-            saveUpdatedInfo();
-        });
+        findViewById(R.id.CoachInfo_saveButton).setOnClickListener(v -> saveUpdatedInfo());
         findViewById(R.id.CoachInfo_cancelButton).setOnClickListener(v -> {
             toggleEditMode(false); // 取消時退出編輯模式
             refreshFields(); // 取消時刷新回原資料
@@ -139,7 +131,7 @@ public class CoachInfo extends AppCompatActivity {
             coachInfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
         } else {
             // 設置默認圖片
-            coachInfo_image.setImageResource(R.drawable.coach_default);
+            coachInfo_image.setImageResource(R.drawable.coach_main_ic_default);
         }
     }
 
@@ -155,7 +147,7 @@ public class CoachInfo extends AppCompatActivity {
         if (image != null && image.length > 0) {
             coachInfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
         } else {
-            coachInfo_image.setImageResource(R.drawable.coach_default);
+            coachInfo_image.setImageResource(R.drawable.coach_main_ic_default);
         }
         uri = null; // 重置 URI
     }
@@ -274,7 +266,7 @@ public class CoachInfo extends AppCompatActivity {
             }
         } else if (Coach.getInstance().getCoachImage() == null || Coach.getInstance().getCoachImage().length == 0) {
             // 如果沒有新圖片且當前圖片為空，設置默認圖片
-            coachInfo_image.setImageResource(R.drawable.coach_default);
+            coachInfo_image.setImageResource(R.drawable.coach_main_ic_default);
         }
 
         // 處理個人介紹欄位
@@ -485,9 +477,7 @@ public class CoachInfo extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("最終確認")
                 .setMessage("帳號刪除後無法復原，是否真的要刪除？")
-                .setPositiveButton("確定", (dialog, which) -> {
-                    performDeleteAccount();
-                })
+                .setPositiveButton("確定", (dialog, which) -> performDeleteAccount())
                 .setNegativeButton("取消", null)
                 .show();
     }

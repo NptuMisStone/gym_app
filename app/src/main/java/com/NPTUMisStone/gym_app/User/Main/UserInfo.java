@@ -1,6 +1,6 @@
 package com.NPTUMisStone.gym_app.User.Main;
 
-import static com.NPTUMisStone.gym_app.User_And_Coach.ErrorHints.editHint;
+import static com.NPTUMisStone.gym_app.User_And_Coach.Helper.ErrorHints.editHint;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,10 +32,10 @@ import androidx.core.view.WindowInsetsCompat;
 import com.NPTUMisStone.gym_app.Main.Identify.Login;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.CameraActivity;
-import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.User_And_Coach.PasswordReset;
-import com.NPTUMisStone.gym_app.User_And_Coach.Validator;
+import com.NPTUMisStone.gym_app.User_And_Coach.UI.CameraActivity;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.PasswordReset;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.Validator;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.ByteArrayOutputStream;

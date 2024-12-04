@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,15 +23,15 @@ import androidx.core.view.WindowInsetsCompat;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.Class.ClassDetail;
-import com.NPTUMisStone.gym_app.User.Class.AllClass;
-import com.NPTUMisStone.gym_app.User.AllCoach.AllCoach;
+import com.NPTUMisStone.gym_app.User.Class.ClassList;
+import com.NPTUMisStone.gym_app.User.Coach.CoachList;
 import com.NPTUMisStone.gym_app.User.Like.UserLike;
 import com.NPTUMisStone.gym_app.User.Records.Appointment;
-import com.NPTUMisStone.gym_app.User_And_Coach.AdHelper;
-import com.NPTUMisStone.gym_app.User_And_Coach.Contact;
-import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.User_And_Coach.Map.Class;
-import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.AdHelper;
+import com.NPTUMisStone.gym_app.User_And_Coach.UI.Contact;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map.View;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ProgressBarHandler;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -98,17 +97,17 @@ public class UserHome extends AppCompatActivity {
     //【《Android》『呼叫外部 App』- 透過 startActivity 執行外部 App 的基本方法】：
     // https://xnfood.com.tw/android-call-app-startactivity/
     //(可參考)：Android—组件化的搭建：https://www.cnblogs.com/wang66a/p/17769227.html
-    public void onClick(View view) {
+    public void onClick(android.view.View view) {
         if (progressBarHandler.isLoading()) return;
         progressBarHandler.showProgressBar();
         int id = view.getId();
         try {
-            if (id == R.id.UserHome_classButton) startActivity(new Intent(this, AllClass.class));
-            else if (id == R.id.UserHome_coachButton) startActivity(new Intent(this, AllCoach.class));
+            if (id == R.id.UserHome_classButton) startActivity(new Intent(this, ClassList.class));
+            else if (id == R.id.UserHome_coachButton) startActivity(new Intent(this, CoachList.class));
             else if (id == R.id.UserHome_loveButton) startActivity(new Intent(this, UserLike.class));
             else if (id == R.id.UserHome_historyButton) startActivity(new Intent(this, Appointment.class));
             //else if (id == R.id.UserHome_gymButton) startNavigationActivity();
-            else if (id == R.id.UserHome_gymButton) startActivity(new Intent(this, Class.class));
+            else if (id == R.id.UserHome_gymButton) startActivity(new Intent(this, View.class));
             else if (id == R.id.UserHome_contactButton) startActivity(new Intent(this, Contact.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);

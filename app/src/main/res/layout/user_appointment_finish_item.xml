@@ -206,7 +206,7 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/main_login_shape_edittext"
-                        android:drawableTop="@drawable/user_ap_comment_check"
+                        android:drawableTop="@drawable/user_appointment_comment_check"
                         android:text="修改評論"
                         android:textSize="14sp" />
 

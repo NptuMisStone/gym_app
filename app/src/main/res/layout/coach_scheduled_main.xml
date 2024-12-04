@@ -52,7 +52,7 @@
             android:background="@drawable/all_effect_ripple"
             android:contentDescription="新增課表"
             android:scaleType="centerInside"
-            android:src="@drawable/plus" />
+            android:src="@drawable/coach_ic_star" />
 
         <!-- 底部細底線 -->
         <View
@@ -71,7 +71,7 @@
         android:background="@null"
         android:contentDescription="日期查詢"
         android:scaleType="centerInside"
-        android:src="@drawable/scheduled_calendar"
+        android:src="@drawable/coach_scheduled_main_ic_calendar"
         app:layout_constraintEnd_toStartOf="@+id/ScheduledMain_dateDisplay"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +98,7 @@
         android:background="@null"
         android:contentDescription="回到今天"
         android:scaleType="centerInside"
-        android:src="@drawable/scheduled_today"
+        android:src="@drawable/coach_scheduled_main_ic_today"
         app:layout_constraintBottom_toBottomOf="@+id/ScheduledMain_dateDisplay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

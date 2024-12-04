@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/all_background"
+    android:background="@drawable/all_background1"
     tools:context=".User.Main.UserHome">
 
     <LinearLayout
@@ -76,13 +76,12 @@
     <com.google.android.gms.ads.AdView
         android:id="@+id/UserHome_adView"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:adSize="FULL_BANNER"
         app:adUnitId="ca-app-pub-5758857104652666/3110436616"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/UserHome_swipeRefreshLayout" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/UserHome_swipeRefreshLayout"

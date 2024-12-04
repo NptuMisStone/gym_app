@@ -29,7 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -215,16 +215,12 @@ public class Coach_Comments extends AppCompatActivity {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            holder.edit_replyBtn.setOnClickListener(v -> {
-                holder.edit_replyArea.setVisibility(View.VISIBLE);
-            });
+            holder.edit_replyBtn.setOnClickListener(v -> holder.edit_replyArea.setVisibility(View.VISIBLE));
             holder.cancelBtn.setOnClickListener(v -> {
                 holder.edit_replyArea.setVisibility(View.GONE);
                 holder.newReply.setText(item.getCoachReply());
             });
-            holder.updateBtn.setOnClickListener(v -> {
-                updateReply(holder.newReply.getText().toString().trim(),item.getCommentID(), position);
-            });
+            holder.updateBtn.setOnClickListener(v -> updateReply(holder.newReply.getText().toString().trim(),item.getCommentID(), position));
         }
         private void updateReply(String reply, int comment_ID,int position) {
             Executors.newSingleThreadExecutor().execute(() -> {

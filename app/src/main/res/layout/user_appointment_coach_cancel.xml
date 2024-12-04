@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.Records.Appointment_CoachCancelFragment">
+    tools:context=".User.Records.Fragment.CoachCancelFragment">
 
     <ProgressBar
         android:id="@+id/progressBar"

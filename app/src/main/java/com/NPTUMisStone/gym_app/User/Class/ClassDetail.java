@@ -19,9 +19,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User.Class.Fragment.ClassDetail_InfoFragment;
+import com.NPTUMisStone.gym_app.User.Class.Fragment.ClassDetail_TimeFragment;
 import com.NPTUMisStone.gym_app.User.Main.User;
-import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.User_And_Coach.Map.MapHelper;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map.Redirecting;
 import com.google.android.material.tabs.TabLayout;
 
 import java.sql.Connection;
@@ -58,7 +60,7 @@ public class ClassDetail extends AppCompatActivity {
 
     private void setupListeners() {
         findViewById(R.id.ClassDetail_backButton).setOnClickListener(v -> finish());
-        findViewById(R.id.ClassDetail_directionButton).setOnClickListener(v -> new MapHelper(this, MapHelper.getLocationAddress(MyConnection,classID)).getCurrentLocation());
+        findViewById(R.id.ClassDetail_directionButton).setOnClickListener(v -> new Redirecting(this, Redirecting.getLocationAddress(MyConnection,classID)).getCurrentLocation());
     }
 
     private void setupWindowInsets() {

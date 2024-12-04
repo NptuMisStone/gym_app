@@ -251,6 +251,8 @@ v1.112：教練版面及各功能已完善(classAdd有時間再修)剩餘使用�
 
 v1.113：地圖圖釘顯示修正(侑宸)
 
+v1.114：整理內部檔案名稱與資料夾配置、移除地圖模組及舊廣告設置(侑宸)
+
 ## 補充：
 
 ### 圖片：
@@ -294,6 +296,18 @@ R.drawable.main_login_ic_account：預設使用者圖片
     `e.printStackTrace()`改成`Log.e("MapActivity", "Error fetching directions: " + e.getMessage());`
 11. 如果要使用兩個按鈕評分水平位置，可使用create horizontal chains選項
 12. 如果要使用使頁面可隨大小變化，可使用guideline並設定%比例
+13. 調用資料庫處須加上以下，避免閒置造成的連接失效`@Override
+    public void onResume() {
+        super.onResume();
+        try {
+            if (Myconnection == null || Myconnection.isClosed()) {
+                Myconnection = new SQLConnection(getView()).IWantToConnection();
+                new SalonAdd().start();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }`
 ### Github 部分
 
 1. 準備上傳至Github時，先點擊左上角「main」->「Update Project」，避免覆蓋掉他人部分

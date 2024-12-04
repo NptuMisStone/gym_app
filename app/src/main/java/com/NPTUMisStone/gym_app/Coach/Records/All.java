@@ -11,6 +11,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.NPTUMisStone.gym_app.Coach.Records.Fragment.FutureFragment;
+import com.NPTUMisStone.gym_app.Coach.Records.Fragment.PastFragment;
+import com.NPTUMisStone.gym_app.Coach.Records.Fragment.TodayFragment;
 import com.NPTUMisStone.gym_app.R;
 import com.google.android.material.tabs.TabLayout;
 

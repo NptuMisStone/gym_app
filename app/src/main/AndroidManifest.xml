@@ -28,19 +28,19 @@
 
         <!-- User and Coach Activities -->
         <activity
-            android:name=".User_And_Coach.Map.Maps"
+            android:name=".User_And_Coach.Map.Direction"
             android:exported="false" />
         <activity
-            android:name=".User_And_Coach.Map.Class"
+            android:name=".User_And_Coach.Map.View"
             android:exported="false" />
         <activity
-            android:name=".User_And_Coach.CameraActivity"
+            android:name=".User_And_Coach.UI.CameraActivity"
             android:exported="false" />
         <activity
-            android:name=".User_And_Coach.Contact"
+            android:name=".User_And_Coach.UI.Contact"
             android:exported="false" />
         <activity
-            android:name=".User_And_Coach.AIInteractive"
+            android:name=".User_And_Coach.UI.AIInteractive"
             android:exported="false" />
 
         <!-- Coach Activities -->
@@ -80,25 +80,25 @@
 
         <!-- User Activities -->
         <activity
-            android:name=".User.AllCoach.CoachDetail"
+            android:name=".User.Coach.CoachDetail"
             android:exported="false" />
         <activity
-            android:name=".User.AllCoach.AllCoach"
+            android:name=".User.Coach.CoachList"
             android:exported="false" />
         <activity
-            android:name=".User.Records.Appointment_Confirm"
+            android:name=".User.Records.Confirm"
             android:exported="false" />
         <activity
             android:name=".User.Class.ClassDetail"
             android:exported="true" />
         <activity
-            android:name=".User.Class.AllClass"
+            android:name=".User.Class.ClassList"
             android:exported="false" />
         <activity
             android:name=".User.Like.UserLike"
             android:exported="false" />
         <activity
-            android:name=".User.Comments.UserComments"
+            android:name=".User.Comments.Comments"
             android:exported="false" />
         <activity
             android:name=".User.Main.UserInfo"

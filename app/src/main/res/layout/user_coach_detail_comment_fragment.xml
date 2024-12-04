@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.AllCoach.CoachDetail_CommentFragment">
+    tools:context=".User.Coach.Fragment.CoachDetail_CommentFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                             android:layout_width="45dp"
                             android:layout_height="45dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/star_click" />
+                            android:src="@drawable/user_coach_detail_comment_ic_star_click" />
 
                         <TextView
                             android:id="@+id/averageRating"

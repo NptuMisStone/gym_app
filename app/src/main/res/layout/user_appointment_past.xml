@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.Records.Appointment_PastFragment">
+    tools:context=".User.Records.Fragment.PastFragment">
 
     <ProgressBar
         android:id="@+id/progressBar"

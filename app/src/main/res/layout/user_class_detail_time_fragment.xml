@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".User.Class.Fragment.ClassDetail_TimeFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <com.hdev.calendar.view.SingleCalendarView
+                android:id="@+id/user_Detail_Class_Choose_date"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center_horizontal"
+                app:day_font_size="16sp"
+                app:default_color="#000000"
+                app:default_dim_color="#AAAAAA"
+                app:selected_bg_color="#0078D7"
+                app:selected_day_color="#EFEFEF"
+                app:week_title_color="@color/medium_gray"
+                app:week_title_font_size="20sp"
+                app:weekend_color="#000000">
+
+            </com.hdev.calendar.view.SingleCalendarView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/user_Detail_Class_Time_RecyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

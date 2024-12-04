@@ -10,7 +10,7 @@
         android:id="@+id/CoachHome_constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg">
+        android:background="@drawable/all_background1">
 
         <LinearLayout
             android:id="@+id/CoachHome_linearLayout1"
@@ -209,7 +209,7 @@
                     android:layout_marginStart="179dp"
                     android:layout_marginTop="104dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@drawable/rounded_button"
+                    android:background="@drawable/coach_main_home_ic_rounded_button"
                     android:drawablePadding="8dp"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="4dp"

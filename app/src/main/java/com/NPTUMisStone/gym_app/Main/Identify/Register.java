@@ -1,10 +1,9 @@
 package com.NPTUMisStone.gym_app.Main.Identify;
 
-import static com.NPTUMisStone.gym_app.User_And_Coach.ErrorHints.editHint;
+import static com.NPTUMisStone.gym_app.User_And_Coach.Helper.ErrorHints.editHint;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.Validator;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.Validator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -166,21 +165,12 @@ public class Register extends AppCompatActivity {
 
                 // 將性別從文本轉換成對應的數字
                 String genderText = et_register_gender.getText().toString().trim();
-                int genderValue;
-                switch (genderText) {
-                    case "男性":
-                        genderValue = 1;
-                        break;
-                    case "女性":
-                        genderValue = 2;
-                        break;
-                    case "不願透露":
-                        genderValue = 3;
-                        break;
-                    default:
-                        genderValue = 0; // 未設定或意外情況
-                        break;
-                }
+                int genderValue = switch (genderText) {
+                    case "男性" -> 1;
+                    case "女性" -> 2;
+                    case "不願透露" -> 3;
+                    default -> 0; // 未設定或意外情況
+                };
 
                 // 插入新使用者資料
                 String insertQuery = "INSERT INTO 使用者資料 (使用者帳號, 使用者密碼, 使用者姓名, 使用者電話, 使用者郵件, 使用者性別) " +

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="15dp"
-    tools:context=".User.AllCoach.CoachDetail_InfoFragment">
+    tools:context=".User.Coach.Fragment.CoachDetail_InfoFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/gender_fluid"
+                    android:src="@drawable/user_ic_gender_fluid"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     tools:layout_editor_absoluteY="455dp" />
@@ -77,7 +77,7 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/telephone" />
+                    android:src="@drawable/all_detail_ic_telephone" />
 
                 <TextView
                     android:id="@+id/user_detail_coachphone"
@@ -103,7 +103,7 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/email" />
+                    android:src="@drawable/user_ic_email" />
 
                 <TextView
                     android:id="@+id/user_detail_coachmail"
@@ -129,7 +129,7 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/identification" />
+                    android:src="@drawable/user_coach_detail_info_ic_identify" />
 
                 <TextView
                     android:id="@+id/user_detail_coachtype"
@@ -261,7 +261,7 @@
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/telephone" />
+                            android:src="@drawable/all_detail_ic_telephone" />
 
                         <TextView
                             android:id="@+id/textView37"
@@ -286,7 +286,7 @@
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/email" />
+                            android:src="@drawable/user_ic_email" />
 
                         <TextView
                             android:id="@+id/textView23"

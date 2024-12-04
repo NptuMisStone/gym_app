@@ -319,7 +319,7 @@
                     android:background="@drawable/all_effect_ripple"
                     android:contentDescription="刪除帳號"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/userdelete" />
+                    android:src="@drawable/all_info_ic_delete" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -347,7 +347,7 @@
                     android:background="@drawable/all_effect_ripple"
                     android:contentDescription="更改密碼"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/useredit" />
+                    android:src="@drawable/all_info_ic_edit" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -375,7 +375,7 @@
                     android:background="@drawable/all_effect_ripple"
                     android:contentDescription="登出"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/logout" />
+                    android:src="@drawable/all_info_ic_logout" />
 
                 <TextView
                     android:layout_width="wrap_content"

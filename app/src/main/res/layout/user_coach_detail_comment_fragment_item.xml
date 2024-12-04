@@ -36,7 +36,7 @@
             android:layout_gravity="right|center_vertical"
             android:backgroundTint="@android:color/transparent"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/more" />
+            app:srcCompat="@drawable/user_and_coach_detail_comment_ic_more" />
     </LinearLayout>
 
     <LinearLayout

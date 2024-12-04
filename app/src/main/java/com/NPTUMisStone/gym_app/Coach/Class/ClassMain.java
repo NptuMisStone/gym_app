@@ -25,7 +25,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.NPTUMisStone.gym_app.Coach.Main.Coach;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,7 +40,6 @@ public class ClassMain extends AppCompatActivity {
     private Connection MyConnection;
     private SwipeRefreshLayout swipeRefreshLayout;
     private CustomAdapter adapter;
-    private RecyclerView recyclerView;
     private boolean isLoadingData = false;
 
     @Override
@@ -79,7 +78,7 @@ public class ClassMain extends AppCompatActivity {
                 new ArrayList<>(),
                 new ArrayList<>()
         );
-        recyclerView = findViewById(R.id.ClassMain_classRecycler);
+        RecyclerView recyclerView = findViewById(R.id.ClassMain_classRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -198,7 +197,7 @@ public class ClassMain extends AppCompatActivity {
             if (imageData != null && imageData.length > 0) {
                 holder.imageView.setImageBitmap(ImageHandle.getBitmap(imageData));
             } else {
-                holder.imageView.setImageResource(R.drawable.class_default);
+                holder.imageView.setImageResource(R.drawable.coach_class_main_ic_default);
             }
 
             holder.nameTextView.setText(nameList.get(position));

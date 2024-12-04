@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User_And_Coach.AIInteractive">
+    tools:context=".User_And_Coach.UI.AIInteractive">
 
     <TextView
         android:id="@+id/AIInteractive_titleText"

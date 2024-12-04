@@ -30,8 +30,8 @@ import com.NPTUMisStone.gym_app.Coach.Main.Coach;
 import com.NPTUMisStone.gym_app.Main.Identify.JavaMailAPI;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.User_And_Coach.Map.MapHelper;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map.Redirecting;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -249,7 +249,7 @@ public class Detail extends AppCompatActivity {
             holder.user_mail.setText("郵件：" + item.getUser_mail());
             holder.user_note.setText("備註：" + item.getUser_note());
             holder.user_location.setText("地點名稱：" + item.getUser_location());
-            holder.directionButton.setOnClickListener(v -> new MapHelper(Detail.this, MapHelper.getLocationAddress(MyConnection,item.getClassID())).getCurrentLocation());
+            holder.directionButton.setOnClickListener(v -> new Redirecting(Detail.this, Redirecting.getLocationAddress(MyConnection,item.getClassID())).getCurrentLocation());
             if (holder.cancelApBtn != null) {
                 holder.cancelApBtn.setOnClickListener(v -> {
                     try {

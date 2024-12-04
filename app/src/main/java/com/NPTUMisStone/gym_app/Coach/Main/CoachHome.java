@@ -7,7 +7,6 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,10 +22,8 @@ import com.NPTUMisStone.gym_app.Coach.Records.Detail;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledMain;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.ImageHandle;
-import com.NPTUMisStone.gym_app.User_And_Coach.Map.Maps;
-import com.NPTUMisStone.gym_app.User_And_Coach.Map.Class;
-import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ProgressBarHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -108,7 +105,7 @@ public class CoachHome extends AppCompatActivity {
             photoImageView.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
         } else {
             // 如果圖片為空，設置默認圖片
-            photoImageView.setImageResource(R.drawable.coach_default);
+            photoImageView.setImageResource(R.drawable.coach_main_ic_default);
         }
     }
 

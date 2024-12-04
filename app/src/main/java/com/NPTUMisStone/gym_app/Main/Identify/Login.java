@@ -1,6 +1,6 @@
 package com.NPTUMisStone.gym_app.Main.Identify;
 
-import static com.NPTUMisStone.gym_app.User_And_Coach.ErrorHints.editHint;
+import static com.NPTUMisStone.gym_app.User_And_Coach.Helper.ErrorHints.editHint;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +11,6 @@ import android.os.Looper;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,8 +30,8 @@ import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User.Main.UserHome;
-import com.NPTUMisStone.gym_app.User_And_Coach.PasswordReset;
-import com.NPTUMisStone.gym_app.User_And_Coach.ProgressBarHandler;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.PasswordReset;
+import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ProgressBarHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -241,14 +240,13 @@ public class Login extends AppCompatActivity {
         }
     }
     private void showDialog(String title, String message) {
-        runOnUiThread(() -> {
-            new androidx.appcompat.app.AlertDialog.Builder(this)
+        runOnUiThread(() -> new androidx.appcompat.app.AlertDialog.Builder(this)
                     .setTitle(title)
                     .setMessage(message)
                     .setCancelable(false)
                     .setPositiveButton("確定", (dialog, which) -> dialog.dismiss())
-                    .show();
-        });
+                    .show()
+        );
     }
     private void goHome() {
         remember_input();

@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/all_background"
-    tools:context=".User_And_Coach.Contact">
+    android:background="@drawable/all_background1"
+    tools:context=".User_And_Coach.UI.Contact">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Contact_topConstraint"

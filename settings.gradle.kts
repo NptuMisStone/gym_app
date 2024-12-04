@@ -31,4 +31,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "gym_app"
 include(":app")
-include(":mapview")
