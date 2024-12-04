@@ -136,52 +136,47 @@ public class Login extends AppCompatActivity {
     private void checkLogin(String account, String password) {
         if (isLoginIn) return;
         isLoginIn = true;
-
         if (account.isEmpty() || password.isEmpty()) {
             if (password.isEmpty()) editHint(et_password, "請輸入密碼");
             if (account.isEmpty()) editHint(et_account, "請輸入帳號");
             isLoginIn = false;
             return;
         }
+        ProgressBarHandler progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
+        runOnUiThread(progressBarHandler::showProgressBar);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                // 驗證帳號密碼
+                boolean isValid = validateCredentials(account, password);
 
-        runOnUiThread(() -> {
-            ProgressBarHandler progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
-            progressBarHandler.showProgressBar();
-            Executors.newSingleThreadExecutor().execute(() -> {
-                try {
-                    // 驗證帳號密碼
-                    boolean isValid = validateCredentials(account, password);
+                if (isValid && !isUser) {
+                    // 如果是教練，執行合約檢查
+                    int coachId = Coach.getInstance().getCoachId();
+                    boolean isContractValid = checkCoachDateDuringLogin(coachId);
 
-                    if (isValid && !isUser) {
-                        // 如果是教練，執行合約檢查
-                        int coachId = Coach.getInstance().getCoachId();
-                        boolean isContractValid = checkCoachDateDuringLogin(coachId);
-
-                        // 如果合約檢查失敗，退出
-                        if (!isContractValid) {
-                            new Handler(Looper.getMainLooper()).post(() -> {
-                                progressBarHandler.hideProgressBar();
-                                isLoginIn = false;
-                            });
-                            return;
-                        }
+                    // 如果合約檢查失敗，退出
+                    if (!isContractValid) {
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            progressBarHandler.hideProgressBar();
+                            isLoginIn = false;
+                        });
+                        return;
                     }
-
-                    // 登入完成，進入主頁面
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        progressBarHandler.hideProgressBar();
-                        isLoginIn = false;
-                        if (isValid) goHome();
-                        else Toast.makeText(this, "帳號或密碼錯誤", Toast.LENGTH_SHORT).show();
-                    });
-                } catch (SQLException e) {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        progressBarHandler.hideProgressBar();
-                        isLoginIn = false;
-                        Toast.makeText(this, "❌ 資料庫錯誤", Toast.LENGTH_SHORT).show();
-                    });
                 }
-            });
+                // 登入完成，進入主頁面
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    progressBarHandler.hideProgressBar();
+                    isLoginIn = false;
+                    if (isValid) goHome();
+                    else Toast.makeText(this, "帳號或密碼錯誤", Toast.LENGTH_SHORT).show();
+                });
+            } catch (SQLException e) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    progressBarHandler.hideProgressBar();
+                    isLoginIn = false;
+                    Toast.makeText(this, "❌ 資料庫錯誤", Toast.LENGTH_SHORT).show();
+                });
+            }
         });
     }
     private boolean checkCoachDateDuringLogin(int coachId) {
@@ -216,13 +211,11 @@ public class Login extends AppCompatActivity {
                         updateStatement.setInt(2, coachId);
                         updateStatement.executeUpdate();
                         updateStatement.close();
-                        showDialog("合約已過期", "您的合約已過期，請使用電腦網頁版重新提出審核！");
-                        return false;
                     } else {
                         Log.d("CheckCoachDate", "合約已過期但審核狀態不變");
-                        showDialog("合約已過期", "您的合約已過期，請使用電腦網頁版重新提出審核！");
-                        return false;
                     }
+                    showDialog("合約已過期", "您的合約已過期，請使用電腦網頁版重新提出審核！");
+                    return false;
                 } else {
                     Log.d("CheckCoachDate", "合約有效");
                     return true; // 合約有效
@@ -311,7 +304,7 @@ public class Login extends AppCompatActivity {
         cb_remember.setChecked(user.getBoolean("isCheck", false));  //取得上次Input的Remember狀態   //顯示上次Remember狀態
     }
 
-        //Android 驗證碼輸入框的實現：https://www.jianshu.com/p/3238a5afc21c
+        //TODO: Android 驗證碼輸入框的實現：https://www.jianshu.com/p/3238a5afc21c
         /*VerifyCodeView verifyCodeView = dialogView.findViewById(R.id.verify_code_view);
         verifyCodeView.setInputCompleteListener(new VerifyCodeView.InputCompleteListener() {
             @Override

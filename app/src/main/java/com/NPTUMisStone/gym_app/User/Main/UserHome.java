@@ -1,20 +1,18 @@
 package com.NPTUMisStone.gym_app.User.Main;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,7 +20,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User.Class.ClassDetail;
 import com.NPTUMisStone.gym_app.User.Class.ClassList;
 import com.NPTUMisStone.gym_app.User.Coach.CoachList;
 import com.NPTUMisStone.gym_app.User.Like.UserLike;
@@ -34,16 +31,11 @@ import com.NPTUMisStone.gym_app.User_And_Coach.Map.View;
 import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ProgressBarHandler;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.concurrent.Executors;
 
 public class UserHome extends AppCompatActivity {
     Connection MyConnection;
-    //List<Advertisement> adList = new ArrayList<>();
     ProgressBarHandler progressBarHandler;
 
     @Override
@@ -56,14 +48,20 @@ public class UserHome extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+        initSQLConnection();
         progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
         init_userinfo();
-        //init_banner();
         AdHelper.initializeAndLoadAd(this, R.id.UserHome_adView);
-
     }
-
+    private void initSQLConnection() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try(Connection connection = new SQLConnection(findViewById(R.id.main)).IWantToConnection()){
+                new Handler(Looper.getMainLooper()).post(() -> MyConnection = connection);
+            } catch (Exception e) {
+                Log.e("SQL", "Connection error", e);
+            }
+        });
+    }
     private void init_userinfo() {
         ((TextView) findViewById(R.id.UserHome_nameText)).setText(getGreetingMessage());
         ((TextView) findViewById(R.id.UserHome_idText)).setText(getString(R.string.All_idText, User.getInstance().getUserId()));
@@ -84,16 +82,15 @@ public class UserHome extends AppCompatActivity {
     }
 
     private void setUserImage() {
-        byte[] image = User.getInstance().getUserImage();
-        if (image != null)
-            ((ImageView)findViewById(R.id.UserHome_photoImage)).setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+        Executors.newSingleThreadExecutor().execute(() -> {
+            byte[] image = User.getInstance().getUserImage();
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (image != null) {
+                    ((ImageView) findViewById(R.id.UserHome_photoImage)).setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+                }
+            });
+        });
     }
-
-    /*private void init_banner() {
-        ViewPager2 user_viewPager = findViewById(R.id.UserHome_viewPager);
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.UserHome_swipeRefreshLayout);
-        Advertisement.init_banner(this, MyConnection, adList, user_viewPager, swipeRefreshLayout);
-    }*/
     //【《Android》『呼叫外部 App』- 透過 startActivity 執行外部 App 的基本方法】：
     // https://xnfood.com.tw/android-call-app-startactivity/
     //(可參考)：Android—组件化的搭建：https://www.cnblogs.com/wang66a/p/17769227.html
@@ -106,50 +103,11 @@ public class UserHome extends AppCompatActivity {
             else if (id == R.id.UserHome_coachButton) startActivity(new Intent(this, CoachList.class));
             else if (id == R.id.UserHome_loveButton) startActivity(new Intent(this, UserLike.class));
             else if (id == R.id.UserHome_historyButton) startActivity(new Intent(this, Appointment.class));
-            //else if (id == R.id.UserHome_gymButton) startNavigationActivity();
             else if (id == R.id.UserHome_gymButton) startActivity(new Intent(this, View.class));
             else if (id == R.id.UserHome_contactButton) startActivity(new Intent(this, Contact.class));
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);
         }
-    }
-    private void startNavigationActivity() {
-        // 查詢資料庫
-        List<String[]> addresses = getAddressesFromDatabase();
-        // 將資料轉換為陣列
-        String[][] addressArray = new String[addresses.size()][2];
-        for (int i = 0; i < addresses.size(); i++) addressArray[i] = addresses.get(i);
-        // 創建 Intent 並傳遞資料
-        Intent intent = new Intent();
-        //intent.setComponent(new ComponentName("com.NptuMisStone.mapview", "com.NptuMisStone.mapview.ClassMap"));
-        intent.setComponent(new ComponentName("com.example.mapboxnavigation", "com.example.mapboxnavigation.Navigation"));
-        intent.putExtra("addresses", addressArray);
-        createTask.launch(intent);
-    }
-    ActivityResultLauncher<Intent> createTask = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> {
-        if(result.getResultCode() == RESULT_OK) {
-            Intent data = result.getData();
-            if (data != null) {
-                int resultString = data.getIntExtra("看更多課程ID", -1);
-                startActivity(new Intent(this, ClassDetail.class).putExtra("看更多課程ID", resultString));
-            }
-        }
-        else Toast.makeText(this, "未選擇任何課程", Toast.LENGTH_SHORT).show();
-    });
-    private List<String[]> getAddressesFromDatabase() {
-        List<String[]> addresses = new ArrayList<>();
-        // 假設你有一個 SQLConnection 類來處理資料庫連接
-        MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-        String query = "SELECT 課程編號,縣市,行政區,顯示地點地址, 顯示地點名稱 FROM [健身教練課程-有排課的]";
-        try (Statement statement = MyConnection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
-            while (resultSet.next())
-                addresses.add(new String[]{ resultSet.getString("縣市")+resultSet.getString("行政區")+resultSet.getString("顯示地點地址"), resultSet.getString("顯示地點名稱"), resultSet.getString("課程編號") });
-        } catch (SQLException e) {
-            Log.e("Database", "Error querying database", e);
-        }
-        return addresses;
     }
     //為了要在登出時關閉Home頁面，註冊廣播器
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
