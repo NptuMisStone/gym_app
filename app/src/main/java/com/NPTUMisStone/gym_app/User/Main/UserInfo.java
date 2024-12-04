@@ -10,10 +10,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -32,7 +35,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.NPTUMisStone.gym_app.Main.Identify.Login;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
-import com.NPTUMisStone.gym_app.User_And_Coach.UI.CameraActivity;
 import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
 import com.NPTUMisStone.gym_app.User_And_Coach.Helper.PasswordReset;
 import com.NPTUMisStone.gym_app.User_And_Coach.Helper.Validator;
@@ -42,6 +44,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserInfo extends AppCompatActivity {
@@ -50,6 +53,9 @@ public class UserInfo extends AppCompatActivity {
     AutoCompleteTextView[] userinfo_tv;
     TextInputLayout[] userinfo_layout;
     Uri uri;
+
+    private boolean isEditMode = false;
+    private int tempSex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +71,21 @@ public class UserInfo extends AppCompatActivity {
     }
 
     private void init() {
-        ((TextView) findViewById(R.id.UserInfo_idText)).setText(getString(R.string.All_idText, User.getInstance().getUserId()));
         findViewById(R.id.UserInfo_return).setOnClickListener(v -> finish());
         findViewById(R.id.UserInfo_logout).setOnClickListener(v -> logout());
-        findViewById(R.id.UserInfo_upload).setOnClickListener(v -> showImageSourceDialog());
-        findViewById(R.id.UserInfo_resetButton).setOnClickListener(v -> new PasswordReset(this,  MyConnection).showPasswordResetDialog());
+        findViewById(R.id.UserInfo_upload).setOnClickListener(v -> changeImage());
+        findViewById(R.id.UserInfo_resetButton).setOnClickListener(v -> new PasswordReset(this, MyConnection).showPasswordResetDialog());
+        findViewById(R.id.UserInfo_saveButton).setOnClickListener(v -> saveUpdatedInfo());
+        findViewById(R.id.UserInfo_cancelButton).setOnClickListener(v -> {
+            toggleEditMode(false); // 取消時退出編輯模式
+            refreshFields(); // 取消時刷新回原資料
+        });
+
+        // 宣告並設置 UserEdit 按鈕
+        findViewById(R.id.UserInfo_edit).setOnClickListener(v -> toggleEditMode(true)); // 點擊進入編輯模式
+
+        findViewById(R.id.UserInfo_delete).setOnClickListener(v -> deleteAccount());
+
         userinfo_tv = new AutoCompleteTextView[]{
                 findViewById(R.id.UserInfo_nameText),
                 findViewById(R.id.UserInfo_accountText),
@@ -84,84 +100,206 @@ public class UserInfo extends AppCompatActivity {
                 findViewById(R.id.UserInfo_emailLayout),
                 findViewById(R.id.UserInfo_identifyLayout)
         };
+
+        // 初始化各欄位的內容
         for (int i = 0; i < userinfo_tv.length; i++) {
             userinfo_tv[i].setText(get_info(i));
-            int finalI = i;
-            userinfo_tv[i].setOnClickListener(v -> changeData(finalI));
+            userinfo_tv[i].setEnabled(false); // 初始為不可編輯
         }
+
+        // 為性別欄位添加點擊事件，顯示性別選擇對話框
+        userinfo_tv[4].setInputType(0); // 禁用鍵盤輸入
+        userinfo_tv[4].setKeyListener(null); // 禁用按鍵事件
+        userinfo_tv[4].setCursorVisible(false); // 隱藏光標
+        userinfo_tv[4].setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                showSexDialog(); // 顯示性別選擇對話框
+            }
+            return true; // 阻止默認點擊行為
+        });
+
+        // 禁用帳號欄位
+        userinfo_tv[1].setFocusable(false);
+        userinfo_tv[1].setFocusableInTouchMode(false);
+
         init_image();
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
     }
-
-    private void changeData(int index) {
-        Log.d("ChangeData", "ChangeData: " + index);
-        AutoCompleteTextView autoCompleteTextView = userinfo_tv[index];
-        TextInputLayout textInputLayout = userinfo_layout[index];
-        View dialogView;
-        Validator validator = new Validator(MyConnection);
-        ViewGroup parent = findViewById(android.R.id.content); // Get the parent view group
-
-        if (index < 4) {
-            dialogView = getLayoutInflater().inflate(R.layout.user_and_coach_info_edit_layout, parent, false);
-            TextInputLayout textInputLayout1 = dialogView.findViewById(R.id.InfoEdit_Layout);
-            textInputLayout1.setHint(textInputLayout.getHint());
-            AutoCompleteTextView autoCompleteTextView1 = dialogView.findViewById(R.id.InfoEdit_Text);
-            autoCompleteTextView1.setText(autoCompleteTextView.getText().toString());
-            showEditDialog(index, autoCompleteTextView, autoCompleteTextView1, validator, dialogView);
+    private void init_image() {
+        userinfo_image = findViewById(R.id.UserInfo_image);
+        byte[] image = User.getInstance().getUserImage();
+        if (image != null && image.length > 0) {
+            // 將圖片轉換為 Bitmap 並設置
+            userinfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
         } else {
-            dialogView = getLayoutInflater().inflate(R.layout.user_and_coach_info_sex_layout, parent, false);
-            RadioButton[] radioButtons = new RadioButton[]{
-                    dialogView.findViewById(R.id.InfoSex_sexRadio1),
-                    dialogView.findViewById(R.id.InfoSex_sexRadio2),
-                    dialogView.findViewById(R.id.InfoSex_sexRadio3)
-            };
-            for (int i = 0; i < radioButtons.length; i++)
-                if (i == User.getInstance().getUserSex() - 1) radioButtons[i].setChecked(true);
-            showSexDialog(autoCompleteTextView, radioButtons);
+            // 設置默認圖片
+            userinfo_image.setImageResource(R.drawable.user_main_ic_default);
         }
     }
 
-    private void showEditDialog(int index, AutoCompleteTextView autoCompleteTextView, AutoCompleteTextView autoCompleteTextView1, Validator validator, View dialogView) {
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle("修改資料")
-                .setMessage("是否要修改資料？")
-                .setView(dialogView)
-                .setPositiveButton("確定", null)
-                .setNegativeButton("否", null)
-                .create();
-        alertDialog.show();
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-            String errorMessage = validateInput(index, autoCompleteTextView1, validator);
-            if (errorMessage == null) {
-                updateUserInfo(index, autoCompleteTextView, autoCompleteTextView1, alertDialog);
-            } else {
-                editHint(autoCompleteTextView1, errorMessage);
-            }
-        });
+
+    private void refreshFields() {
+        for (int i = 0; i < userinfo_tv.length; i++) {
+            userinfo_tv[i].setText(get_info(i)); // 使用原始資料刷新字段
+        }
+        refreshImage(); // 刷新圖片
+    }
+    private void refreshImage() {
+        byte[] image = User.getInstance().getUserImage();
+        if (image != null && image.length > 0) {
+            userinfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
+        } else {
+            userinfo_image.setImageResource(R.drawable.user_main_ic_default);
+        }
+        uri = null; // 重置 URI
     }
 
-    private void showSexDialog(AutoCompleteTextView autoCompleteTextView, RadioButton[] radioButtons) {
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle("修改資料").setMessage("是否要修改資料？")
-                .setView((View) radioButtons[0].getParent())
-                .setPositiveButton("是", (dialog, which) -> {
-                    for (int i = 0; i < radioButtons.length; i++) {
-                        if (radioButtons[i].isChecked()) {
-                            try {
-                                MyConnection.prepareStatement("UPDATE 使用者資料 SET 使用者性別 = " + (i + 1) + " WHERE 使用者編號 = " + User.getInstance().getUserId()).executeUpdate();
-                                User.getInstance().setUserSex(i + 1);
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
-                            autoCompleteTextView.setText(radioButtons[i].getText().toString());
-                            break;
-                        }
+
+    private void toggleEditMode(boolean isCancel) {
+        isEditMode = !isEditMode;
+
+        // 如果是取消操作，刷新資料
+        if (isCancel) {
+            refreshUserInfo(); // 刷新文字欄位
+            refreshImage(); // 刷新圖片
+        }
+
+        // 根據模式切換文字顏色
+        int editModeColor = getResources().getColor(R.color.dark_black); // 編輯模式顏色
+        int viewModeColor = getResources().getColor(R.color.dark_gray); // 查看模式顏色
+        int textColor = isEditMode ? editModeColor : viewModeColor;
+
+        // 切換所有欄位的編輯狀態
+        for (int i = 0; i < userinfo_tv.length; i++) {
+            if (i == 1) continue; // 跳過帳號欄位
+            AutoCompleteTextView textView = userinfo_tv[i];
+            textView.setEnabled(isEditMode); // 切換編輯模式
+            textView.setFocusable(isEditMode);
+            textView.setFocusableInTouchMode(isEditMode);
+            textView.setTextColor(textColor); // 動態設置文字顏色
+        }
+
+        // 隱藏或顯示編輯圖示
+        findViewById(R.id.UserInfo_edit).setVisibility(isEditMode ? View.GONE : View.VISIBLE);
+
+        // 顯示或隱藏儲存與取消按鈕
+        findViewById(R.id.saveCancelButtons).setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+
+        // 顯示或隱藏 UserInfo_upload
+        findViewById(R.id.UserInfo_upload).setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+    }
+
+
+    private void refreshUserInfo() {
+        for (int i = 0; i < userinfo_tv.length; i++) {
+            userinfo_tv[i].setText(get_info(i));
+        }
+        tempSex = -1; // 重置臨時性別
+    }
+
+    private void saveUpdatedInfo() {
+        // 日誌
+        Log.d("UserInfo", "saveUpdatedInfo() called");
+        Validator validator = new Validator(MyConnection);
+
+        // 驗證並更新每個欄位，跳過索引 4 (性別)
+        for (int i = 0; i < userinfo_tv.length; i++) {
+            if (i == 4) continue; // 跳過性別，稍後單獨處理
+            AutoCompleteTextView textView = userinfo_tv[i];
+            String errorMessage = validateInput(i, textView, validator);
+
+            if (errorMessage != null) {
+                editHint(textView, errorMessage);
+                return; // 終止保存操作
+            }
+
+            try {
+                String updateQuery = getUpdateQuery(i);
+                PreparedStatement ps = MyConnection.prepareStatement(updateQuery);
+                ps.setString(1, textView.getText().toString());
+                ps.setInt(2, User.getInstance().getUserId());
+                ps.executeUpdate();
+                updateUserInstance(i, textView.getText().toString());
+            } catch (SQLException e) {
+                Log.e("SQL", "Error saving updated info", e);
+                Toast.makeText(this, "更新失敗", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        // 處理性別更新
+        if (tempSex != -1 && tempSex != User.getInstance().getUserSex()) {
+            try {
+                String updateQuery = "UPDATE 使用者資料 SET 使用者性別 = ? WHERE 使用者編號 = ?";
+                PreparedStatement ps = MyConnection.prepareStatement(updateQuery);
+                ps.setInt(1, tempSex);
+                ps.setInt(2, User.getInstance().getUserId());
+                ps.executeUpdate();
+
+                // 更新本地 User 實例數據
+                User.getInstance().setUserSex(tempSex);
+            } catch (SQLException e) {
+                Log.e("SQL", "更新性別失敗", e);
+                Toast.makeText(this, "性別更新失敗", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        // 處理圖片更新
+        if (uri != null) {
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] imageBytes = stream.toByteArray();
+
+                String updateImageQuery = "UPDATE 使用者資料 SET 使用者圖片 = ? WHERE 使用者編號 = ?";
+                PreparedStatement ps = MyConnection.prepareStatement(updateImageQuery);
+                ps.setBytes(1, imageBytes);
+                ps.setInt(2, User.getInstance().getUserId());
+                ps.executeUpdate();
+
+                // 更新本地 User 實例的圖片
+                User.getInstance().setUserImage(imageBytes);
+
+            } catch (IOException | SQLException e) {
+                Log.e("SQL", "更新圖片失敗", e);
+                Toast.makeText(this, "圖片更新失敗", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } else if (User.getInstance().getUserImage() == null || User.getInstance().getUserImage().length == 0) {
+            // 如果沒有新圖片且當前圖片為空，設置默認圖片
+            userinfo_image.setImageResource(R.drawable.user_main_ic_default);
+        }
+
+
+        // 關閉編輯模式
+        toggleEditMode(false); // 確保此方法被正確執行
+        Log.d("UserInfo", "toggleEditMode(false) called"); // 日誌
+        Toast.makeText(this, "資料已成功更新", Toast.LENGTH_SHORT).show();
+    }
+
+
+
+    private void showSexDialog() {
+        // 性別選項
+        String[] sexOptions = {"男性", "女性", "不願透露"};
+        int currentSex = (tempSex != -1) ? tempSex - 1 : User.getInstance().getUserSex() - 1; // 當前性別索引
+
+        new AlertDialog.Builder(this)
+                .setTitle("選擇性別")
+                .setSingleChoiceItems(sexOptions, currentSex, (dialog, which) -> {
+                    // 設置臨時性別索引
+                    tempSex = which + 1;
+                })
+                .setPositiveButton("確認", (dialog, which) -> {
+                    if (tempSex != -1) {
+                        userinfo_tv[4].setText(sexOptions[tempSex - 1]); // 更新顯示的性別
                     }
                 })
-                .setNegativeButton("否", null)
-                .create();
-        alertDialog.show();
+                .setNegativeButton("取消", null)
+                .show();
     }
+
 
     private String validateInput(int index, AutoCompleteTextView autoCompleteTextView1, Validator validator) {
         return switch (index) {
@@ -191,21 +329,6 @@ public class UserInfo extends AppCompatActivity {
         };
     }
 
-    private void updateUserInfo(int index, AutoCompleteTextView autoCompleteTextView, AutoCompleteTextView autoCompleteTextView1, AlertDialog alertDialog) {
-        autoCompleteTextView.setText(autoCompleteTextView1.getText().toString());
-        try {
-            String updateQuery = getUpdateQuery(index);
-            PreparedStatement ps = MyConnection.prepareStatement(updateQuery);
-            ps.setString(1, autoCompleteTextView1.getText().toString());
-            ps.setInt(2, User.getInstance().getUserId());
-            ps.executeUpdate();
-            updateUserInstance(index, autoCompleteTextView1.getText().toString());
-            alertDialog.dismiss();
-        } catch (SQLException e) {
-            Log.e("SQL", "Error updating user info", e);
-        }
-    }
-
     private void updateUserInstance(int index, String newValue) {
         switch (index) {
             case 0 -> User.getInstance().setUserName(newValue);
@@ -222,10 +345,13 @@ public class UserInfo extends AppCompatActivity {
             case 1 -> "使用者帳號";
             case 2 -> "使用者電話";
             case 3 -> "使用者郵件";
+            case 4 -> "使用者性別"; // 性別對應資料庫中的欄位名稱
             default -> throw new IllegalStateException("Unexpected value: " + index);
         };
         return "UPDATE 使用者資料 SET " + columnName + " = ? WHERE 使用者編號 = ?";
     }
+
+
 
     private String get_info(int index) {
         return switch (index) {
@@ -234,23 +360,14 @@ public class UserInfo extends AppCompatActivity {
             case 2 -> User.getInstance().getUserPhone();
             case 3 -> User.getInstance().getUserMail();
             case 4 -> switch (User.getInstance().getUserSex()) {
-                case 1 -> "男♂";
-                case 2 -> "女♀";
-                case 3 -> "保密⚲";
+                case 1 -> "男性";
+                case 2 -> "女性";
+                case 3 -> "不願透露";
                 default -> "未設定";
             };
             default -> "";
         };
     }
-
-    private void init_image() {
-        userinfo_image = findViewById(R.id.UserInfo_image);
-        //將byte[]轉換成Bitmap：https://stackoverflow.com/questions/3520019/display-image-from-bytearray
-        byte[] image = User.getInstance().getUserImage();
-        if (image != null)
-            userinfo_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(image)));
-    }
-
     private void logout() {
         User.setInstance(0, "", "", "", 0, "", null);
         //Delete SharedPreferences Data：https://stackoverflow.com/questions/3687315/how-to-delete-shared-preferences-data-from-app-in-android
@@ -259,7 +376,7 @@ public class UserInfo extends AppCompatActivity {
         startActivity(new Intent(this, Login.class));
         finish();
     }
-/*
+
     private void changeImage() {
         userinfo_image = findViewById(R.id.UserInfo_image);
         Intent intent = new Intent();
@@ -274,124 +391,96 @@ public class UserInfo extends AppCompatActivity {
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
-                    if (data == null) return;
-                    uri = data.getData();
-                    userinfo_image.setImageURI(uri);
-                } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
-                    Toast.makeText(this, "取消圖片上傳", Toast.LENGTH_SHORT).show();
-                }
-            }
-    );*/
-
-    private void showImageSourceDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("選擇圖片來源").setItems(new CharSequence[]{"從相簿選擇", "拍照"}, (dialog, which) -> {
-                    //上傳圖片：https://www.youtube.com/watch?v=9oNujFx_ZaI&ab_channel=ShihFinChen  //上傳圖片：https://www.youtube.com/watch?v=9oNujFx_ZaI&ab_channel=ShihFinChen
-                    if (which == 0) uploadImage_ActivityResult.launch(new Intent().setType("image/*")
-                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                                .setAction(Intent.ACTION_GET_CONTENT));
-                    else cameraActivityResultLauncher.launch(new Intent(this, CameraActivity.class));
-        }).show();
-    }
-    ActivityResultLauncher<Intent> cameraActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
                     if (data != null) {
-                        String imagePath = data.getStringExtra("imagePath");
-                        if (imagePath != null) {
-                            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-                            ImageView imageView = findViewById(R.id.UserInfo_image);
-                            imageView.setImageBitmap(bitmap);
-                            updateUserImageInDatabase(bitmap);
-                        }
-                    }
-                }
-            }
-    );
-    ActivityResultLauncher<Intent> uploadImage_ActivityResult = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    if (data == null) return;
-                    uri = data.getData();
-                    Bitmap bitmap = null;
-                    if (uri == null && data.getExtras() != null) {
-                        bitmap = (Bitmap) data.getExtras().get("data");
-                    } else {
-                        try {
-                            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-                        } catch (IOException e) {
-                            Log.e("Image", "Error getting image from URI", e);
-                        }
-                    }
-                    if (bitmap != null) {
-                        userinfo_image.setImageBitmap(bitmap);
-                        updateUserImageInDatabase(bitmap);
+                        uri = data.getData(); // 設定新的 URI
+                        userinfo_image.setImageURI(uri); // 顯示新圖片
                     }
                 } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
-                    Toast.makeText(this, "取消圖片上傳", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "圖片上傳失敗", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "取消圖片選擇", Toast.LENGTH_SHORT).show();
+                    refreshImage(); // 恢復原始圖片
                 }
             }
     );
-    private void updateUserImageInDatabase(Bitmap bitmap) {
-        // Convert Bitmap to byte array
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] imageBytes = stream.toByteArray();
+    private void deleteAccount() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("刪除帳號")
+                .setMessage("是否確定要刪除帳號？刪除後無法復原。")
+                .setPositiveButton("確定", (dialog, which) -> {
+                    // 第一步：請輸入密碼驗證
+                    showPasswordInputDialog();
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
 
-        // Update the database
+    private void showPasswordInputDialog() {
+        // 創建輸入框
+        EditText passwordInput = new EditText(this);
+        passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("驗證密碼")
+                .setMessage("請輸入您的密碼以驗證身份：")
+                .setView(passwordInput)
+                .setPositiveButton("確定", (dialog, which) -> {
+                    String inputPassword = passwordInput.getText().toString();
+                    if (validatePasswordFromDatabase(inputPassword)) {
+                        // 第二步：再次確認刪除
+                        confirmFinalDelete();
+                    } else {
+                        Toast.makeText(this, "密碼錯誤，無法刪除帳號。", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private boolean validatePasswordFromDatabase(String inputPassword) {
+        boolean isValid = false;
         try {
-            PreparedStatement ps = MyConnection.prepareStatement("UPDATE 使用者資料 SET 使用者圖片 = ? WHERE 使用者編號 = ?");
-            ps.setBytes(1, imageBytes);
-            ps.setInt(2, User.getInstance().getUserId());
-            ps.executeUpdate();
-            User.getInstance().setUserImage(imageBytes);
-            Toast.makeText(this, "圖片更新成功", Toast.LENGTH_SHORT).show();
+            // 使用 SQL 查詢從資料庫驗證密碼
+            String query = "SELECT 使用者密碼 FROM 使用者資料 WHERE 使用者編號 = ?";
+            PreparedStatement ps = MyConnection.prepareStatement(query);
+            ps.setInt(1, User.getInstance().getUserId()); // 使用當前教練的 ID
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String storedPassword = rs.getString("使用者密碼");
+                isValid = inputPassword.equals(storedPassword); // 比較輸入的密碼與資料庫中的密碼
+            }
         } catch (SQLException e) {
-            Log.e("SQL", "Error updating user image", e);
-            Toast.makeText(this, "圖片更新失敗", Toast.LENGTH_SHORT).show();
+            Log.e("SQL", "密碼驗證失敗", e);
         }
-    }
-    /*private void takePhoto() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            uploadImage_ActivityResult.launch(intent);
-        } new AlertDialog.Builder(this).setTitle("錯誤")
-                .setMessage("無法開啟相機，請檢查您的相機應用程式或權限設置。")
-                .setPositiveButton("確定", null).show();
-    }
-*/
-    private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
-    private static final int CAMERA_REQUEST_CODE = 1001;
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
-            String imagePath = data.getStringExtra("imagePath");
-            if (imagePath != null) {
-                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-                ImageView imageView = findViewById(R.id.UserInfo_image);
-                imageView.setImageBitmap(bitmap);
-            }
-        }
+        return isValid;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivity(new Intent(this, CameraActivity.class));
-            } else {
-                new AlertDialog.Builder(this).setTitle("錯誤")
-                        .setMessage("無法開啟相機，請檢查您的相機應用程式或權限設置。")
-                        .setPositiveButton("確定", null).show();
-            }
+    private void confirmFinalDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("最終確認")
+                .setMessage("帳號刪除後無法復原，是否真的要刪除？")
+                .setPositiveButton("確定", (dialog, which) -> performDeleteAccount())
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private void performDeleteAccount() {
+        try {
+            // 刪除使用者主記錄
+            String deleteUserQuery = "DELETE FROM 使用者資料 WHERE 使用者編號 = ?";
+            PreparedStatement userStatement = MyConnection.prepareStatement(deleteUserQuery);
+            userStatement.setInt(1, User.getInstance().getUserId());
+            userStatement.executeUpdate();
+
+            // 清除本地 User 實例
+            User.setInstance(0, "", "", "", 0, "", null);
+
+            // 跳轉到登錄頁面
+            Toast.makeText(this, "帳號已刪除。", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, Login.class));
+            finish();
+        } catch (SQLException e) {
+            Log.e("SQL", "刪除帳號失敗", e);
+            Toast.makeText(this, "刪除帳號時發生錯誤，請稍後再試。", Toast.LENGTH_SHORT).show();
         }
     }
 }
