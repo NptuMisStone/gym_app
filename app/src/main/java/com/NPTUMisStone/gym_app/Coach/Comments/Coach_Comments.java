@@ -67,8 +67,8 @@ public class Coach_Comments extends AppCompatActivity {
                 PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
                 searchStatement.setInt(1, Coach.getInstance().getCoachId());
                 ResultSet rs = searchStatement.executeQuery();
-                while (rs.next())
-                    coach_comments_data.add(new Coach_Comments.Coach_Comments_Data(
+                while (rs.next()) {
+                    coach_comments_data.add(new Coach_Comments_Data(
                             rs.getInt("評論編號"),
                             rs.getDate("評論日期"),
                             rs.getBytes("使用者圖片"),
@@ -78,6 +78,7 @@ public class Coach_Comments extends AppCompatActivity {
                             rs.getString("評論內容"),
                             rs.getString("回覆")
                     ));
+                }
                 rs.close();
                 searchStatement.close();
             } catch (SQLException e) {
@@ -85,15 +86,25 @@ public class Coach_Comments extends AppCompatActivity {
             }
             new Handler(Looper.getMainLooper()).post(this::updateUI);
         });
-
     }
+
     private void updateUI() {
-
         RecyclerView recyclerView = findViewById(R.id.coachCommentsRecycleview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        CoachCommentsAdapter adapter = new CoachCommentsAdapter(this, coach_comments_data, findViewById(R.id.main));
-        recyclerView.setAdapter(adapter);
+        TextView emptyView = findViewById(R.id.empty_view);
+
+        if (coach_comments_data.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            CoachCommentsAdapter adapter = new CoachCommentsAdapter(this, coach_comments_data, findViewById(R.id.main));
+            recyclerView.setAdapter(adapter);
+        }
     }
+
     static class Coach_Comments_Data {
         Date date;
         int commentID,rating;

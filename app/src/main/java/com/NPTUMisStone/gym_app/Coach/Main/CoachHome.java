@@ -6,16 +6,20 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.NPTUMisStone.gym_app.Coach.Class.ClassMain;
 import com.NPTUMisStone.gym_app.Coach.Comments.Coach_Comments;
 
 import com.NPTUMisStone.gym_app.Coach.Records.All;
+import com.NPTUMisStone.gym_app.Coach.Records.Detail;
 import com.NPTUMisStone.gym_app.Coach.Scheduled.ScheduledMain;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
@@ -37,20 +41,10 @@ public class CoachHome extends AppCompatActivity {
     private Connection MyConnection;
     private ProgressBarHandler progressBarHandler;
 
-    // UI 元件
-    private View upcomingClassCard;
-    private TextView upcomingClassTitle;
-    private TextView upcomingClassDetails;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.coach_main_home);
-
-        // 初始化 UI 元件
-        upcomingClassCard = findViewById(R.id.CoachHome_upcomingClassCard);
-        upcomingClassTitle = findViewById(R.id.CoachHome_upcomingClassTitle);
-        upcomingClassDetails = findViewById(R.id.CoachHome_upcomingClassDetails);
 
         // 初始化其他屬性
         MyConnection = new SQLConnection(findViewById(R.id.CoachHome_constraintLayout)).IWantToConnection();
@@ -170,6 +164,7 @@ public class CoachHome extends AppCompatActivity {
                 ResultSet rs = searchStatement.executeQuery();
 
                 if (rs.next()) {
+                    int scheduleID = rs.getInt("課表編號"); // 獲取 ScheduleID
                     String courseName = rs.getString("課程名稱");
                     String date = rs.getDate("日期").toString();
                     String dayOfWeek = rs.getString("星期幾");
@@ -179,9 +174,11 @@ public class CoachHome extends AppCompatActivity {
                     int locationType = rs.getInt("地點類型");
                     String city = rs.getString("縣市");
                     String district = rs.getString("行政區");
+                    int bookedPeople = rs.getInt("預約人數");
+                    int totalPeople = rs.getInt("上課人數");
 
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        updateUIWithClosestUpcomingAppointment(courseName, date, dayOfWeek, startTime, endTime, locationName, locationType, city, district);
+                        updateUIWithClosestUpcomingAppointment(scheduleID, courseName, date, dayOfWeek, startTime, endTime, locationName, locationType, city, district, bookedPeople, totalPeople);
                         progressBarHandler.hideProgressBar();
                         isLoading = false;
                     });
@@ -211,38 +208,84 @@ public class CoachHome extends AppCompatActivity {
         });
     }
 
-    private void updateUIWithClosestUpcomingAppointment(String courseName, String date, String dayOfWeek,
+    private void updateUIWithClosestUpcomingAppointment(int scheduleID, String courseName, String date, String dayOfWeek,
                                                         String startTime, String endTime, String locationName,
-                                                        int locationType, String city, String district) {
-        // 設置地點
-        String locationText;
+                                                        int locationType, String city, String district, int bookedPeople, int totalPeople) {
+        TextView classTypeLabel = findViewById(R.id.classTypeLabel);
+        TextView textCourseName = findViewById(R.id.textCourseName);
+        TextView textDate = findViewById(R.id.textDate);
+        TextView textTime = findViewById(R.id.textTime);
+        TextView textLocation = findViewById(R.id.textLocation);
+        TextView peopleCount = findViewById(R.id.peopleCount);
+        View classDetailLayout = findViewById(R.id.class_detailLayout); // 找到 class_detailLayout
+
+        // 根據 locationType 設置標籤
         if (locationType == 2) { // 到府服務
-            locationText = "到府 (" + city + district + ")";
-        } else { // 固定地點
-            locationText = locationName;
+            classTypeLabel.setText("到府課程");
+            classTypeLabel.setBackgroundResource(R.drawable.class_type_label_bg); // 藍底
+        } else { // 團體課程
+            classTypeLabel.setText("團體課程");
+            classTypeLabel.setBackgroundResource(R.drawable.class_type_label_red_bg); // 紅底
         }
 
-        // 更新 UI 顯示
-        upcomingClassCard.setVisibility(View.VISIBLE);
-        upcomingClassTitle.setText("即將到來的課程");
-        upcomingClassDetails.setText(String.format(
-                "課程名稱: %s\n日期: %s (%s)\n時間: %s - %s\n地點: %s",
-                courseName, date, dayOfWeek, startTime, endTime, locationText
-        ));
+        // 設置其他課程資訊
+        textCourseName.setText("\uD83D\uDCCC"+courseName);
+        textDate.setText(String.format("%s (%s)", date, dayOfWeek));
+        textTime.setText(String.format("%s - %s", startTime, endTime));
+        textLocation.setText(locationName);
+        peopleCount.setText(bookedPeople + " / " + totalPeople);
 
-        // 根據地點類型設置背景顏色
-        if (locationType == 2) { // 到府服務
-            upcomingClassCard.setBackgroundResource(R.drawable.course_card_blue);
-        } else { // 固定地點
-            upcomingClassCard.setBackgroundResource(R.drawable.course_card_red);
+        // 切換背景為 "有課程" 圖片
+        ConstraintLayout layout = findViewById(R.id.classbackground);
+        layout.setBackgroundResource(R.drawable.coach_home_hasclass);
+
+        // 顯示課程詳細信息布局
+        if (classDetailLayout != null) {
+            classDetailLayout.setVisibility(View.VISIBLE);
         }
+
+        // 設置按鈕點擊事件
+        Button viewAppointmentListButton = findViewById(R.id.viewAppointmentListButton);
+        viewAppointmentListButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Detail.class);
+            intent.putExtra("看預約名單ID", scheduleID);
+            startActivity(intent);
+        });
     }
 
 
     private void updateUIWithNoUpcomingAppointment() {
-        upcomingClassCard.setVisibility(View.VISIBLE);
-        upcomingClassTitle.setText("沒有即將到來的課程");
-        upcomingClassDetails.setText("未來沒有課程安排");
+        TextView textCourseName = findViewById(R.id.textCourseName);
+        TextView textDate = findViewById(R.id.textDate);
+        TextView textTime = findViewById(R.id.textTime);
+        TextView textLocation = findViewById(R.id.textLocation);
+        TextView peopleCount = findViewById(R.id.peopleCount);
+        TextView classTypeLabel = findViewById(R.id.classTypeLabel);
+        Button viewAppointmentListButton = findViewById(R.id.viewAppointmentListButton);
+        View classDetailLayout = findViewById(R.id.class_detailLayout); // 找到 class_detailLayout
+
+        // 清空課程資訊
+        textCourseName.setText("");
+        textDate.setText("");
+        textTime.setText("");
+        textLocation.setText("");
+        peopleCount.setText("0 / 0");
+        classTypeLabel.setText("");
+        classTypeLabel.setBackgroundResource(0); // 移除標籤背景
+
+        // 隱藏按鈕
+        viewAppointmentListButton.setVisibility(View.GONE);
+
+        // 隱藏課程詳細信息布局
+        if (classDetailLayout != null) {
+            classDetailLayout.setVisibility(View.GONE);
+        }
+
+        // 切換背景為 "無課程" 圖片
+        ConstraintLayout layout = findViewById(R.id.classbackground);
+        layout.setBackgroundResource(R.drawable.coach_home_default);
     }
+
+
 
 }

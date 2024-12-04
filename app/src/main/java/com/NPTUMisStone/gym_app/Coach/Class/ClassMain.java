@@ -85,10 +85,8 @@ public class ClassMain extends AppCompatActivity {
 
         reloadData(); // 初始載入資料
     }
-
-
     private void reloadData() {
-        if (isLoadingData) return; // 防止重複加載
+        if (isLoadingData) return; // 防止重复加载
         isLoadingData = true;
 
         swipeRefreshLayout.setRefreshing(true);
@@ -101,27 +99,34 @@ public class ClassMain extends AppCompatActivity {
                 List<Integer> sizeList = new ArrayList<>();
                 List<Double> feeList = new ArrayList<>();
 
-                // 加載數據
+                // 加载数据
                 fetchClassData(idList, imageList, nameList, durationList, sizeList, feeList);
 
-                // 更新 UI 和資料
+                // 更新 UI 和数据
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    adapter.idList = idList;
-                    adapter.imageList = imageList;
-                    adapter.nameList = nameList;
-                    adapter.durationList = durationList;
-                    adapter.sizeList = sizeList;
-                    adapter.feeList = feeList;
-                    adapter.notifyDataSetChanged();
+                    TextView emptyView = findViewById(R.id.empty_view);
+                    RecyclerView recyclerView = findViewById(R.id.ClassMain_classRecycler);
 
                     if (idList.isEmpty()) {
-                        Toast.makeText(this, "目前無課程資料", Toast.LENGTH_SHORT).show();
+                        emptyView.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        emptyView.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+
+                        adapter.idList = idList;
+                        adapter.imageList = imageList;
+                        adapter.nameList = nameList;
+                        adapter.durationList = durationList;
+                        adapter.sizeList = sizeList;
+                        adapter.feeList = feeList;
+                        adapter.notifyDataSetChanged();
                     }
                 });
             } catch (Exception e) {
                 Log.e("SQL", "Error loading data", e);
                 new Handler(Looper.getMainLooper()).post(() ->
-                        Toast.makeText(this, "加載課程列表失敗，請稍後再試", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "加载课程列表失败，请稍后再试", Toast.LENGTH_SHORT).show()
                 );
             } finally {
                 new Handler(Looper.getMainLooper()).post(() -> {
@@ -131,8 +136,6 @@ public class ClassMain extends AppCompatActivity {
             }
         });
     }
-
-
 
     private void fetchClassData(List<Integer> idList, List<byte[]> imageList, List<String> nameList, List<Integer> durationList,
                                 List<Integer> sizeList, List<Double> feeList) {
@@ -195,7 +198,7 @@ public class ClassMain extends AppCompatActivity {
             if (imageData != null && imageData.length > 0) {
                 holder.imageView.setImageBitmap(ImageHandle.getBitmap(imageData));
             } else {
-                holder.imageView.setImageResource(R.drawable.null_class);
+                holder.imageView.setImageResource(R.drawable.class_default);
             }
 
             holder.nameTextView.setText(nameList.get(position));
