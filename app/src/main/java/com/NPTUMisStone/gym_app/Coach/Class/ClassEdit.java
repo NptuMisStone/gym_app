@@ -620,17 +620,20 @@ public class ClassEdit extends AppCompatActivity {
             Toast.makeText(this, "加載鄉鎮區失敗", Toast.LENGTH_SHORT).show();
         }
     }
-    /**
-     * 保存課程
-     */
     private void saveCourse() {
+        Log.d("SaveCourse", "開始執行課程儲存邏輯");
+
         // 驗證欄位
         if (!validateFields()) {
+            Log.e("SaveCourse", "欄位驗證失敗");
             return; // 如果欄位驗證失敗，退出方法
         }
 
+        Log.d("SaveCourse", "欄位驗證成功");
+
         // 優先使用 updatedImageBytes
         byte[] imageBytesToSave = updatedImageBytes != null ? updatedImageBytes : currentImageBytes;
+        Log.d("SaveCourse", "準備使用的圖片數據是否存在: " + (imageBytesToSave != null));
 
         String query = "UPDATE [健身教練課程] " +
                 "SET [課程名稱] = ?, " +
@@ -650,6 +653,8 @@ public class ClassEdit extends AppCompatActivity {
 
         try (PreparedStatement statement = MyConnection.prepareStatement(query)) {
             // 收集用戶輸入資料
+            Log.d("SaveCourse", "開始收集用戶輸入資料");
+
             String courseName = ((EditText) findViewById(R.id.ClassEdit_nameEdit)).getText().toString().trim();
             int courseType = ((ClassType) classTypeSpinner.getSelectedItem()).classTypeId;
             int courseTime = Integer.parseInt(classDurationSpinner.getSelectedItem().toString().replace(" 分鐘", ""));
@@ -657,6 +662,8 @@ public class ClassEdit extends AppCompatActivity {
             String requiredEquipment = ((EditText) findViewById(R.id.ClassEdit_equipmentEdit)).getText().toString().trim();
             double courseFee = Double.parseDouble(((EditText) findViewById(R.id.ClassEdit_feeEdit)).getText().toString());
             int classSize = classSizeRadioGroup.getCheckedRadioButtonId() == R.id.ClassEdit_oneToOneRadio ? 1 : Integer.parseInt(groupSizeEdit.getText().toString());
+
+            Log.d("SaveCourse", "收集完成: 課程名稱=" + courseName + ", 類型=" + courseType + ", 時間=" + courseTime + "分鐘");
 
             int locationType = locationRadioGroup.getCheckedRadioButtonId() == R.id.ClassEdit_trainerStoreRadio ? 1 :
                     locationRadioGroup.getCheckedRadioButtonId() == R.id.ClassEdit_clientLocationRadio ? 2 : 3;
@@ -668,7 +675,7 @@ public class ClassEdit extends AppCompatActivity {
             int areaId = -1;
 
             if (locationType == 1) {
-                // 從資料庫獲取服務地點資訊
+                Log.d("SaveCourse", "服務地點為教練門市");
                 try (PreparedStatement stmt = MyConnection.prepareStatement(
                         "SELECT [服務地點名稱], [縣市id], [行政區id], [服務地點地址] FROM [健身教練審核合併] WHERE [健身教練編號] = ?")) {
                     stmt.setInt(1, Coach.getInstance().getCoachId());
@@ -678,22 +685,20 @@ public class ClassEdit extends AppCompatActivity {
                         cityId = rs.getInt("縣市id");
                         areaId = rs.getInt("行政區id");
                         locationAddress = rs.getString("服務地點地址");
+                        Log.d("SaveCourse", "服務地點資訊讀取成功: " + locationName + ", 地址: " + locationAddress);
                     } else {
+                        Log.e("SaveCourse", "未找到教練的服務地點資訊");
                         Toast.makeText(this, "未找到教練的服務地點資訊", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "讀取服務地點資訊失敗", Toast.LENGTH_SHORT).show();
-                    return;
                 }
             } else {
-                // 檢查 Spinner 是否有值
+                Log.d("SaveCourse", "服務地點為其他類型");
                 if (citySpinner.getSelectedItem() == null || areaSpinner.getSelectedItem() == null) {
+                    Log.e("SaveCourse", "縣市或行政區選擇無效");
                     Toast.makeText(this, "請選擇有效的縣市和行政區", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 City selectedCity = (City) citySpinner.getSelectedItem();
                 Area selectedArea = (Area) areaSpinner.getSelectedItem();
 
@@ -705,6 +710,8 @@ public class ClassEdit extends AppCompatActivity {
                     locationAddress = ((EditText) findViewById(R.id.ClassEdit_addressEdit)).getText().toString().trim();
                 }
             }
+
+            Log.d("SaveCourse", "準備執行資料庫更新操作");
 
             // 設定參數
             statement.setString(1, courseName);
@@ -720,7 +727,6 @@ public class ClassEdit extends AppCompatActivity {
             statement.setInt(11, cityId);
             statement.setInt(12, areaId);
 
-            // 如果有圖片，將圖片參數添加到查詢
             if (imageBytesToSave != null) {
                 statement.setBytes(13, imageBytesToSave);
                 statement.setInt(14, classId);
@@ -730,17 +736,20 @@ public class ClassEdit extends AppCompatActivity {
 
             // 執行更新操作
             int rowsAffected = statement.executeUpdate();
+            Log.d("SaveCourse", "更新影響的行數: " + rowsAffected);
             if (rowsAffected > 0) {
                 Toast.makeText(this, "課程更新成功！", Toast.LENGTH_SHORT).show();
-                navigateToClassMain(); // 更新完成後返回主頁
+                navigateToClassMain();
             } else {
+                Log.e("SaveCourse", "課程更新失敗");
                 Toast.makeText(this, "課程更新失敗！", Toast.LENGTH_SHORT).show();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e("SaveCourse", "SQL 錯誤", e);
             Toast.makeText(this, "儲存過程中發生錯誤", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void navigateToClassMain() {
         Intent intent = new Intent(this, ClassMain.class); // ClassMain 是您的主界面 Activity

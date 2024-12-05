@@ -37,7 +37,7 @@
             android:layout_centerInParent="true"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="教練資訊"
+            android:text="課程資訊"
             android:textColor="#808080"
             android:textSize="20sp" />
 

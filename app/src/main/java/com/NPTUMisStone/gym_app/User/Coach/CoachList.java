@@ -174,7 +174,6 @@ public class CoachList extends AppCompatActivity {
                 editor.apply(); // 保存
                 Intent intent = new Intent(context, CoachDetail.class);
                 startActivity(intent);
-                finish();
             });
             try {
                 MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();

@@ -2,6 +2,8 @@ package com.NPTUMisStone.gym_app.User.Like.Fragment;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -26,6 +28,7 @@ import android.widget.Toast;
 
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
+import com.NPTUMisStone.gym_app.User.Class.ClassDetail;
 import com.NPTUMisStone.gym_app.User.Main.User;
 import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
 import com.NPTUMisStone.gym_app.databinding.UserLikeClassFragmentBinding;
@@ -171,7 +174,7 @@ public class UserLike_ClassFragment extends Fragment {
         public static class ViewHolder extends RecyclerView.ViewHolder {
             ImageView class_image;
             TextView class_people_sign,class_name,class_price,coach_name,class_intro,class_people;
-            ImageButton like_class_btn;
+            ImageButton more_class_btn,like_class_btn;
             public ViewHolder(View itemView) {
                 super(itemView);
                 class_image=itemView.findViewById(R.id.user_like_class_img);
@@ -181,7 +184,7 @@ public class UserLike_ClassFragment extends Fragment {
                 coach_name=itemView.findViewById(R.id.user_like_class_coachname);
                 class_intro=itemView.findViewById(R.id.user_like_class_intro);
                 class_people=itemView.findViewById(R.id.user_like_class_people);
-
+                more_class_btn=itemView.findViewById(R.id.user_like_class_info);
                 like_class_btn=itemView.findViewById(R.id.user_like_class_btn);
             }
         }
@@ -216,6 +219,14 @@ public class UserLike_ClassFragment extends Fragment {
                         })
                         .setNegativeButton("取消", null)
                         .show();
+            });
+            holder.more_class_btn.setOnClickListener(v -> {
+                SharedPreferences sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("看更多課程ID", item.getClassID());
+                editor.apply(); // 保存
+                Intent intent = new Intent(context, ClassDetail.class);
+                startActivity(intent);
             });
 
             try {

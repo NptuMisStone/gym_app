@@ -73,6 +73,7 @@ public class CoachDetail extends AppCompatActivity {
                 .replace(R.id.DetailCoachFrameLayout, infoFragment)
                 .addToBackStack(null)
                 .commit();
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -82,20 +83,23 @@ public class CoachDetail extends AppCompatActivity {
                         fragment = new CoachDetail_ClassFragment();
                         break;
                     case 1:
-                        fragment = infoFragment;
+                        fragment = new CoachDetail_InfoFragment();
                         break;
                     case 2:
                         fragment = new CoachDetail_CommentFragment();
                         break;
                 }
+
                 if (fragment != null) {
-                    // 傳遞 classID 给新的 Fragment
+                    // 傳遞 coachID 給新的 Fragment
                     Bundle bundle = new Bundle();
                     bundle.putInt("coachID", coachID);
                     fragment.setArguments(bundle);
 
+                    // 使用 replace 並將交易添加到返回棧
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.DetailCoachFrameLayout, fragment)
+                            .addToBackStack(null) // 將 Fragment 添加到返回棧
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .commit();
                 } else {
@@ -109,6 +113,9 @@ public class CoachDetail extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
+
+
+
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
         likebtn=findViewById(R.id.user_like_detail_coach_btn);
         coachimg=findViewById(R.id.user_detail_coach_img);
@@ -184,8 +191,6 @@ public class CoachDetail extends AppCompatActivity {
         });
     }
     public  void user_detail_coach_goback(View view){
-        Intent it =new Intent(this, CoachList.class);
-        startActivity(it);
         finish();
     }
 }
