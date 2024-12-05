@@ -49,16 +49,28 @@
             android:background="#d3d3d3" />
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <!--<androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/AIInteractive_questionRecycler"
         android:layout_width="347dp"
         android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/AIInteractive_inputEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header" />-->
+    <ExpandableListView
+        android:id="@+id/AIInteractive_expandableList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/AIInteractive_inputEdit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header" />
-
     <EditText
         android:id="@+id/AIInteractive_inputEdit"
         android:layout_width="wrap_content"
