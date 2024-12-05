@@ -14,7 +14,7 @@
 
         <LinearLayout
             android:id="@+id/CoachHome_linearLayout1"
-            android:layout_width="360dp"
+            android:layout_width="340dp"
             android:layout_height="95dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toStartOf="@+id/guideline19"

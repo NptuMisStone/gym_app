@@ -9,15 +9,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.NPTUMisStone.gym_app.Coach.Main.Coach;
+import com.NPTUMisStone.gym_app.Coach.Records.Detail;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.Class.ClassList;
@@ -31,6 +36,9 @@ import com.NPTUMisStone.gym_app.User_And_Coach.Map.View;
 import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ProgressBarHandler;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.concurrent.Executors;
 
@@ -51,8 +59,22 @@ public class UserHome extends AppCompatActivity {
         initSQLConnection();
         progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
         init_userinfo();
-        //AdHelper.initializeAndLoadAd(this, R.id.UserHome_adView);
+
+        // 下拉刷新處理
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.UserHome_swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refreshPageContent();
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
+        // 初次載入最近課程
+        fetchClosestUpcomingAppointment();
     }
+
+    private void refreshPageContent() {
+        fetchClosestUpcomingAppointment();
+    }
+
     private void initSQLConnection() {
         Executors.newSingleThreadExecutor().execute(() -> {
             try(Connection connection = new SQLConnection(findViewById(R.id.main)).IWantToConnection()){
@@ -128,14 +150,177 @@ public class UserHome extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        progressBarHandler.hideProgressBar();
-        init_userinfo();
-        Log.d("ActivityState", "Activity resumed, progress bar hidden.");
+        if (MyConnection == null) {
+            MyConnection = new SQLConnection(findViewById(R.id.UserHome_constraintLayout)).IWantToConnection();
+            if (MyConnection == null) {
+                Log.e("Database", "資料庫連線失敗");
+                progressBarHandler.hideProgressBar();
+                return;
+            }
+        }
+        setUserImage(); // 確保刷新時設置圖片
+        fetchClosestUpcomingAppointment();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
+    }
+
+    private boolean isLoading = false;
+
+    private void fetchClosestUpcomingAppointment() {
+        if (isLoading) {
+            return;
+        }
+        isLoading = true;
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                String sql = "SELECT TOP 1 * FROM [使用者預約-有預約的] " +
+                        "WHERE 使用者編號 = ? AND " +
+                        "(日期 > ? OR (日期 = ? AND 結束時間 > ?)) " +
+                        "ORDER BY 日期 ASC, 開始時間 ASC";
+
+                if (MyConnection == null || MyConnection.isClosed()) {
+                    Log.e("Database", "資料庫連線失敗");
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        progressBarHandler.hideProgressBar();
+                        isLoading = false;
+                    });
+                    return;
+                }
+
+                PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
+                java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
+                java.sql.Time currentTime = new java.sql.Time(System.currentTimeMillis());
+                searchStatement.setInt(1, User.getInstance().getUserId());
+                searchStatement.setDate(2, today);
+                searchStatement.setDate(3, today);
+                searchStatement.setTime(4, currentTime);
+
+                ResultSet rs = searchStatement.executeQuery();
+
+                if (rs.next()) {
+                    int scheduleID = rs.getInt("課表編號"); // 獲取 ScheduleID
+                    String courseName = rs.getString("課程名稱");
+                    String date = rs.getDate("日期").toString();
+                    String dayOfWeek = rs.getString("星期幾");
+                    String startTime = rs.getString("開始時間");
+                    String endTime = rs.getString("結束時間");
+                    String locationName = rs.getString("地點名稱");
+                    int locationType = rs.getInt("地點類型");
+                    String city = rs.getString("縣市");
+                    String district = rs.getString("行政區");
+                    int bookedPeople = rs.getInt("預約人數");
+                    int totalPeople = rs.getInt("上課人數");
+
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        updateUIWithClosestUpcomingAppointment(scheduleID, courseName, date, dayOfWeek, startTime, endTime, locationName, locationType, city, district, bookedPeople, totalPeople);
+                        progressBarHandler.hideProgressBar();
+                        isLoading = false;
+                    });
+                } else {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        updateUIWithNoUpcomingAppointment();
+                        progressBarHandler.hideProgressBar();
+                        isLoading = false;
+                    });
+                }
+
+                rs.close();
+                searchStatement.close();
+            } catch (SQLException e) {
+                Log.e("SQL", "資料庫查詢失敗", e);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    progressBarHandler.hideProgressBar();
+                    isLoading = false;
+                });
+            } catch (Exception e) {
+                Log.e("Exception", "發生意外錯誤", e);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    progressBarHandler.hideProgressBar();
+                    isLoading = false;
+                });
+            }
+        });
+    }
+
+    private void updateUIWithClosestUpcomingAppointment(int scheduleID, String courseName, String date, String dayOfWeek,
+                                                        String startTime, String endTime, String locationName,
+                                                        int locationType, String city, String district, int bookedPeople, int totalPeople) {
+        TextView classTypeLabel = findViewById(R.id.classTypeLabel);
+        TextView textCourseName = findViewById(R.id.textCourseName);
+        TextView textDate = findViewById(R.id.textDate);
+        TextView textTime = findViewById(R.id.textTime);
+        TextView textLocation = findViewById(R.id.textLocation);
+        TextView peopleCount = findViewById(R.id.peopleCount);
+        android.view.View classDetailLayout = findViewById(R.id.class_detailLayout); // 找到 class_detailLayout
+
+        // 根據 locationType 設置標籤
+        if (locationType == 2) { // 到府服務
+            classTypeLabel.setText("到府課程");
+            classTypeLabel.setBackgroundResource(R.drawable.class_type_label_bg); // 藍底
+        } else { // 團體課程
+            classTypeLabel.setText("團體課程");
+            classTypeLabel.setBackgroundResource(R.drawable.class_type_label_red_bg); // 紅底
+        }
+
+        // 設置其他課程資訊
+        textCourseName.setText("\uD83D\uDCCC"+courseName);
+        textDate.setText(String.format("%s (%s)", date, dayOfWeek));
+        textTime.setText(String.format("%s - %s", startTime, endTime));
+        textLocation.setText(locationName);
+        peopleCount.setText(bookedPeople + " / " + totalPeople);
+
+        // 切換背景為 "有課程" 圖片
+        ConstraintLayout layout = findViewById(R.id.classbackground);
+        layout.setBackgroundResource(R.drawable.user_home_hasclass);
+
+        // 顯示課程詳細信息布局
+        if (classDetailLayout != null) {
+            classDetailLayout.setVisibility(android.view.View.VISIBLE);
+        }
+
+        // 設置按鈕點擊事件
+        Button viewAppointmentListButton = findViewById(R.id.viewAppointmentListButton);
+        viewAppointmentListButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Detail.class);
+            intent.putExtra("看預約名單ID", scheduleID);
+            startActivity(intent);
+        });
+    }
+
+
+    private void updateUIWithNoUpcomingAppointment() {
+        TextView textCourseName = findViewById(R.id.textCourseName);
+        TextView textDate = findViewById(R.id.textDate);
+        TextView textTime = findViewById(R.id.textTime);
+        TextView textLocation = findViewById(R.id.textLocation);
+        TextView peopleCount = findViewById(R.id.peopleCount);
+        TextView classTypeLabel = findViewById(R.id.classTypeLabel);
+        Button viewAppointmentListButton = findViewById(R.id.viewAppointmentListButton);
+        android.view.View classDetailLayout = findViewById(R.id.class_detailLayout); // 找到 class_detailLayout
+
+        // 清空課程資訊
+        textCourseName.setText("");
+        textDate.setText("");
+        textTime.setText("");
+        textLocation.setText("");
+        peopleCount.setText("0 / 0");
+        classTypeLabel.setText("");
+        classTypeLabel.setBackgroundResource(0); // 移除標籤背景
+
+        // 隱藏按鈕
+        viewAppointmentListButton.setVisibility(android.view.View.GONE);
+
+        // 隱藏課程詳細信息布局
+        if (classDetailLayout != null) {
+            classDetailLayout.setVisibility(android.view.View.GONE);
+        }
+
+        // 切換背景為 "無課程" 圖片
+        ConstraintLayout layout = findViewById(R.id.classbackground);
+        layout.setBackgroundResource(R.drawable.user_home_default);
     }
 }

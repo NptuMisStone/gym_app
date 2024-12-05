@@ -292,7 +292,4 @@ public class CoachHome extends AppCompatActivity {
         ConstraintLayout layout = findViewById(R.id.classbackground);
         layout.setBackgroundResource(R.drawable.coach_home_default);
     }
-
-
-
 }
