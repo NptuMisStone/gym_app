@@ -1,6 +1,0 @@
-<resources>
-    <!--直接從:app複製過來-->
-
-    <style name="Base.Theme.Gym_app" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge" />
-    <style name="Theme.Gym_app" parent="Base.Theme.Gym_app" />
-</resources>
