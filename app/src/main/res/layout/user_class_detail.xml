@@ -7,6 +7,62 @@
     android:layout_height="match_parent"
     tools:context=".User.Class.ClassDetail">
 
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- 返回按鈕 -->
+        <ImageButton
+            android:id="@+id/ClassDetail_backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="返回上一頁"
+            android:scaleType="centerInside"
+            android:src="@drawable/all_ic_arrow_back3" />
+
+        <!-- 標頭標題 -->
+        <TextView
+            android:id="@+id/title3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="教練資訊"
+            android:textColor="#808080"
+            android:textSize="20sp" />
+
+        <!-- 喜好按鈕 -->
+        <ImageButton
+            android:id="@+id/ClassDetail_likeButton"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="喜好按鈕"
+            android:scaleType="centerInside"
+            android:src="@drawable/user_like_ic_not_love" />
+
+        <!-- 底部細底線 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#d3d3d3" />
+    </RelativeLayout>
+
+
     <ImageView
         android:id="@+id/ClassDetail_classImage"
         android:layout_width="0dp"
@@ -18,7 +74,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline36"
         app:layout_constraintStart_toStartOf="@+id/guideline35"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:srcCompat="@drawable/course_ic_null_class" />
+        app:srcCompat="@drawable/coach_class_main_ic_default" />
 
     <ImageButton
         android:id="@+id/ClassDetail_directionButton"
@@ -32,58 +88,6 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline25"
         app:layout_constraintEnd_toEndOf="@+id/ClassDetail_classImage"
         app:layout_constraintStart_toEndOf="@+id/ClassDetail_classImage" />
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/ClassDetail_titleToolbar"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/white"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/ClassDetail_backButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:background="@drawable/all_effect_ripple"
-        android:contentDescription="@string/goBack"
-        android:scaleType="centerCrop"
-        android:src="@drawable/all_ic_arrow_back1"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/ClassDetail_likeButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="20dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/Class_loveImageDescription"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="@+id/ClassDetail_titleToolbar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/user_like_ic_not_love" />
-
-    <TextView
-        android:id="@+id/ClassDetail_titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/Class_titleText"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.51" />
 
     <FrameLayout
         android:id="@+id/ClassDetail_detailFrame"

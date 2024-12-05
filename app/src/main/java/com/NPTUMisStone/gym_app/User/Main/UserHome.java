@@ -51,7 +51,7 @@ public class UserHome extends AppCompatActivity {
         initSQLConnection();
         progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
         init_userinfo();
-        AdHelper.initializeAndLoadAd(this, R.id.UserHome_adView);
+        //AdHelper.initializeAndLoadAd(this, R.id.UserHome_adView);
     }
     private void initSQLConnection() {
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -64,8 +64,6 @@ public class UserHome extends AppCompatActivity {
     }
     private void init_userinfo() {
         ((TextView) findViewById(R.id.UserHome_nameText)).setText(getGreetingMessage());
-        ((TextView) findViewById(R.id.UserHome_idText)).setText(getString(R.string.All_idText, User.getInstance().getUserId()));
-        findViewById(R.id.UserHome_editButton).setOnClickListener(v -> startActivity(new Intent(this, UserInfo.class)));
         findViewById(R.id.UserHome_photoImage).setOnClickListener(v -> startActivity(new Intent(this, UserInfo.class)));
         registerReceiver(broadcastReceiver, new IntentFilter("com.NPTUMisStone.gym_app.LOGOUT"), Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Context.RECEIVER_NOT_EXPORTED : 0);
         setUserImage();
@@ -99,16 +97,26 @@ public class UserHome extends AppCompatActivity {
         progressBarHandler.showProgressBar();
         int id = view.getId();
         try {
-            if (id == R.id.UserHome_classButton) startActivity(new Intent(this, ClassList.class));
-            else if (id == R.id.UserHome_coachButton) startActivity(new Intent(this, CoachList.class));
-            else if (id == R.id.UserHome_loveButton) startActivity(new Intent(this, UserLike.class));
-            else if (id == R.id.UserHome_historyButton) startActivity(new Intent(this, Appointment.class));
-            else if (id == R.id.UserHome_gymButton) startActivity(new Intent(this, View.class));
-            else if (id == R.id.UserHome_contactButton) startActivity(new Intent(this, Contact.class));
+            if (id == R.id.UserHome_classCard) {
+                startActivity(new Intent(this, ClassList.class));
+            } else if (id == R.id.UserHome_coachCard) {
+                startActivity(new Intent(this, CoachList.class));
+            } else if (id == R.id.UserHome_loveCard) {
+                startActivity(new Intent(this, UserLike.class));
+            } else if (id == R.id.UserHome_historyCard) {
+                startActivity(new Intent(this, Appointment.class));
+            } else if (id == R.id.UserHome_gymCard) {
+                startActivity(new Intent(this, View.class));
+            } else if (id == R.id.UserHome_contactCard) {
+                startActivity(new Intent(this, Contact.class));
+            }
         } catch (Exception e) {
             Log.e("Button", "Button click error", e);
+        } finally {
+            progressBarHandler.hideProgressBar();
         }
     }
+
     //為了要在登出時關閉Home頁面，註冊廣播器
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override

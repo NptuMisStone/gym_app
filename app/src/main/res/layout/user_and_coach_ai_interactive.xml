@@ -7,36 +7,63 @@
     android:layout_height="match_parent"
     tools:context=".User_And_Coach.UI.AIInteractive">
 
-    <TextView
-        android:id="@+id/AIInteractive_titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="@string/AIInteractive_titleText"
-        android:textSize="24sp"
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
-        android:id="@+id/AIInteractive_backButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/all_effect_ripple"
-        android:contentDescription="@string/goBack"
-        android:scaleType="centerCrop"
-        android:src="@drawable/all_ic_arrow_back1"
+        <!-- 返回按鈕 -->
+        <ImageButton
+            android:id="@+id/AIInteractive_backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="返回上一頁"
+            android:scaleType="centerInside"
+            android:src="@drawable/all_ic_arrow_back3" />
+
+        <!-- 標頭標題 -->
+        <TextView
+            android:id="@+id/AIInteractive_titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="常見問題"
+            android:textColor="#808080"
+            android:textSize="20sp" />
+
+        <!-- 底部細底線 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#d3d3d3" />
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="347dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/header" />
 
     <EditText
         android:id="@+id/AIInteractive_inputEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="36dp"
         android:autofillHints="FitQuestion"
         android:ems="10"
         android:hint="@string/AIInteractive_inputHint"
@@ -58,15 +85,4 @@
         app:layout_constraintStart_toEndOf="@+id/AIInteractive_inputEdit"
         app:layout_constraintTop_toTopOf="@+id/AIInteractive_inputEdit" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/AIInteractive_submitButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AIInteractive_titleText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

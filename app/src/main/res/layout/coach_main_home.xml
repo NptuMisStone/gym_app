@@ -14,22 +14,17 @@
 
         <LinearLayout
             android:id="@+id/CoachHome_linearLayout1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="15dp"
+            android:layout_width="360dp"
+            android:layout_height="95dp"
             android:orientation="horizontal"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline19"
+            app:layout_constraintStart_toStartOf="@+id/guideline20"
             app:layout_constraintTop_toTopOf="@+id/guideline18">
 
             <TextView
                 android:id="@+id/CoachHome_nameText"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/All_welcome"
@@ -51,14 +46,12 @@
             android:id="@+id/CoachHome_upcomingClassCard"
             android:layout_width="342dp"
             android:layout_height="211dp"
-            android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
             android:elevation="4dp"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline19"
+            app:layout_constraintStart_toStartOf="@+id/guideline20"
             app:layout_constraintTop_toBottomOf="@+id/CoachHome_linearLayout1">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -410,7 +403,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.02" />
+            app:layout_constraintGuide_percent="0.08" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline20"

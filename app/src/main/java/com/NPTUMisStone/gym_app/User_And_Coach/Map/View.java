@@ -31,7 +31,7 @@ public class View extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        findViewById(R.id.MapSalon_backButon).setOnClickListener(v -> finish());
+        findViewById(R.id.MapClass_backButton).setOnClickListener(v -> finish());
         //權限請求
         PermissionGET();
     }

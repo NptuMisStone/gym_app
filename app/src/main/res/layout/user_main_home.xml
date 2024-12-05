@@ -8,58 +8,6 @@
     android:background="@drawable/user_bg"
     tools:context=".User.Main.UserHome">
 
-    <LinearLayout
-        android:id="@+id/CoachHome_linearLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="15dp"
-        android:backgroundTint="@color/white"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/guideline16"
-        app:layout_constraintStart_toStartOf="@+id/guideline21"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/UserHome_photoImage"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="15dp"
-            android:contentDescription="@string/Home_imageDescription"
-            android:src="@drawable/home_shape_image"
-            app:civ_border_color="@color/dark_gray"
-            app:civ_border_width="1dp" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/UserHome_nameText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:gravity="bottom"
-                android:text="@string/All_welcome"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/UserHome_idText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="top"
-                android:text="@string/All_idText"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-    </LinearLayout>
 
     <!--<androidx.viewpager2.widget.ViewPager2
         android:id="@+id/UserHome_viewPager"
@@ -73,7 +21,7 @@
     </androidx.viewpager2.widget.ViewPager2>-->
 
 
-    <com.google.android.gms.ads.AdView
+    <!--<com.google.android.gms.ads.AdView
         android:id="@+id/UserHome_adView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -81,303 +29,329 @@
         app:adUnitId="ca-app-pub-5758857104652666/3110436616"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />-->
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/UserHome_swipeRefreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline16">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/UserHome_constraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/CoachHome_linearLayout1"
+                android:layout_width="360dp"
+                android:layout_height="95dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="@+id/guideline21"
+                app:layout_constraintTop_toTopOf="@+id/guideline17">
+
+                <TextView
+                    android:id="@+id/UserHome_nameText"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/All_welcome"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/UserHome_photoImage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/Home_imageDescription"
+                    android:src="@drawable/home_shape_image"
+                    app:civ_border_color="@color/dark_gray"
+                    app:civ_border_width="1dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/UserHome_linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/guideline23"
+                app:layout_constraintTop_toBottomOf="@+id/CoachHome_linearLayout1"
+                app:layout_constraintVertical_bias="1.0"
+                tools:layout_editor_absoluteX="0dp">
+
+                <!-- 第一行按鈕 -->
+                <LinearLayout
+                    android:id="@+id/UserHome_linearLayout1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/UserHome_classCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:elevation="4dp"
+                        android:onClick="onClick"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="8dp">
+
+                        <LinearLayout
+                            android:id="@+id/UserHome_linearLayout1_1"
+                            android:layout_width="160dp"
+                            android:layout_height="100dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:layout_gravity="center_horizontal"
+                                android:src="@drawable/user_home_icon1" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/transparent"
+                                android:gravity="center"
+                                android:text="課程查詢"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/UserHome_coachCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:elevation="4dp"
+                        android:onClick="onClick"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="8dp">
+
+                        <LinearLayout
+                            android:id="@+id/UserHome_linearLayout1_2"
+                            android:layout_width="160dp"
+                            android:layout_height="100dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:layout_gravity="center_horizontal"
+                                android:src="@drawable/user_home_icon2" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/transparent"
+                                android:gravity="center"
+                                android:text="教練查詢"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- 第二行按鈕 -->
+                <LinearLayout
+                    android:id="@+id/UserHome_linearLayout2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/UserHome_loveCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:elevation="4dp"
+                        android:onClick="onClick"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="8dp">
+
+                        <LinearLayout
+                            android:id="@+id/UserHome_linearLayout2_1"
+                            android:layout_width="160dp"
+                            android:layout_height="100dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:layout_gravity="center_horizontal"
+                                android:src="@drawable/user_home_icon3" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/transparent"
+                                android:gravity="center"
+                                android:text="我的收藏"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/UserHome_historyCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:elevation="4dp"
+                        android:onClick="onClick"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="8dp">
+
+                        <LinearLayout
+                            android:id="@+id/UserHome_linearLayout2_2"
+                            android:layout_width="160dp"
+                            android:layout_height="100dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:layout_gravity="center_horizontal"
+                                android:src="@drawable/user_home_icon4" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/transparent"
+                                android:gravity="center"
+                                android:text="預約紀錄"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- 第三行按鈕 -->
+                <LinearLayout
+                    android:id="@+id/UserHome_linearLayout3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/UserHome_gymCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:elevation="4dp"
+                        android:onClick="onClick"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="8dp">
+
+                        <LinearLayout
+                            android:id="@+id/UserHome_linearLayout3_1"
+                            android:layout_width="160dp"
+                            android:layout_height="100dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:layout_gravity="center_horizontal"
+                                android:src="@drawable/user_home_icon5" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/transparent"
+                                android:gravity="center"
+                                android:text="附近課程"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/UserHome_contactCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:elevation="4dp"
+                        android:onClick="onClick"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="8dp">
+
+                        <LinearLayout
+                            android:id="@+id/UserHome_linearLayout3_2"
+                            android:layout_width="160dp"
+                            android:layout_height="100dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:layout_gravity="center_horizontal"
+                                android:src="@drawable/user_home_icon6" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/transparent"
+                                android:gravity="center"
+                                android:text="聯絡我們"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+            </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline18"
+                android:id="@+id/guideline21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.04" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.96" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline23"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.05" />
-
-            <LinearLayout
-                android:id="@+id/UserHome_linearLayout1"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="15dp"
-                android:layout_weight="1"
-                android:background="@drawable/all_home_background_linearlayout"
-                android:orientation="vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline32"
-                app:layout_constraintEnd_toStartOf="@+id/guideline31"
-                app:layout_constraintStart_toStartOf="@+id/guideline20"
-                app:layout_constraintTop_toTopOf="@+id/guideline18">
-
-                <Button
-                    android:id="@+id/UserHome_classButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/user_home_stroke_class_button"
-                    android:onClick="onClick" />
-
-                <TextView
-                    android:id="@+id/UserHome_classText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:text="@string/Home_userButton1" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/UserHome_linearLayout2"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="15dp"
-                android:layout_weight="1"
-                android:background="@drawable/all_home_background_linearlayout"
-                android:orientation="vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline32"
-                app:layout_constraintEnd_toStartOf="@+id/guideline19"
-                app:layout_constraintStart_toStartOf="@+id/guideline31"
-                app:layout_constraintTop_toTopOf="@+id/guideline18">
-
-                <Button
-                    android:id="@+id/UserHome_coachButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/user_home_stroke_coach_button"
-                    android:onClick="onClick" />
-
-                <TextView
-                    android:id="@+id/UserHome_coachText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:text="@string/Home_userButton2" />
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline32"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.35" />
-
-            <LinearLayout
-                android:id="@+id/UserHome_linearLayout3"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="15dp"
-                android:layout_weight="1"
-                android:background="@drawable/all_home_background_linearlayout"
-                android:orientation="vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline33"
-                app:layout_constraintEnd_toStartOf="@+id/guideline31"
-                app:layout_constraintStart_toStartOf="@+id/guideline20"
-                app:layout_constraintTop_toTopOf="@+id/guideline32">
-
-                <Button
-                    android:id="@+id/UserHome_loveButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/user_home_stroke_love_button"
-                    android:onClick="onClick" />
-
-                <TextView
-                    android:id="@+id/UserHome_loveText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:text="@string/Home_userButton3" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/UserHome_linearLayout4"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="15dp"
-                android:layout_weight="1"
-                android:background="@drawable/all_home_background_linearlayout"
-                android:orientation="vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline33"
-                app:layout_constraintEnd_toStartOf="@+id/guideline19"
-                app:layout_constraintStart_toStartOf="@+id/guideline31"
-                app:layout_constraintTop_toTopOf="@+id/guideline32">
-
-                <Button
-                    android:id="@+id/UserHome_historyButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/user_home_stroke_history_button"
-                    android:onClick="onClick" />
-
-                <TextView
-                    android:id="@+id/UserHome_historyText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:text="@string/Home_userButton4" />
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline33"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.65" />
-
-            <LinearLayout
-                android:id="@+id/UserHome_linearLayout5"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="15dp"
-                android:layout_weight="1"
-                android:background="@drawable/all_home_background_linearlayout"
-                android:orientation="vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline17"
-                app:layout_constraintEnd_toStartOf="@+id/guideline31"
-                app:layout_constraintStart_toStartOf="@+id/guideline20"
-                app:layout_constraintTop_toTopOf="@+id/guideline33">
-
-                <Button
-                    android:id="@+id/UserHome_gymButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/user_home_stroke_gym_button"
-                    android:onClick="onClick" />
-
-                <TextView
-                    android:id="@+id/UserHome_gymText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:text="@string/Home_userButton5" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/UserHome_linearLayout6"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="15dp"
-                android:layout_weight="1"
-                android:background="@drawable/all_home_background_linearlayout"
-                android:orientation="vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline17"
-                app:layout_constraintEnd_toStartOf="@+id/guideline19"
-                app:layout_constraintStart_toStartOf="@+id/guideline31"
-                app:layout_constraintTop_toTopOf="@+id/guideline33">
-
-                <Button
-                    android:id="@+id/UserHome_contactButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/user_home_stroke_contact_button"
-                    android:onClick="onClick" />
-
-                <TextView
-                    android:id="@+id/UserHome_contactText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:text="@string/Contact_titleText" />
-            </LinearLayout>
+                app:layout_constraintGuide_percent="0.98" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.95" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.12" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline19"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.88" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline31"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5" />
+                app:layout_constraintGuide_percent="0.08" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <Button
-        android:id="@+id/UserHome_editButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:background="@drawable/main_register_selector_track_backgrounds"
-        android:backgroundTint="@color/red"
-        android:text="@string/Home_editButton"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/guideline16"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.17" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline21"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.04" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline23"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.88" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,7 +26,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:hint="輸入店家名稱" />
+            android:hint="輸入課程名稱" />
 
         <Button
             android:id="@+id/submit"

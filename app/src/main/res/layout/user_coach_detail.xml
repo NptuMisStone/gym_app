@@ -8,72 +8,100 @@
     tools:context=".User.Coach.CoachDetail">
 
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar3"
+    <!-- 標頭 -->
+    <RelativeLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
-        android:id="@+id/user_DetailCoach_back"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:onClick="user_detail_coach_goback"
+        <!-- 返回按鈕 -->
+        <ImageButton
+            android:id="@+id/user_DetailCoach_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="返回上一頁"
+            android:onClick="user_detail_coach_goback"
+            android:scaleType="centerInside"
+            android:src="@drawable/all_ic_arrow_back3" />
+
+        <!-- 標頭標題 -->
+        <TextView
+            android:id="@+id/title3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="教練資訊"
+            android:textColor="#808080"
+            android:textSize="20sp" />
+
+        <!-- 喜好按鈕 -->
+        <ImageButton
+            android:id="@+id/user_like_detail_coach_btn"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="喜好按鈕"
+            android:scaleType="centerInside"
+            android:src="@drawable/user_like_ic_not_love" />
+
+        <!-- 底部細底線 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#d3d3d3" />
+    </RelativeLayout>
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_detail_coach_img"
+        android:layout_width="230dp"
+        android:layout_height="230dp"
+        android:layout_gravity="center_vertical"
+        android:padding="4dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/guideline23"
+        android:src="@drawable/coach_main_ic_default"
+        app:civ_border_color="#4C000000"
+        app:civ_border_width="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline25"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.042"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/all_ic_arrow_back1" />
+        app:layout_constraintTop_toBottomOf="@+id/header" />
 
-    <ImageButton
-        android:id="@+id/user_like_detail_coach_btn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="20dp"
-        android:background="@android:color/transparent"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/guideline23"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/user_like_ic_not_love" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline23"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.08" />
-
-    <TextView
-        android:id="@+id/title3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="教練資訊"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar3"
+    <View
+        android:id="@+id/ClassDetail_gapLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#d3d3d3"
+        app:layout_constraintBottom_toTopOf="@+id/DetailCoachTabLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.51" />
+        app:layout_constraintTop_toTopOf="@+id/guideline25" />
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/DetailCoachTabLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/DetailCoachFrameLayout"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline25">
-
+        app:layout_constraintTop_toTopOf="@+id/guideline25"
+        app:layout_constraintVertical_bias="0.24">
 
 
         <com.google.android.material.tabs.TabItem
@@ -81,17 +109,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="教練課程" />
+
         <com.google.android.material.tabs.TabItem
             android:id="@+id/DetailCoachTab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="基本資訊" />
+
         <com.google.android.material.tabs.TabItem
             android:id="@+id/DetailCoachRatingTab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="評分與評論" />
-
 
 
     </com.google.android.material.tabs.TabLayout>
@@ -119,29 +148,4 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.40024784" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/user_detail_coach_img"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center_vertical"
-        android:padding="4dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/main_login_ic_coach"
-        app:layout_constraintBottom_toTopOf="@+id/guideline25"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline23"
-        app:civ_border_color="#000000"
-        app:civ_border_width="4dp"/>
-
-    <View
-        android:id="@+id/ClassDetail_gapLine"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/black"
-        app:layout_constraintBottom_toTopOf="@+id/DetailCoachTabLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline25" />
 </androidx.constraintlayout.widget.ConstraintLayout>

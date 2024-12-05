@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,33 +6,49 @@
     android:layout_height="match_parent"
     tools:context=".User.Class.ClassList">
 
-    <TextView
-        android:id="@+id/title4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="所有課程"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline22"
+    <!-- 標頭 -->
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.51" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
-        android:id="@+id/user_AllClass_back"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:onClick="user_All_Class_goback"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/guideline22"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.042"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/all_ic_arrow_back1" />
+        <!-- 返回按鈕 -->
+        <ImageButton
+            android:id="@+id/user_AllClass_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/all_effect_ripple"
+            android:contentDescription="返回上一頁"
+            android:onClick="user_All_Class_goback"
+            android:scaleType="centerInside"
+            android:src="@drawable/all_ic_arrow_back3" />
+
+        <!-- 標頭標題 -->
+        <TextView
+            android:id="@+id/user_Like_titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="所有課程"
+            android:textColor="#808080"
+            android:textSize="20sp" />
+
+        <!-- 底部細底線 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#d3d3d3" />
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/progressBar_allclass"
@@ -79,7 +94,6 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/user_class_list_ic_filter" />
-
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -105,5 +119,4 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.18194254" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -181,7 +181,6 @@ public class CoachDetail extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-
         });
     }
     public  void user_detail_coach_goback(View view){

@@ -27,7 +27,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/guideline5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/course_ic_null_class" />
+                app:srcCompat="@drawable/coach_class_main_ic_default" />
 
             <TextView
                 android:id="@+id/user_all_class_people_sign"
