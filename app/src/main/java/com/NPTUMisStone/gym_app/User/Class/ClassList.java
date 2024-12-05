@@ -787,6 +787,8 @@ public class ClassList extends AppCompatActivity {
             peoplegroup.check(R.id.filter_class_people_all);
 
             // 重置價格範圍
+            minmoney = filterView.findViewById(R.id.filter_class_price_min);
+            maxmoney = filterView.findViewById(R.id.filter_class_price_max);
             if (minmoney != null) minmoney.setText("");
             if (maxmoney != null) maxmoney.setText("");
 

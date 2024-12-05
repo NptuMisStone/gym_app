@@ -29,6 +29,7 @@ import com.NPTUMisStone.gym_app.User.Class.ClassList;
 import com.NPTUMisStone.gym_app.User.Coach.CoachList;
 import com.NPTUMisStone.gym_app.User.Like.UserLike;
 import com.NPTUMisStone.gym_app.User.Records.Appointment;
+import com.NPTUMisStone.gym_app.User.Records.Fragment.NowFragment;
 import com.NPTUMisStone.gym_app.User_And_Coach.Helper.AdHelper;
 import com.NPTUMisStone.gym_app.User_And_Coach.UI.Contact;
 import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
@@ -43,7 +44,7 @@ import java.util.Calendar;
 import java.util.concurrent.Executors;
 
 public class UserHome extends AppCompatActivity {
-    Connection MyConnection;
+    private Connection MyConnection;
     ProgressBarHandler progressBarHandler;
 
     @Override
@@ -51,12 +52,13 @@ public class UserHome extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.user_main_home);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.UserHome_constraintLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        initSQLConnection();
+        // 初始化其他屬性
+        MyConnection = new SQLConnection(findViewById(R.id.UserHome_constraintLayout)).IWantToConnection();
         progressBarHandler = new ProgressBarHandler(this, findViewById(android.R.id.content));
         init_userinfo();
 
@@ -75,15 +77,6 @@ public class UserHome extends AppCompatActivity {
         fetchClosestUpcomingAppointment();
     }
 
-    private void initSQLConnection() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            try(Connection connection = new SQLConnection(findViewById(R.id.main)).IWantToConnection()){
-                new Handler(Looper.getMainLooper()).post(() -> MyConnection = connection);
-            } catch (Exception e) {
-                Log.e("SQL", "Connection error", e);
-            }
-        });
-    }
     private void init_userinfo() {
         ((TextView) findViewById(R.id.UserHome_nameText)).setText(getGreetingMessage());
         findViewById(R.id.UserHome_photoImage).setOnClickListener(v -> startActivity(new Intent(this, UserInfo.class)));
@@ -202,7 +195,6 @@ public class UserHome extends AppCompatActivity {
                 ResultSet rs = searchStatement.executeQuery();
 
                 if (rs.next()) {
-                    int scheduleID = rs.getInt("課表編號"); // 獲取 ScheduleID
                     String courseName = rs.getString("課程名稱");
                     String date = rs.getDate("日期").toString();
                     String dayOfWeek = rs.getString("星期幾");
@@ -216,7 +208,7 @@ public class UserHome extends AppCompatActivity {
                     int totalPeople = rs.getInt("上課人數");
 
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        updateUIWithClosestUpcomingAppointment(scheduleID, courseName, date, dayOfWeek, startTime, endTime, locationName, locationType, city, district, bookedPeople, totalPeople);
+                        updateUIWithClosestUpcomingAppointment(courseName, date, dayOfWeek, startTime, endTime, locationName, locationType, city, district, bookedPeople, totalPeople);
                         progressBarHandler.hideProgressBar();
                         isLoading = false;
                     });
@@ -246,7 +238,7 @@ public class UserHome extends AppCompatActivity {
         });
     }
 
-    private void updateUIWithClosestUpcomingAppointment(int scheduleID, String courseName, String date, String dayOfWeek,
+    private void updateUIWithClosestUpcomingAppointment(String courseName, String date, String dayOfWeek,
                                                         String startTime, String endTime, String locationName,
                                                         int locationType, String city, String district, int bookedPeople, int totalPeople) {
         TextView classTypeLabel = findViewById(R.id.classTypeLabel);
@@ -285,8 +277,7 @@ public class UserHome extends AppCompatActivity {
         // 設置按鈕點擊事件
         Button viewAppointmentListButton = findViewById(R.id.viewAppointmentListButton);
         viewAppointmentListButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, Detail.class);
-            intent.putExtra("看預約名單ID", scheduleID);
+            Intent intent = new Intent(this, Appointment.class);
             startActivity(intent);
         });
     }

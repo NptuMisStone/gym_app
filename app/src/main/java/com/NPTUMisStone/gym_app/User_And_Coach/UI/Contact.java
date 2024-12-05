@@ -79,7 +79,7 @@ public class Contact extends AppCompatActivity {
         mapView.getMapboxMap().loadStyle(getString(R.string.mapbox_style_url), style -> {
             mapView.getMapboxMap().setCamera(new CameraOptions.Builder()
                     .center(Point.  fromLngLat(120.5112317, 22.6573704))
-                    .zoom(17.0).build());
+                    .zoom(16.0).build());
             LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
             locationComponentPlugin.setEnabled(true);
             LocationPuck2D locationPuck2D = new LocationPuck2D();

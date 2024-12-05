@@ -24,10 +24,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.NPTUMisStone.gym_app.Coach.Records.Detail;
 import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User.Main.User;
+import com.NPTUMisStone.gym_app.User.Records.Appointment;
 import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ImageHandle;
+import com.NPTUMisStone.gym_app.User_And_Coach.Map.Redirecting;
 import com.NPTUMisStone.gym_app.databinding.UserAppointmentNowBinding;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -72,7 +76,7 @@ public class NowFragment extends Fragment {
             try {
                 MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
                 appointmentData.clear();
-                String sql = "SELECT 預約編號,日期,星期幾,開始時間,課程時間長度,課程名稱,課程費用,健身教練圖片,健身教練姓名,預約狀態,備註,課表編號 FROM [使用者預約-有預約的] WHERE [預約狀態] = 1 AND 使用者編號 = ?";
+                String sql = "SELECT 預約編號,日期,星期幾,開始時間,課程時間長度,課程名稱,課程費用,健身教練圖片,健身教練姓名,預約狀態,備註,課表編號,課程編號 FROM [使用者預約-有預約的] WHERE [預約狀態] = 1 AND 使用者編號 = ?";
                 PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
                 searchStatement.setInt(1, User.getInstance().getUserId());
                 ResultSet rs = searchStatement.executeQuery();
@@ -90,8 +94,10 @@ public class NowFragment extends Fragment {
                             rs.getString("健身教練姓名"),
                             rs.getInt("預約狀態"),
                             rs.getString("備註"),
-                            rs.getInt("課表編號")
+                            rs.getInt("課表編號"),
+                            rs.getInt("課程編號")
                     ));
+
                 rs.close();
                 searchStatement.close();
             } catch (SQLException e) {
@@ -118,16 +124,16 @@ public class NowFragment extends Fragment {
     }
     static class User_Now_AppointmentData {
         Date date;
-        int reservationID, timeLong, status,scheduleID;
+        int reservationID, timeLong, status,scheduleID,classID;
         byte[] coachimage;
         String className, classPrice, coachName, note,week,time;
         static ArrayList<User_Now_AppointmentData> appointments = new ArrayList<>();
 
-        public User_Now_AppointmentData(int reservationID, Date date, String week, String time, int timeLong, String className, String classPrice, byte[] coachimage, String coachName, int status, String note,int scheduleID) {
+        public User_Now_AppointmentData(int reservationID, Date date, String week, String time, int timeLong, String className, String classPrice, byte[] coachimage, String coachName, int status, String note, int scheduleID, int classID) {
             this.reservationID = reservationID;
             this.date = date;
-            this.week=week;
-            this.time=time;
+            this.week = week;
+            this.time = time;
             this.timeLong = timeLong;
             this.className = className;
             this.classPrice = classPrice;
@@ -135,13 +141,18 @@ public class NowFragment extends Fragment {
             this.coachName = coachName;
             this.status = status;
             this.note = note;
-            this.scheduleID=scheduleID;
+            this.scheduleID = scheduleID;
+            this.classID = classID;
         }
         public static ArrayList<User_Now_AppointmentData> getAppointments() {
             if (appointments == null) {
                 return null;
             }
             return appointments;
+        }
+
+        public int getClassID() {
+            return classID;
         }
 
         private int getReservationID() {
@@ -197,7 +208,7 @@ public class NowFragment extends Fragment {
         public static class ViewHolder extends RecyclerView.ViewHolder {
             ImageView coach_image;
             TextView ap_date, ap_Time, class_time_long, class_name, class_price, coach_name, note, ap_week;
-            ImageButton user_ap_cancel_btn;
+            ImageButton user_ap_cancel_btn,directionButton;
             public ViewHolder(View itemView) {
                 super(itemView);
                 coach_image = itemView.findViewById(R.id.user_ap_coach_img);
@@ -210,6 +221,7 @@ public class NowFragment extends Fragment {
                 coach_name = itemView.findViewById(R.id.user_like_class_people);
                 note = itemView.findViewById(R.id.user_like_coach_type);
                 user_ap_cancel_btn=itemView.findViewById(R.id.user_ap_cancel_confirmbtn);
+                directionButton=itemView.findViewById(R.id.appointmentDetail_directionButton);
             }
         }
 
@@ -247,6 +259,11 @@ public class NowFragment extends Fragment {
                         .setNegativeButton("取消", null)
                         .show();
             });
+            holder.directionButton.setOnClickListener(v -> {
+                String locationAddress = Redirecting.getLocationAddress(MyConnection, item.getClassID());
+                new Redirecting(context, locationAddress).getCurrentLocation(); // 使用 context
+            });
+
         }
         private void deleteAppointment(int reservationID, int position) {
             Executors.newSingleThreadExecutor().execute(() -> {

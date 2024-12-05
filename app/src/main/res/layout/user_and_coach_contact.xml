@@ -73,12 +73,12 @@
         <!-- Map with buttons -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="350dp">
 
             <com.mapbox.maps.MapView
                 android:id="@+id/Contact_mapView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <Button
                     android:id="@+id/Contact_rightButton"
@@ -115,27 +115,18 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="475dp"
+            android:layout_height="match_parent"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="20dp">
 
             <!-- Location -->
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:text="我們團隊致力於為所有使用者提供良好且資訊透明的環境來預約、提高教練被發現的機會。"
-                android:textColor="@color/dark_green"
-                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/textView13"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="4dp"
                 android:gravity="center"
                 android:text="我們是由一群熱愛健身及運動的大學生組成"
                 android:textColor="#F44336"
@@ -145,7 +136,7 @@
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:text="如有任何問題，歡迎與我們聯繫"
                 android:textColor="#009688"
@@ -155,7 +146,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">

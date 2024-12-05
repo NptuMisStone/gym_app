@@ -465,6 +465,7 @@ public class UserInfo extends AppCompatActivity {
 
     private void performDeleteAccount() {
         try {
+            // 待加入刪除所有關聯
             // 刪除使用者主記錄
             String deleteUserQuery = "DELETE FROM 使用者資料 WHERE 使用者編號 = ?";
             PreparedStatement userStatement = MyConnection.prepareStatement(deleteUserQuery);

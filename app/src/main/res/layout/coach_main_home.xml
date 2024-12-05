@@ -66,8 +66,8 @@
                     android:id="@+id/classTypeLabel"
                     android:layout_width="81dp"
                     android:layout_height="35dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
                     android:background="@drawable/class_type_label_bg"
                     android:gravity="center"
                     android:paddingHorizontal="8dp"
@@ -83,7 +83,7 @@
                     android:id="@+id/class_detailLayout"
                     android:layout_width="342dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="42dp"
+                    android:layout_marginTop="38dp"
                     android:orientation="vertical"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
@@ -127,7 +127,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="8dp">
+                        android:paddingTop="5dp">
 
                         <ImageView
                             android:layout_width="25dp"
@@ -200,9 +200,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="179dp"
-                    android:layout_marginTop="104dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
                     android:background="@drawable/coach_main_home_ic_rounded_button"
                     android:drawablePadding="8dp"
                     android:paddingHorizontal="16dp"
@@ -210,10 +209,8 @@
                     android:text="🔍  查看預約名單"
                     android:textColor="#946550"
                     android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/classTypeLabel" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 

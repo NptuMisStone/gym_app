@@ -545,7 +545,7 @@ public class ClassAdd extends AppCompatActivity {
             // 使用 Handler 延遲 2 秒後跳轉到 ClassMain
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 navigateToClassMain(); // 跳轉到主頁面
-            }, 2000); // 2000 毫秒即 2 秒
+            }, 3000); // 3000 毫秒即 3 秒
         } catch (SQLException e) {
             e.printStackTrace();
             Toast.makeText(this, "儲存課程失敗！", Toast.LENGTH_SHORT).show();

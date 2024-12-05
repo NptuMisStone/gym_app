@@ -757,9 +757,22 @@ public class ScheduledMain extends AppCompatActivity {
 
         // 自定義按鈕
         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "刪除課表", (dialogInterface, which) -> {
-            // 確認刪除
-            confirmDeleteSchedule(scheduleId);
+            // 顯示確認刪除的對話框
+            new AlertDialog.Builder(this)
+                    .setTitle("確認刪除")
+                    .setMessage("您是否要刪除此門課程安排？")
+                    .setPositiveButton("是", (confirmDialog, confirmWhich) -> {
+                        // 執行刪除操作
+                        confirmDeleteSchedule(scheduleId);
+                        confirmDialog.dismiss();
+                    })
+                    .setNegativeButton("否", (confirmDialog, confirmWhich) -> {
+                        // 取消操作
+                        confirmDialog.dismiss();
+                    })
+                    .show();
         });
+
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, "關閉", (dialogInterface, which) -> dialogInterface.dismiss());
 
         // 顯示對話框後設置按鈕樣式

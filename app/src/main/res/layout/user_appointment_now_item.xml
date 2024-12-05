@@ -311,6 +311,19 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <ImageButton
+                android:id="@+id/appointmentDetail_directionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/all_effect_ripple"
+                android:contentDescription="@string/goBack"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user_class_detail_ic_direction"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView_Date" />
+
             <TextView
                 android:id="@+id/textView_cancel"
                 android:layout_width="wrap_content"

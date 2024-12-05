@@ -880,6 +880,28 @@ public class ClassEdit extends AppCompatActivity {
      * 刪除課程
      */
     private void deleteCourse() {
+        // 查詢是否有未結束的預約
+        String queryCheck = "SELECT COUNT(*) AS count FROM [使用者預約-有預約的] " +
+                "WHERE 課程編號 = ? AND (日期 > GETDATE() OR (日期 = GETDATE() AND 結束時間 > CONVERT(VARCHAR, GETDATE(), 108)))";
+
+        try (PreparedStatement checkStmt = MyConnection.prepareStatement(queryCheck)) {
+            checkStmt.setInt(1, classId); // 使用課程 ID 設置參數
+            ResultSet rs = checkStmt.executeQuery();
+            if (rs.next() && rs.getInt("count") > 0) {
+                // 如果有未結束的預約，彈出提示
+                new AlertDialog.Builder(this)
+                        .setTitle("無法刪除課程")
+                        .setMessage("該課程仍有未結束的預約，請先於班表移除排班後再嘗試刪除。")
+                        .setPositiveButton("確定", (dialog, which) -> dialog.dismiss())
+                        .show();
+                return;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "檢查未結束預約時發生錯誤，請稍後再試", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // 創建一個確認對話框
         new AlertDialog.Builder(this)
                 .setTitle("刪除課程")
@@ -896,7 +918,6 @@ public class ClassEdit extends AppCompatActivity {
                             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                                 navigateToClassMain(); // 跳轉到主頁面
                             }, 2000); // 2000 毫秒即 2 秒
-
                         } else {
                             Toast.makeText(this, "刪除失敗，課程不存在", Toast.LENGTH_SHORT).show();
                         }
@@ -911,5 +932,6 @@ public class ClassEdit extends AppCompatActivity {
                 })
                 .show();
     }
+
 
 }
