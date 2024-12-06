@@ -165,4 +165,16 @@ public class ClassDetail extends AppCompatActivity {
     private interface ResultSetHandler {
         void handle(ResultSet rs) throws SQLException;
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            if (MyConnection == null || MyConnection.isClosed()) {
+                MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+                findViewById(R.id.ClassDetail_directionButton).setOnClickListener(v -> new Redirecting(this, Redirecting.getLocationAddress(MyConnection,classID)).getCurrentLocation());
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

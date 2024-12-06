@@ -56,29 +56,29 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 
 public class ClassList extends AppCompatActivity {
-    private ClassListAdapter cityadapter;
+    private ClassListAdapter cityAdapter;
     private BottomSheetDialog filterDialog;
     Connection MyConnection;
     ArrayList<User_All_Class_Data> class_data = new ArrayList<>();
     private ProgressBar progressBar;
-    ImageView filterbtn, searchbtn;
-    TextView searchtext;
+    ImageView filterButton, searchButton;
+    TextView searchText;
     ExpandableListView expandableListView;
     List<String> parentList; // 父節點縣市
     HashMap<String, List<String>> childMap; // 子節點：行政區
-    EditText minmoney, maxmoney;
+    EditText minMoney, maxMoney;
     ArrayList<String> selectedCities, selectedAreas;
-    String searchtxt;
+    String searchString;
 
     public static class ClassListAdapter extends BaseExpandableListAdapter {
-        private Context context;
-        private List<String> parentList;
-        private HashMap<String, List<String>> childMap;
-        private HashMap<String, Boolean> groupCheckState; // 保存父節點的 CheckBox 狀態
-        private HashMap<String, HashMap<String, Boolean>> childCheckState; // 保存子節點的 CheckBox 狀態
+        Context context;
+        List<String> parentList;
+        HashMap<String, List<String>> childMap;
+        HashMap<String, Boolean> groupCheckState; // 保存父節點的 CheckBox 狀態
+        HashMap<String, HashMap<String, Boolean>> childCheckState; // 保存子節點的 CheckBox 狀態
 
-        private ArrayList<String> selectedCities; // 選中的縣市
-        private ArrayList<String> selectedAreas;  // 選中的行政區
+        ArrayList<String> selectedCities; // 選中的縣市
+        ArrayList<String> selectedAreas;  // 選中的行政區
 
         public ClassListAdapter(Context context, List<String> parentList, HashMap<String, List<String>> childMap) {
             this.context = context;
@@ -94,7 +94,7 @@ public class ClassList extends AppCompatActivity {
             for (String group : parentList) {
                 groupCheckState.put(group, false);
                 HashMap<String, Boolean> childStates = new HashMap<>();
-                for (String child : childMap.get(group)) {
+                for (String child : Objects.requireNonNull(childMap.get(group))) {
                     childStates.put(child, false);
                 }
                 childCheckState.put(group, childStates);
@@ -117,7 +117,7 @@ public class ClassList extends AppCompatActivity {
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            return childMap.get(parentList.get(groupPosition)).size();
+            return Objects.requireNonNull(childMap.get(parentList.get(groupPosition))).size();
         }
 
         @Override
@@ -127,7 +127,7 @@ public class ClassList extends AppCompatActivity {
 
         @Override
         public Object getChild(int groupPosition, int childPosition) {
-            return childMap.get(parentList.get(groupPosition)).get(childPosition);
+            return Objects.requireNonNull(childMap.get(parentList.get(groupPosition))).get(childPosition);
         }
 
         @Override
@@ -167,7 +167,7 @@ public class ClassList extends AppCompatActivity {
 
             // 設置 CheckBox 的狀態
             checkBox.setOnCheckedChangeListener(null);
-            checkBox.setChecked(groupCheckState.get(cityName));
+            checkBox.setChecked(Boolean.TRUE.equals(groupCheckState.get(cityName)));
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 groupCheckState.put(cityName, isChecked);
 
@@ -214,9 +214,9 @@ public class ClassList extends AppCompatActivity {
 
             textView.setText(areaName);
             checkBox.setOnCheckedChangeListener(null);
-            checkBox.setChecked(childCheckState.get(groupName).get(areaName));
+            checkBox.setChecked(Boolean.TRUE.equals(Objects.requireNonNull(childCheckState.get(groupName)).get(areaName)));
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                childCheckState.get(groupName).put(areaName, isChecked);
+                Objects.requireNonNull(childCheckState.get(groupName)).put(areaName, isChecked);
 
                 if (isChecked) {
                     if (!selectedAreas.contains(areaName)) {
@@ -232,17 +232,13 @@ public class ClassList extends AppCompatActivity {
 
         public void resetCheckStates() {
             // 重置父節點的勾選狀態
-            for (String group : groupCheckState.keySet()) {
-                groupCheckState.put(group, false);
-            }
+            groupCheckState.replaceAll((g, v) -> false);
 
             // 重置子節點的勾選狀態
             for (String group : childCheckState.keySet()) {
                 HashMap<String, Boolean> childStates = childCheckState.get(group);
                 if (childStates != null) {
-                    for (String child : childStates.keySet()) {
-                        childStates.put(child, false);
-                    }
+                    childStates.replaceAll((c, v) -> false);
                 }
             }
 
@@ -274,27 +270,27 @@ public class ClassList extends AppCompatActivity {
         MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
         progressBar = findViewById(R.id.progressBar_allclass);
         progressBar.setVisibility(View.VISIBLE);
-        filterbtn = findViewById(R.id.class_filter_btn);
-        filterbtn.setOnClickListener(view -> showFilterDialog());
-        searchtext = findViewById(R.id.class_filter_searchtext);
-        searchbtn = findViewById(R.id.class_search_btn);
-        searchbtn.setOnClickListener(view -> {
+        filterButton = findViewById(R.id.class_filter_btn);
+        filterButton.setOnClickListener(view -> showFilterDialog());
+        searchText = findViewById(R.id.class_filter_searchText);
+        searchButton = findViewById(R.id.class_search_btn);
+        searchButton.setOnClickListener(view -> {
             // 顯示進度條
             progressBar.setVisibility(View.VISIBLE);
 
             // 將所有過濾條件初始化
-            selectedCities = cityadapter != null ? cityadapter.getSelectedCities() : new ArrayList<>();
-            selectedAreas = cityadapter != null ? cityadapter.getSelectedAreas() : new ArrayList<>();
-            searchtxt = searchtext.getText().toString();
-            gendercheck = ""; // 根據你的需求預設為空或某一值
-            peoplecheck = "0"; // 預設為 0 表示全部人數
-            minmoney = findViewById(R.id.filter_class_price_min);
-            maxmoney = findViewById(R.id.filter_class_price_max);
+            selectedCities = cityAdapter != null ? cityAdapter.getSelectedCities() : new ArrayList<>();
+            selectedAreas = cityAdapter != null ? cityAdapter.getSelectedAreas() : new ArrayList<>();
+            searchString = searchText.getText().toString();
+            genderCheck = ""; // 根據你的需求預設為空或某一值
+            peopleCheck = "0"; // 預設為 0 表示全部人數
+            minMoney = findViewById(R.id.filter_class_price_min);
+            maxMoney = findViewById(R.id.filter_class_price_max);
 
             // 呼叫篩選方法
-            fetchfilter();
+            fetchFilter();
         });
-
+        findViewById(R.id.user_AllClass_back).setOnClickListener(v -> finish());
 
     }
 
@@ -326,23 +322,23 @@ public class ClassList extends AppCompatActivity {
         });
     }
 
-    private void fetchfilter() {
+    private void fetchFilter() {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
 
-                searchtxt = (searchtxt == null || searchtxt.trim().isEmpty()) ? "%" : "%" + searchtxt + "%";
+                searchString = (searchString == null || searchString.trim().isEmpty()) ? "%" : "%" + searchString + "%";
                 selectedTypeID = (selectedTypeID == null || selectedTypeID.trim().isEmpty()) ? "%" : selectedTypeID;
                 selectedTypeID = (selectedTypeID.equals("0")) ? "%" : selectedTypeID;
-                gendercheck = (gendercheck == null || gendercheck.trim().isEmpty()) ? "%" : gendercheck;
-                gendercheck = (gendercheck.equals("0")) ? "%" : gendercheck;
-                peoplecheck = (peoplecheck == null || peoplecheck.trim().isEmpty()) ? "0" : peoplecheck;
+                genderCheck = (genderCheck == null || genderCheck.trim().isEmpty()) ? "%" : genderCheck;
+                genderCheck = (genderCheck.equals("0")) ? "%" : genderCheck;
+                peopleCheck = (peopleCheck == null || peopleCheck.trim().isEmpty()) ? "0" : peopleCheck;
 
                 // 獲取最大和最小費用
-                String minMoneyText = (minmoney != null && minmoney.getText() != null && !minmoney.getText().toString().isEmpty())
-                        ? minmoney.getText().toString() : "0";
-                String maxMoneyText = (maxmoney != null && maxmoney.getText() != null && !maxmoney.getText().toString().isEmpty())
-                        ? maxmoney.getText().toString() : "9999";
+                String minMoneyText = (minMoney != null && minMoney.getText() != null && !minMoney.getText().toString().isEmpty())
+                        ? minMoney.getText().toString() : "0";
+                String maxMoneyText = (maxMoney != null && maxMoney.getText() != null && !maxMoney.getText().toString().isEmpty())
+                        ? maxMoney.getText().toString() : "9999";
 
                 int minMoney = Integer.parseInt(minMoneyText);
                 int maxMoney = Integer.parseInt(maxMoneyText);
@@ -362,7 +358,7 @@ public class ClassList extends AppCompatActivity {
                                 "AND [健身教練性別] LIKE ? " +
                                 "AND ([課程費用] >= ? AND [課程費用] <= ?) ");
 
-                switch (peoplecheck) {
+                switch (peopleCheck) {
                     case "0":
                         sqlBuilder.append("AND [上課人數] LIKE ? ");
                         break;
@@ -388,20 +384,17 @@ public class ClassList extends AppCompatActivity {
 
                 PreparedStatement statement = MyConnection.prepareStatement(sqlBuilder.toString());
                 int index = 1;
-                statement.setString(index++, searchtxt);
+                statement.setString(index++, searchString);
                 statement.setString(index++, selectedTypeID);
-                statement.setString(index++, gendercheck);
+                statement.setString(index++, genderCheck);
                 statement.setInt(index++, minMoney);
                 statement.setInt(index++, maxMoney);
 
-                switch (peoplecheck) {
+                switch (peopleCheck) {
                     case "0":
                         statement.setString(index++, "%");
                         break;
-                    case "1":
-                        statement.setString(index++, "1");
-                        break;
-                    case "2":
+                    case "1", "2":
                         statement.setString(index++, "1");
                         break;
                 }
@@ -409,10 +402,7 @@ public class ClassList extends AppCompatActivity {
                     for (String area : selectedAreas) {
                         statement.setString(index++, "%" + area + "%");
                     }
-                } else {
-                    statement.setString(index++, "%");
                 }
-
                 ResultSet rs = statement.executeQuery();
                 class_data.clear();
                 while (rs.next()) {
@@ -445,14 +435,14 @@ public class ClassList extends AppCompatActivity {
 
     static class User_All_Class_Data {
         int classID;
-        byte[] classimage;
+        byte[] classImage;
         String className, classPrice, coachName, classIntro, classPeople;
 
         static ArrayList<User_All_Class_Data> classData = new ArrayList<>();
 
-        public User_All_Class_Data(int classID, byte[] classimage, String className, String classPrice, String coachName, String classIntro, String classPeople) {
+        public User_All_Class_Data(int classID, byte[] classImage, String className, String classPrice, String coachName, String classIntro, String classPeople) {
             this.classID = classID;
-            this.classimage = classimage;
+            this.classImage = classImage;
             this.className = className;
             this.classPrice = classPrice;
             this.coachName = coachName;
@@ -472,7 +462,7 @@ public class ClassList extends AppCompatActivity {
         }
 
         private byte[] getClassImage() {
-            return classimage;
+            return classImage;
         }
 
         private String getClassName() {
@@ -511,7 +501,7 @@ public class ClassList extends AppCompatActivity {
         public static class ViewHolder extends RecyclerView.ViewHolder {
             ImageView class_image;
             TextView class_people_sign, class_name, class_price, coach_name, class_intro, class_people;
-            ImageButton like_class_btn, moreindo_btn;
+            ImageButton like_class_btn, moreInfoButton;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -524,7 +514,7 @@ public class ClassList extends AppCompatActivity {
                 class_people = itemView.findViewById(R.id.user_all_class_people);
 
                 like_class_btn = itemView.findViewById(R.id.user_like_all_class_btn);
-                moreindo_btn = itemView.findViewById(R.id.user_all_class_info);
+                moreInfoButton = itemView.findViewById(R.id.user_all_class_info);
             }
         }
 
@@ -549,7 +539,7 @@ public class ClassList extends AppCompatActivity {
             holder.coach_name.setText(item.getCoachName());
             holder.class_intro.setText(item.getClassIntro());
             holder.class_people.setText("人數：" + item.getClassPeople() + "人");
-            holder.moreindo_btn.setOnClickListener(v -> {
+            holder.moreInfoButton.setOnClickListener(v -> {
                 SharedPreferences sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt("看更多課程ID", item.getClassID());
@@ -638,10 +628,6 @@ public class ClassList extends AppCompatActivity {
         public int getItemCount() {
             return class_dataList.size();
         }
-    }
-
-    public void user_All_Class_goback(View view) {
-        finish();
     }
 
     // 数据模型
@@ -743,13 +729,13 @@ public class ClassList extends AppCompatActivity {
             }
             childMap.put(city.cityName, areas);
         }
-        cityadapter = new ClassListAdapter(this, parentList, childMap);
-        expandableListView.setAdapter(cityadapter);
+        cityAdapter = new ClassListAdapter(this, parentList, childMap);
+        expandableListView.setAdapter(cityAdapter);
 
 
     }
 
-    String gendercheck, peoplecheck;
+    String genderCheck, peopleCheck;
 
     private void showFilterDialog() {
         if (isFinishing() || isDestroyed()) {
@@ -778,24 +764,24 @@ public class ClassList extends AppCompatActivity {
         loadCityAndAreaData();
         loadClassTypeData(typeSpinner);
 
-        RadioGroup gendergroup = filterView.findViewById(R.id.filter_class_coachgender_radiobuttongroup);
-        RadioGroup peoplegroup = filterView.findViewById(R.id.filter_class_people_radiobuttongroup);
+        RadioGroup genderGroup = filterView.findViewById(R.id.filter_class_coachgender_radiobuttongroup);
+        RadioGroup peopleGroup = filterView.findViewById(R.id.filter_class_people_radiobuttongroup);
         Button resetButton = filterView.findViewById(R.id.btn_reset);
         resetButton.setOnClickListener(v -> {
             // 重置篩選條件
-            gendergroup.check(R.id.filter_class_coachgender_all);
-            peoplegroup.check(R.id.filter_class_people_all);
+            genderGroup.check(R.id.filter_class_coachgender_all);
+            peopleGroup.check(R.id.filter_class_people_all);
 
             // 重置價格範圍
-            minmoney = filterView.findViewById(R.id.filter_class_price_min);
-            maxmoney = filterView.findViewById(R.id.filter_class_price_max);
-            if (minmoney != null) minmoney.setText("");
-            if (maxmoney != null) maxmoney.setText("");
+            minMoney = filterView.findViewById(R.id.filter_class_price_min);
+            maxMoney = filterView.findViewById(R.id.filter_class_price_max);
+            if (minMoney != null) minMoney.setText("");
+            if (maxMoney != null) maxMoney.setText("");
 
             // 重置城市和區域選擇
-            if (cityadapter != null) {
-                cityadapter.resetCheckStates();
-                cityadapter.notifyDataSetChanged();
+            if (cityAdapter != null) {
+                cityAdapter.resetCheckStates();
+                cityAdapter.notifyDataSetChanged();
             }
 
             // 重置分類
@@ -810,41 +796,41 @@ public class ClassList extends AppCompatActivity {
         applyButton.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             // 取得選中的 RadioButton ID
-            int selectedGenderId = gendergroup.getCheckedRadioButtonId();
+            int selectedGenderId = genderGroup.getCheckedRadioButtonId();
 
             // 判斷選中的 RadioButton
             if (selectedGenderId == R.id.filter_class_coachgender_boy) {
                 // 男性被選中
-                gendercheck = "1";
+                genderCheck = "1";
             } else if (selectedGenderId == R.id.filter_class_coachgender_girl) {
                 // 女性被選中
-                gendercheck = "2";
+                genderCheck = "2";
             } else if (selectedGenderId == R.id.filter_class_coachgender_nogender) {
                 // 全部被選中
-                gendercheck = "3";
+                genderCheck = "3";
             } else {
-                gendercheck = "";
+                genderCheck = "";
             }
             // 取得選中的 RadioButton ID
-            int selectedPeopleId = peoplegroup.getCheckedRadioButtonId();
+            int selectedPeopleId = peopleGroup.getCheckedRadioButtonId();
 
             // 判斷選中的 RadioButton
             if (selectedPeopleId == R.id.filter_class_people_all) {
                 // 全部人數
-                peoplecheck = "0";
+                peopleCheck = "0";
             } else if (selectedPeopleId == R.id.filter_class_people_one) {
                 // 1對1
-                peoplecheck = "1";
+                peopleCheck = "1";
             } else if (selectedPeopleId == R.id.filter_class_people_many) {
                 // 團體
-                peoplecheck = "2";
+                peopleCheck = "2";
             }
-            selectedCities = cityadapter.getSelectedCities();
-            selectedAreas = cityadapter.getSelectedAreas();
-            searchtxt = searchtext.getText().toString();
-            minmoney = filterView.findViewById(R.id.filter_class_price_min);
-            maxmoney = filterView.findViewById(R.id.filter_class_price_max);
-            fetchfilter();
+            selectedCities = cityAdapter.getSelectedCities();
+            selectedAreas = cityAdapter.getSelectedAreas();
+            searchString = searchText.getText().toString();
+            minMoney = filterView.findViewById(R.id.filter_class_price_min);
+            maxMoney = filterView.findViewById(R.id.filter_class_price_max);
+            fetchFilter();
 
             filterDialog.dismiss();
         });

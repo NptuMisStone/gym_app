@@ -26,7 +26,6 @@
             android:layout_marginStart="16dp"
             android:background="@drawable/all_effect_ripple"
             android:contentDescription="返回上一頁"
-            android:onClick="user_All_Class_goback"
             android:scaleType="centerInside"
             android:src="@drawable/all_ic_arrow_back3" />
 
@@ -63,19 +62,24 @@
 
     <LinearLayout
         android:id="@+id/linearLayout7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline26"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline22">
 
         <EditText
-            android:id="@+id/class_filter_searchtext"
+            android:id="@+id/class_filter_searchText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="10"
+            android:autofillHints="searchClass"
             android:ems="10"
             android:hint="請輸入想搜尋的課程..."
             android:inputType="text" />
@@ -91,7 +95,7 @@
             android:id="@+id/class_filter_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/user_class_list_ic_filter" />
     </LinearLayout>
@@ -105,9 +109,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userClassRecycleview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="140dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

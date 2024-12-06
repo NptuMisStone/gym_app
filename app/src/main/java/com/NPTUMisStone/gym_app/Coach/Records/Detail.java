@@ -471,6 +471,7 @@ public class Detail extends AppCompatActivity {
             });
         }
 
+
     }
 
     public void coach_Appointment_detail_goBack(View view) {
@@ -478,5 +479,18 @@ public class Detail extends AppCompatActivity {
         resultIntent.putExtra("刷新數據", true);
         setResult(RESULT_OK, resultIntent);
         super.finish();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            if (MyConnection == null || MyConnection.isClosed()) {
+                MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
+                notifyAll();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

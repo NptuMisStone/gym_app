@@ -202,12 +202,16 @@
                     android:id="@+id/ClassEdit_oneToOneRadio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:layout_gravity="center_vertical"
                     android:text="一對一課程" />
 
                 <RadioButton
                     android:id="@+id/ClassEdit_groupRadio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:layout_gravity="center_vertical"
                     android:text="團體課程" />
 
                 <EditText
@@ -218,7 +222,7 @@
                     android:layout_marginBottom="16dp"
                     android:hint="請輸入團體課程人數"
                     android:inputType="number"
-                    android:visibility="gone" />
+                    android:visibility="invisible" />
             </RadioGroup>
 
             <!-- 上課地點 -->
