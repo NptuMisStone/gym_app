@@ -26,14 +26,14 @@
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:hint="輸入課程名稱" />
+            android:hint="@string/MapView_searchHint" />
 
         <Button
             android:id="@+id/submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="查詢" />
+            android:text="@string/MapView_searchButton" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -44,7 +44,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="45dp"
         android:layout_marginBottom="45dp"
         android:scrollbars="none" />
 
