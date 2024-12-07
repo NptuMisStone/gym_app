@@ -1,147 +1,144 @@
-<!-- item_reservation.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="10dp">
+
     <!--預約資訊卡片-->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="320dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
+            <!-- 使用 FrameLayout 包裹圖片和右上角標籤 -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="180dp">
 
-            <ImageView
-                android:id="@+id/user_all_class_img"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                <ImageView
+                    android:id="@+id/user_all_class_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/coach_class_main_ic_default" />
 
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/coach_class_main_ic_default" />
-
-            <TextView
-                android:id="@+id/user_all_class_people_sign"
-                android:layout_width="45dp"
-                android:layout_height="35dp"
-                android:layout_weight="1"
-                android:background="#FF0000"
-                android:gravity="center"
-                android:text="一對一"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                <!-- 課程類型標籤 -->
+                <TextView
+                    android:id="@+id/user_all_class_people_sign"
+                    android:layout_width="81dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="end|top"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/class_type_label_bg"
+                    android:gravity="center"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp"
+                    android:text="課程類型"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
                 android:orientation="horizontal"
-                android:paddingHorizontal="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toTopOf="parent">
+                android:padding="10dp">
 
                 <LinearLayout
-                    android:layout_width="175dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/user_all_class_classname"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="課程名稱"
-                        android:textSize="12sp" />
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <!-- 圓形教練圖片 -->
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/user_detail_coach_img"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_marginEnd="8dp"
+                            android:padding="3dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/coach_main_ic_default"
+                            app:civ_border_color="#4C000000"
+                            app:civ_border_width="1dp" />
+
+                        <!-- 教練姓名 -->
+                        <TextView
+                            android:id="@+id/user_all_class_coachname"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="教練姓名"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/user_all_class_price"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="金額"
                         android:textColor="#FF0000"
-                        android:textSize="12sp" />
+                        android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/user_all_class_coachname"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="教練姓名"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/user_all_class_intro"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="介紹"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/user_all_class_people"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="上課人數"
-                        android:textSize="12sp" />
+                    <!-- 教練圖片與姓名 -->
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical">
-
-                    <ImageButton
-                        android:id="@+id/user_all_class_info"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@android:color/transparent"
-                        android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/user_like_more_info" />
 
                     <ImageButton
                         android:id="@+id/user_like_all_class_btn"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_marginTop="10dp"
                         android:background="@android:color/transparent"
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/user_like_ic_not_love" />
+
+                    <ImageButton
+                        android:id="@+id/user_all_class_info"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/user_like_more_info" />
+
                 </LinearLayout>
 
             </LinearLayout>
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.34" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-
 
 </LinearLayout>

@@ -310,7 +310,8 @@ public class ClassList extends AppCompatActivity {
                             rs.getString("課程費用"),
                             rs.getString("健身教練姓名"),
                             rs.getString("課程內容介紹"),
-                            rs.getString("上課人數")
+                            rs.getString("上課人數"),
+                            rs.getInt("地點類型")
                     ));
                 }
                 rs.close();
@@ -413,7 +414,8 @@ public class ClassList extends AppCompatActivity {
                             rs.getString("課程費用"),
                             rs.getString("健身教練姓名"),
                             rs.getString("課程內容介紹"),
-                            rs.getString("上課人數")
+                            rs.getString("上課人數"),
+                            rs.getInt("地點類型")
                     ));
                 }
                 rs.close();
@@ -434,13 +436,13 @@ public class ClassList extends AppCompatActivity {
     }
 
     static class User_All_Class_Data {
-        int classID;
+        int classID,locationType;
         byte[] classImage;
         String className, classPrice, coachName, classIntro, classPeople;
 
         static ArrayList<User_All_Class_Data> classData = new ArrayList<>();
 
-        public User_All_Class_Data(int classID, byte[] classImage, String className, String classPrice, String coachName, String classIntro, String classPeople) {
+        public User_All_Class_Data(int classID, byte[] classImage, String className, String classPrice, String coachName, String classIntro, String classPeople, int locationType ) {
             this.classID = classID;
             this.classImage = classImage;
             this.className = className;
@@ -448,6 +450,7 @@ public class ClassList extends AppCompatActivity {
             this.coachName = coachName;
             this.classIntro = classIntro;
             this.classPeople = classPeople;
+            this.locationType = locationType;
         }
 
         public static ArrayList<User_All_Class_Data> getClassData() {
@@ -484,6 +487,10 @@ public class ClassList extends AppCompatActivity {
         private String getClassPeople() {
             return classPeople;
         }
+
+        private int getlocationType() {
+            return locationType;
+        }
     }
 
     class All_ClassAdapter extends RecyclerView.Adapter<ClassList.All_ClassAdapter.ViewHolder> {
@@ -500,7 +507,7 @@ public class ClassList extends AppCompatActivity {
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
             ImageView class_image;
-            TextView class_people_sign, class_name, class_price, coach_name, class_intro, class_people;
+            TextView class_people_sign, class_name, class_price, coach_name;
             ImageButton like_class_btn, moreInfoButton;
 
             public ViewHolder(View itemView) {
@@ -510,9 +517,6 @@ public class ClassList extends AppCompatActivity {
                 class_name = itemView.findViewById(R.id.user_all_class_classname);
                 class_price = itemView.findViewById(R.id.user_all_class_price);
                 coach_name = itemView.findViewById(R.id.user_all_class_coachname);
-                class_intro = itemView.findViewById(R.id.user_all_class_intro);
-                class_people = itemView.findViewById(R.id.user_all_class_people);
-
                 like_class_btn = itemView.findViewById(R.id.user_like_all_class_btn);
                 moreInfoButton = itemView.findViewById(R.id.user_all_class_info);
             }
@@ -537,8 +541,17 @@ public class ClassList extends AppCompatActivity {
             holder.class_name.setText(item.getClassName());
             holder.class_price.setText("$" + item.getClassPrice().split("\\.")[0] + "/堂");
             holder.coach_name.setText(item.getCoachName());
-            holder.class_intro.setText(item.getClassIntro());
-            holder.class_people.setText("人數：" + item.getClassPeople() + "人");
+
+            int locationType = item.getlocationType();
+            // 根據 locationType 設置課程標籤
+            if (locationType == 2) { // 到府服務
+                holder.class_people_sign.setText("到府課程");
+                holder.class_people_sign.setBackgroundResource(R.drawable.class_type_label_bg); // 藍底
+            } else { // 團體課程
+                holder.class_people_sign.setText("團體課程");
+                holder.class_people_sign.setBackgroundResource(R.drawable.class_type_label_red_bg); // 紅底
+            }
+
             holder.moreInfoButton.setOnClickListener(v -> {
                 SharedPreferences sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -602,25 +615,6 @@ public class ClassList extends AppCompatActivity {
                 }
 
             });
-            try {
-                MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
-                String SQL = "SELECT 上課人數 FROM 健身教練課程 WHERE 課程編號 = ? ";
-                PreparedStatement Statement = MyConnection.prepareStatement(SQL);
-                Statement.setInt(1, item.getClassID());
-                ResultSet rs = Statement.executeQuery();
-                while (rs.next()) {
-                    if (item.getClassPeople().equals("1")) {
-                        holder.class_people_sign.setText("一對一");
-                    } else {
-                        holder.class_people_sign.setText("團體");
-                    }
-                }
-                rs.close();
-                Statement.close();
-            } catch (SQLException e) {
-                Log.e("SQL", "Error checking like status", e);
-            }
-
         }
 
 
