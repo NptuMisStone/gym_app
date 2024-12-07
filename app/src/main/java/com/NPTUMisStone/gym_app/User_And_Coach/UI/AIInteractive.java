@@ -124,9 +124,8 @@ public class AIInteractive extends AppCompatActivity {
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
             String title = ((Question) getGroup(groupPosition)).getTitle();
-            if (convertView == null) {
+            if (convertView == null)
                 convertView = LayoutInflater.from(context).inflate(android.R.layout.simple_expandable_list_item_1, parent, false);
-            }
             TextView textView = convertView.findViewById(android.R.id.text1);
             textView.setText(title);
             return convertView;
@@ -135,10 +134,9 @@ public class AIInteractive extends AppCompatActivity {
         @Override
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
             String answer = (String) getChild(groupPosition, childPosition);
-            if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(android.R.layout.simple_expandable_list_item_2, parent, false);
-            }
-            TextView textView = convertView.findViewById(android.R.id.text1);
+            if (convertView == null)
+                convertView = LayoutInflater.from(context).inflate(R.layout.user_and_coach_ai_interactive_list_item_expandable_child, parent, false);
+            TextView textView = convertView.findViewById(R.id.child_text_view);
             textView.setText(answer);
             return convertView;
         }
@@ -175,11 +173,12 @@ public class AIInteractive extends AppCompatActivity {
         List<Question> questions = new ArrayList<>();
         questions.add(new Question("如何知道健身教練的詳細資訊及安排的課程？", "在健身教練頁面，點擊任何一個教練即可查看教練詳細資訊及他所有安排的課程。"));
         questions.add(new Question("想知道如何預約課程？", "在尋找課程中會有各個教練安排的課程供你們選擇，課程點擊後，即可依照課程日期、時間進行預約。"));
-        questions.add(new Question("想知道如何預約課程？", "在尋找課程中會有各個教練安排的課程供你們選擇，課程點擊後，即可依照課程日期、時間進行預約。"));
         questions.add(new Question("如何查找特定課程？", "在尋找課程中，搜尋列表旁，有個篩選按鈕，可進行選取想查詢的課程。"));
+        questions.add(new Question("想知道如何取消預約？", "在預約紀錄中，可以查看所有預約紀錄，並進行取消。"));
         questions.add(new Question("如何查看目前所收藏的教練及課程？", "在我的收藏中，即可看到所收藏的教練及課程。"));
 
         ExpandableListView expandableListView = findViewById(R.id.AIInteractive_expandableList);
+
         ExpandableQuestionAdapter adapter = new ExpandableQuestionAdapter(this, questions);
         expandableListView.setAdapter(adapter);
     }

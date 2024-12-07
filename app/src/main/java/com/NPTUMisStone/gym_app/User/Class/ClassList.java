@@ -149,7 +149,7 @@ public class ClassList extends AppCompatActivity {
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
             String cityName = (String) getGroup(groupPosition);
             if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.expandable_list_group, parent, false);
+                convertView = LayoutInflater.from(context).inflate(R.layout.user_class_list_expandable_group, parent, false);
             }
 
             TextView textView = convertView.findViewById(R.id.group_name);
@@ -206,7 +206,7 @@ public class ClassList extends AppCompatActivity {
             String groupName = (String) getGroup(groupPosition);
 
             if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.expandable_list_child, parent, false);
+                convertView = LayoutInflater.from(context).inflate(R.layout.user_class_list_item_expandable_child, parent, false);
             }
 
             TextView textView = convertView.findViewById(R.id.child_name);
