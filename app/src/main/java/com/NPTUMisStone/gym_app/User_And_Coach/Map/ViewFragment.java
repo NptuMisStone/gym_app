@@ -63,19 +63,20 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
     private RecyclerView recyclerDesigner;
     private DesignersAdapter designersAdapter;
     private List<CourseItem> designerList = new ArrayList<>();
+
     class SalonAdd extends Thread {
         @Override
         public void run() {
-            String sql = "SELECT DISTINCT 地點名稱, 課程編號 FROM [健身教練課程-有排課的]";
+            String sql = "SELECT DISTINCT 地點名稱, 課程名稱, 課程編號 FROM [健身教練課程-有排課的] WHERE 顯示地點名稱!= '到府(客戶指定地點)'";
             try {
                 Statement st = Myconnection.createStatement();
                 ResultSet rs = st.executeQuery(sql);
                 SalonItem.clearSalon();
 
                 while (rs.next()) {
-                    SalonItem salonItem = new SalonItem(rs.getString("地點名稱"), Redirecting.getLocationAddress(Myconnection,rs.getInt("課程編號")));
+                    SalonItem salonItem = new SalonItem(rs.getString("課程名稱"),rs.getString("地點名稱"), Redirecting.getLocationAddress(Myconnection, rs.getInt("課程編號")));
                     SalonItem.addSalon(salonItem);
-                    Log.d("正在加入的Salon", salonItem.getName() + " " + salonItem.getAddress());
+                    Log.d("正在加入的課程", salonItem.getClassName() + " " + salonItem.getLocationAddress());
                 }
                 rs.close();
             } catch (SQLException exception) {
@@ -83,6 +84,7 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
             }
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.user_and_coach_map_fragment, container, false);
@@ -95,24 +97,23 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
         setupAutoCompleteTextView();
 
         (view.findViewById(R.id.submit)).setOnClickListener(v -> {
-            String locationName = editText.getText().toString();
-            if (!locationName.isEmpty()) {
-                SalonItem targetSalon = findSalonByName(locationName);
+            String className = editText.getText().toString();
+            if (!className.isEmpty()) {
+                SalonItem targetSalon = findSalonByName(className);
                 if (targetSalon != null) {
                     Geocoder geocoder = new Geocoder(requireActivity(), Locale.TRADITIONAL_CHINESE);
                     try {
-                        List<Address> addressList = geocoder.getFromLocationName(targetSalon.getAddress(), 1);
+                        List<Address> addressList = geocoder.getFromLocationName(targetSalon.getLocationAddress(), 1);
                         if (addressList != null && !addressList.isEmpty()) {
                             Address address = addressList.get(0);
                             LatLng targetLocation = new LatLng(address.getLatitude(), address.getLongitude());
                             map.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLocation, 13));
-
-                            designerList = getDesignerList(locationName);
+                            designerList = getListByClassName(className);
                             RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                             recyclerDesigner.setLayoutManager(layoutManager1);
                             designersAdapter = new DesignersAdapter(designerList);
                             recyclerDesigner.setAdapter(designersAdapter);
-
+                            recyclerDesigner.setVisibility(View.VISIBLE);
                             for (Marker marker : salonMarkers) {
                                 if (marker.getPosition().equals(targetLocation)) {
                                     marker.showInfoWindow();
@@ -126,7 +127,7 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
                         Log.e("MapFragment", "Geocoding failed", e);
                     }
                 } else {
-                    Toast.makeText(getActivity(), "抱歉，找不到相應的理髮店", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "抱歉，找不到相應的課程", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -154,9 +155,9 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
 
         LocationServices.getFusedLocationProviderClient(requireActivity()).getLastLocation()
                 .addOnSuccessListener(requireActivity(), location -> {
-                    if (location != null) {
+                    if (location != null)
                         myLocation[0] = new LatLng(location.getLatitude(), location.getLongitude());
-                    } else {
+                    else {
                         myLocation[0] = new LatLng(25.033964, 121.564468);
                         Toast.makeText(getActivity(), "Failed to get your location.", Toast.LENGTH_SHORT).show();
                     }
@@ -168,13 +169,11 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
 
     @Override
     public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer) {
-        if (renderer == MapsInitializer.Renderer.LATEST) {
+        if (renderer == MapsInitializer.Renderer.LATEST)
             Log.d("MapsDemo", "The latest version of the renderer is used.");
-        } else {
+        else
             Log.d("MapsDemo", "A deprecated version of the renderer is used.");
-        }
     }
-
     private class Add_Salon_Marker extends Thread {
         private final ArrayList<SalonItem> salonItems;
 
@@ -189,35 +188,30 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
             mainHandler.post(() -> Toast.makeText(getActivity(), "Salon Size: " + salonItems.size(), Toast.LENGTH_SHORT).show());
             for (int i = 0; i < salonItems.size(); i++) {
                 try {
-                    tagStoreName.add(salonItems.get(i).getName());
-
-                    List<Address> address_LatLon = geocoder.getFromLocationName(salonItems.get(i).getAddress(), 2);
+                    tagStoreName.add(salonItems.get(i).getClassName());
+                    List<Address> address_LatLon = geocoder.getFromLocationName(salonItems.get(i).getLocationAddress(), 2);
                     if (address_LatLon != null && !address_LatLon.isEmpty()) {
                         Address location_LatLon = address_LatLon.get(0);
                         int index = i;
                         mainHandler.post(() -> {
-                            Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(location_LatLon.getLatitude(), location_LatLon.getLongitude())).title(salonItems.get(index).getName()));
+                            Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(location_LatLon.getLatitude(), location_LatLon.getLongitude())).title(salonItems.get(index).getLocationName()));
                             salonMarkers.add(marker);
                             adapter.notifyDataSetChanged();
                             //TODO 改用 MarkerManager.Collection markerCollection;
-                            map.setOnInfoWindowClickListener(marker1 -> {/*startActivity(new Intent(Intent.ACTION_VIEW)
-                                    .setData(Uri.parse("https://www.google.com/maps/dir/?api=1&origin="
-                                            + myLocation[0].latitude + "," + myLocation[0].longitude + "&destination="
-                                            + marker1.getPosition().latitude + "," + marker1.getPosition().longitude)))*/
+                            map.setOnInfoWindowClickListener(marker1 -> {
                                 for (SalonItem salonItem : SalonItem.getSalonObjects()) {
-                                    if (salonItem.getName().equals(marker1.getTitle())) {
-                                        String address = salonItem.getAddress();
+                                    if (salonItem.getLocationName().equals(marker1.getTitle())) {
+                                        String address = salonItem.getLocationAddress();
                                         Toast.makeText(getActivity(), "導航至" + marker1.getTitle(), Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(getActivity(), Direction.class).putExtra("address", address));
+                                        //startActivity(new Intent(getActivity(), Direction.class).putExtra("address", address));
+                                        new Redirecting(getActivity(), address).getCurrentLocation();
                                         break;
                                     }
                                 }
-                                //Toast.makeText(getActivity(), "導航至" + Objects.requireNonNull(marker).getTitle(), Toast.LENGTH_SHORT).show();
-                                //startActivity(new Intent(getActivity(), Maps.class).putExtra("address", 59));
                             });
                             map.setOnMarkerClickListener(marker2 -> {
                                 recyclerDesigner.setVisibility(View.VISIBLE);
-                                designerList = getDesignerList(marker2.getTitle());
+                                designerList = getListByStoreName(marker2.getTitle());
                                 RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                                 recyclerDesigner.setLayoutManager(layoutManager1);
                                 designersAdapter = new DesignersAdapter(designerList);
@@ -228,9 +222,9 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
                         });
                     } else {
                         int finalI = i;
-                        Log.e("MapFragment", "Failed to find location for address: " + salonItems.get(finalI).getAddress());
-                        mainHandler.post(() -> Toast.makeText(getActivity(), "Failed to find location for address: " + salonItems.get(finalI).getAddress(), Toast.LENGTH_SHORT).show());
-                        mainHandler.post(() -> Toast.makeText(getActivity(), "The " + salonItems.get(finalI).getName() + " can not display the marker.", Toast.LENGTH_SHORT).show());
+                        Log.e("MapFragment", "Failed to find location for address: " + salonItems.get(finalI).getLocationAddress());
+                        mainHandler.post(() -> Toast.makeText(getActivity(), "Failed to find location for address: " + salonItems.get(finalI).getLocationAddress(), Toast.LENGTH_SHORT).show());
+                        mainHandler.post(() -> Toast.makeText(getActivity(), "The " + salonItems.get(finalI).getLocationName() + " can not display the marker.", Toast.LENGTH_SHORT).show());
                     }
                 } catch (IOException e) {
                     Log.e("MapFragment", "Geocoding failed", e);
@@ -238,9 +232,29 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
             }
         }
     }
-    private List<CourseItem> getDesignerList(String storeName) {
+
+    private List<CourseItem> getListByStoreName(String storeName) {
         List<CourseItem> designerList = new ArrayList<>();
         String query = "SELECT * FROM [健身教練課程-有排課的] WHERE 地點名稱 = '" + storeName + "' ORDER BY 健身教練性別 DESC";
+        Log.d("MapFragment", "Query: " + query); // Log the query
+        try (Statement stmt = Myconnection.createStatement(); ResultSet rs1 = stmt.executeQuery(query)) {
+            while (rs1.next()) {
+                int designerId = rs1.getInt("課程編號");
+                byte[] designerHead = rs1.getBytes("課程圖片");
+                String designerName = rs1.getString("課程名稱");
+                String rating = rs1.getString("健身教練性別");
+                CourseItem designerItem = new CourseItem(designerId, designerHead, designerName, rating);
+                designerList.add(designerItem);
+            }
+        } catch (SQLException e) {
+            Log.e("MapFragment", "Failed to fetch designer list", e);
+        }
+        Log.d("MapFragment", "Designer list size: " + designerList.size()); // Log the size of the designer list
+        return designerList;
+    }
+    private List<CourseItem> getListByClassName(String className) {
+        List<CourseItem> designerList = new ArrayList<>();
+        String query = "SELECT * FROM [健身教練課程-有排課的] WHERE 課程名稱 = '" + className + "' ORDER BY 健身教練性別 DESC";
         Log.d("MapFragment", "Query: " + query); // Log the query
         try (Statement stmt = Myconnection.createStatement(); ResultSet rs1 = stmt.executeQuery(query)) {
             while (rs1.next()) {
@@ -298,20 +312,18 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
             @Override
             protected void publishResults(CharSequence constraint, FilterResults filterResults) {
                 filteredData.clear();
-                if (filterResults != null && filterResults.count > 0) {
-                    if (filterResults.values instanceof List<?> resultsList) {
+                if (filterResults != null && filterResults.count > 0){
+                    if (filterResults.values instanceof List<?> resultsList)
                         for (Object result : resultsList)
                             if (result instanceof String)
                                 filteredData.add((String) result);
-                    }
                     notifyDataSetChanged();
-                } else {
-                    notifyDataSetInvalidated();
                 }
+                else notifyDataSetInvalidated();
             }
         };
 
-        MapLikeQueryAdapter(Context context, int resource, List<String> objects) {
+        private MapLikeQueryAdapter(Context context, int resource, List<String> objects) {
             super(context, resource, objects);
         }
 
@@ -432,13 +444,15 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
     }
 
     static class SalonItem {
-        String name;
-        String address;
+        String className;
+        String locationName;
+        String locationAddress;
         private static ArrayList<SalonItem> salonItems = new ArrayList<>();
 
-        public SalonItem(String name, String address) {
-            this.name = name;
-            this.address = address;
+        public SalonItem(String className,String locationName, String locationAddress) {
+            this.className = className;
+            this.locationName = locationName;
+            this.locationAddress = locationAddress;
         }
 
         public static void addSalon(SalonItem salonItem) {
@@ -457,13 +471,15 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
         private static void setSalon(ArrayList<SalonItem> salonItems) {
             SalonItem.salonItems = salonItems;
         }
-
-        public String getAddress() {
-            return address != null ? address : "";
+        public String getClassName() {
+            return className != null ? className : "";
+        }
+        public String getLocationName() {
+            return locationName != null ? locationName : "";
         }
 
-        public String getName() {
-            return name != null ? name : "";
+        public String getLocationAddress() {
+            return locationAddress != null ? locationAddress : "";
         }
     }
 
@@ -471,13 +487,14 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
         List<SalonItem> salonItems = SalonItem.getSalonObjects();
         if (salonItems != null) {
             for (SalonItem salonItem : salonItems) {
-                if (salonItem.getName().equalsIgnoreCase(name)) {
+                if (salonItem.getClassName().equalsIgnoreCase(name)) {
                     return salonItem;
                 }
             }
         }
         return null;
     }
+
     @Override
     public void onResume() {
         super.onResume();
