@@ -67,7 +67,7 @@ public class ViewFragment extends androidx.fragment.app.Fragment implements OnMa
     class SalonAdd extends Thread {
         @Override
         public void run() {
-            String sql = "SELECT DISTINCT 地點名稱, 課程名稱, 課程編號 FROM [健身教練課程-有排課的] WHERE 顯示地點名稱!= '到府(客戶指定地點)'";
+            String sql = "SELECT DISTINCT 地點名稱, 課程名稱, 課程編號 FROM [健身教練課程-有排課的] WHERE 地點類型!= 2";
             try {
                 Statement st = Myconnection.createStatement();
                 ResultSet rs = st.executeQuery(sql);
