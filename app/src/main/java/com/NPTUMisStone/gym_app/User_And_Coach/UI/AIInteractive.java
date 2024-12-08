@@ -19,7 +19,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.NPTUMisStone.gym_app.Main.Initial.SQLConnection;
 import com.NPTUMisStone.gym_app.Main.Initial.SnackBarUtils;
 import com.NPTUMisStone.gym_app.R;
 import com.NPTUMisStone.gym_app.User_And_Coach.Helper.ProgressBarHandler;
@@ -42,10 +41,10 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public class AIInteractive extends AppCompatActivity {
-    static String BASE_URL = "https://g1014308research-f6hvaugmd2cxg3as.eastus-01.azurewebsites.net/";
+    static String BASE_URL = "https://newai-g4g9daf4hnh6frec.eastasia-01.azurewebsites.net/";
     private boolean hasShownSuccess = false;
     private ProgressBarHandler progressBarHandler;
-    Connection MyConnection;
+    //Connection MyConnection;
 
     interface HealthCheckService {
         @GET("/health")
@@ -178,7 +177,6 @@ public class AIInteractive extends AppCompatActivity {
         questions.add(new Question("如何查看目前所收藏的教練及課程？", "在我的收藏中，即可看到所收藏的教練及課程。"));
 
         ExpandableListView expandableListView = findViewById(R.id.AIInteractive_expandableList);
-
         ExpandableQuestionAdapter adapter = new ExpandableQuestionAdapter(this, questions);
         expandableListView.setAdapter(adapter);
     }
@@ -237,12 +235,12 @@ public class AIInteractive extends AppCompatActivity {
             try {
                 String responseBody = Objects.requireNonNull(response.body()).string();
                 new AlertDialog.Builder(this).setTitle("AI回應").setMessage(responseBody)
-                        .setPositiveButton("紀錄歷史訊息", (dialog, which) -> {
+                        /*.setPositiveButton("紀錄歷史訊息", (dialog, which) -> {
                             // TODO: 紀錄歷史訊息
                             MyConnection = new SQLConnection(findViewById(R.id.main)).IWantToConnection();
                             //MyConnection.createStatement().executeUpdate("INSERT INTO AIInteractiveHistory (input, output) VALUES ('" + inputText + "', '" + responseBody + "')");
-                        })
-                        .setNegativeButton("確認", (dialog, which) -> dialog.dismiss()).show();
+                        })*/
+                        .setPositiveButton("確認", (dialog, which) -> dialog.dismiss()).show();
                 Log.d("Response", responseBody);
             } catch (Exception e) {
                 Log.e("Response", "Error parsing response", e);
