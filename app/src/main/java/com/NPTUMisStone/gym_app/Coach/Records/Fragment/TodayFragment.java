@@ -122,6 +122,7 @@ public class TodayFragment extends Fragment {
             }
         }
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

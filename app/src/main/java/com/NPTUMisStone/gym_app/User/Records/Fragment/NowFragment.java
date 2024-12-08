@@ -76,7 +76,9 @@ public class NowFragment extends Fragment {
             try {
                 MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
                 appointmentData.clear();
-                String sql = "SELECT 預約編號,日期,星期幾,開始時間,課程時間長度,課程名稱,課程費用,健身教練圖片,健身教練姓名,預約狀態,備註,課表編號,課程編號 FROM [使用者預約-有預約的] WHERE [預約狀態] = 1 AND 使用者編號 = ?";
+                String sql = "SELECT * FROM [使用者預約-有預約的] " +
+                        "WHERE [預約狀態] = 1 AND 使用者編號 = ?";
+
                 PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
                 searchStatement.setInt(1, User.getInstance().getUserId());
                 ResultSet rs = searchStatement.executeQuery();
@@ -95,7 +97,12 @@ public class NowFragment extends Fragment {
                             rs.getInt("預約狀態"),
                             rs.getString("備註"),
                             rs.getInt("課表編號"),
-                            rs.getInt("課程編號")
+                            rs.getInt("課程編號"),
+                            rs.getInt("地點類型"),
+                            rs.getString("客戶到府地址"),
+                            rs.getString("縣市"),
+                            rs.getString("行政區"),
+                            rs.getString("地點地址")
                     ));
 
                 rs.close();
@@ -124,12 +131,12 @@ public class NowFragment extends Fragment {
     }
     static class User_Now_AppointmentData {
         Date date;
-        int reservationID, timeLong, status,scheduleID,classID;
+        int reservationID, timeLong, status,scheduleID,classID,locationType;
         byte[] coachimage;
-        String className, classPrice, coachName, note,week,time;
+        String className, classPrice, coachName, note,week,time,customerAddress, city, district, locationName;
         static ArrayList<User_Now_AppointmentData> appointments = new ArrayList<>();
 
-        public User_Now_AppointmentData(int reservationID, Date date, String week, String time, int timeLong, String className, String classPrice, byte[] coachimage, String coachName, int status, String note, int scheduleID, int classID) {
+        public User_Now_AppointmentData(int reservationID, Date date, String week, String time, int timeLong, String className, String classPrice, byte[] coachimage, String coachName, int status, String note, int scheduleID, int classID, int locationType, String customerAddress, String city, String district, String locationName) {
             this.reservationID = reservationID;
             this.date = date;
             this.week = week;
@@ -143,7 +150,13 @@ public class NowFragment extends Fragment {
             this.note = note;
             this.scheduleID = scheduleID;
             this.classID = classID;
+            this.locationType = locationType;
+            this.customerAddress = customerAddress;
+            this.city = city;
+            this.district = district;
+            this.locationName =locationName;
         }
+
         public static ArrayList<User_Now_AppointmentData> getAppointments() {
             if (appointments == null) {
                 return null;
@@ -192,6 +205,24 @@ public class NowFragment extends Fragment {
 
         private int getScheduleID() {
             return scheduleID;
+        }
+        public int getLocationType() {
+            return locationType;
+        }
+
+        public String getCustomerAddress() {
+            return customerAddress;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public String getDistrict() {
+            return district;
+        }
+        public String getlocationName() {
+            return locationName;
         }
     }
     class NowAppointmentAdapter extends RecyclerView.Adapter<NowAppointmentAdapter.ViewHolder>
@@ -248,23 +279,36 @@ public class NowFragment extends Fragment {
             holder.class_price.setText(item.getClassPrice().split("\\.")[0]);
             holder.coach_name.setText(item.getCoachName());
             holder.note.setText(item.getNote());
+
+            // 設定地點
+            String locationAddressMap;
+            if (item.getLocationType() == 2) {
+                locationAddressMap = item.getCity() + item.getDistrict() + item.getCustomerAddress();
+                Log.d("LocationAddressMap", "地點類型為 2，組合地址: " + locationAddressMap);
+            } else {
+                locationAddressMap = item.getCity() + item.getDistrict() + item.getlocationName();
+                Log.d("LocationAddressMap", "地點類型非 2，組合地址: " + locationAddressMap);
+            }
+
+            // 綁定方向按鈕
+            holder.directionButton.setOnClickListener(v -> {
+                Log.d("DirectionButton", "方向按鈕被點擊，地址: " + locationAddressMap);
+                new Redirecting(context, locationAddressMap).getCurrentLocation();
+            });
+
+
             holder.user_ap_cancel_btn.setOnClickListener(v -> {
                 new AlertDialog.Builder(context)
                         .setTitle("確認取消")
                         .setMessage("確定要取消此預約嗎？")
                         .setPositiveButton("確認", (dialog, which) -> {
-                            // 調用刪除方法
                             deleteAppointment(item.getReservationID(), position);
                         })
                         .setNegativeButton("取消", null)
                         .show();
             });
-            holder.directionButton.setOnClickListener(v -> {
-                String locationAddress = Redirecting.getLocationAddress(MyConnection, item.getClassID());
-                new Redirecting(context, locationAddress).getCurrentLocation(); // 使用 context
-            });
-
         }
+
         private void deleteAppointment(int reservationID, int position) {
             Executors.newSingleThreadExecutor().execute(() -> {
                 try {
@@ -293,22 +337,22 @@ public class NowFragment extends Fragment {
             });
         }
         private int SearchAPPeople(int scheduleID){
-                try {
-                    MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
+            try {
+                MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
 
-                    String sql = "SELECT 預約人數 FROM [健身教練課表] WHERE 課表編號 = ?";
-                    PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
-                    searchStatement.setInt(1,scheduleID);
-                    ResultSet rs = searchStatement.executeQuery();
-                    if (rs.next()) {
-                        apPeople = rs.getInt("預約人數");
-                        searchStatement.close();
-                    }
-                    rs.close();
+                String sql = "SELECT 預約人數 FROM [健身教練課表] WHERE 課表編號 = ?";
+                PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
+                searchStatement.setInt(1,scheduleID);
+                ResultSet rs = searchStatement.executeQuery();
+                if (rs.next()) {
+                    apPeople = rs.getInt("預約人數");
                     searchStatement.close();
-                } catch (SQLException e) {
-                    Log.e("SQL", Objects.requireNonNull(e.getMessage()));
                 }
+                rs.close();
+                searchStatement.close();
+            } catch (SQLException e) {
+                Log.e("SQL", Objects.requireNonNull(e.getMessage()));
+            }
             return  apPeople;
         }
 

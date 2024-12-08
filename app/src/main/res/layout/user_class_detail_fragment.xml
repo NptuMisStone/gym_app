@@ -393,7 +393,7 @@
                         android:layout_gravity="center|center_vertical"
                         android:padding="4dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/all_ic_null_image_account"
+                        android:src="@drawable/coach_main_ic_default"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

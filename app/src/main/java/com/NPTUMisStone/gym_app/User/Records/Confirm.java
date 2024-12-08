@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -107,30 +108,40 @@ public class Confirm extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    public  void UserConfirmAP(View view){
-        if(CheckAP()){
+    public void UserConfirmAP(View view) {
+
+        if (CheckAP()) {
+            // 檢查 homeaddress 是否為 null 或空白
+            if (homeaddress.getText() == null || homeaddress.getText().toString().trim().isEmpty()) {
+                // 顯示通知請使用者輸入地址
+                Toast.makeText(this, "請輸入客戶到府地址", Toast.LENGTH_SHORT).show();
+                return; // 結束方法
+            }
+
             try {
-                String query = "Insert Into 使用者預約 (使用者編號,健身教練編號,課程編號,課表編號,預約狀態,備註,客戶到府地址)values(?,?,?,?,?,?,?)" ;
-                PreparedStatement Statement = MyConnection.prepareStatement(query);
-                Statement.setInt(1,User.getInstance().getUserId());
-                Statement.setInt(2,coachID);
-                Statement.setInt(3,classID);
-                Statement.setInt(4,scheduleID);
-                Statement.setInt(5,1);
-                Statement.setString(6,note.getText().toString());
-                Statement.setString(7,homeaddress.getText().toString());
-                Statement.executeQuery();
-                Statement.close();
+                String query = "Insert Into 使用者預約 (使用者編號,健身教練編號,課程編號,課表編號,預約狀態,備註,客戶到府地址)values(?,?,?,?,?,?,?)";
+                PreparedStatement statement = MyConnection.prepareStatement(query);
+                statement.setInt(1, User.getInstance().getUserId());
+                statement.setInt(2, coachID);
+                statement.setInt(3, classID);
+                statement.setInt(4, scheduleID);
+                statement.setInt(5, 1);
+                statement.setString(6, note.getText().toString());
+                statement.setString(7, homeaddress.getText().toString());
+                statement.executeQuery();
+                statement.close();
 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
             UpdateApPeople();
-            Intent it=new Intent(this, Appointment.class);
+            Intent it = new Intent(this, Appointment.class);
             startActivity(it);
             finish();
         }
     }
+
     private void SearchApPeople(){
         try {
             String query = "SELECT 預約人數 FROM 健身教練課表 WHERE 課表編號 = ? " ;

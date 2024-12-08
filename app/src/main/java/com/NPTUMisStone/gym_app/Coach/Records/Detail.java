@@ -92,7 +92,8 @@ public class Detail extends AppCompatActivity {
                             rs.getString("縣市"),
                             rs.getString("行政區"),
                             rs.getInt("地點類型"),
-                            rs.getString("客戶到府地址")
+                            rs.getString("客戶到府地址"),
+                            rs.getString("地點地址")
                     ));
                 rs.close();
                 searchStatement.close();
@@ -117,13 +118,13 @@ public class Detail extends AppCompatActivity {
     static class Coach_Detail_Ap_Data {
         int scheduleID, appointmentID, classID,locationType;
         byte[] userImage;
-        String ap_status, user_name, user_gender, user_phone, user_mail, user_note, user_location,city, district,user_address;
+        String ap_status, user_name, user_gender, user_phone, user_mail, user_note, user_location,city, district,user_address,locationName;
 
         static ArrayList<Coach_Detail_Ap_Data> detail_ap_data = new ArrayList<>();
 
         public Coach_Detail_Ap_Data(int scheduleID, int appointmentID, byte[] userImage, String ap_status, String user_name,
                                     String user_gender, String user_phone, String user_mail, String user_note, String user_location,
-                                    int classID, String city, String district, int locationType, String user_address) {
+                                    int classID, String city, String district, int locationType, String user_address, String locationName) {
             this.scheduleID = scheduleID;
             this.appointmentID = appointmentID;
             this.userImage = userImage;
@@ -139,6 +140,7 @@ public class Detail extends AppCompatActivity {
             this.district = district;
             this.locationType = locationType;
             this.user_address = user_address;
+            this.locationName = locationName;
         }
 
 
@@ -205,6 +207,9 @@ public class Detail extends AppCompatActivity {
 
         public String getUserAddress() {
             return user_address;
+        }
+        public String getlocationName() {
+            return locationName;
         }
     }
 
@@ -286,7 +291,21 @@ public class Detail extends AppCompatActivity {
             holder.user_phone.setText("電話：" + item.getUser_phone());
             holder.user_mail.setText("郵件：" + item.getUser_mail());
             holder.user_note.setText("備註：" + item.getUser_note());
-            holder.directionButton.setOnClickListener(v -> new Redirecting(Detail.this, Redirecting.getLocationAddress(MyConnection,item.getClassID())).getCurrentLocation());
+            // 設定地點
+            String locationAddressMap;
+            if (item.getLocationType() == 2) {
+                locationAddressMap = item.getCity() + item.getDistrict() + item.getUserAddress();
+                Log.d("LocationAddressMap", "地點類型為 2，組合地址: " + locationAddressMap);
+            } else {
+                locationAddressMap = item.getCity() + item.getDistrict() + item.getlocationName();
+                Log.d("LocationAddressMap", "地點類型非 2，組合地址: " + locationAddressMap);
+            }
+            // 綁定方向按鈕
+            holder.directionButton.setOnClickListener(v -> {
+                Log.d("DirectionButton", "方向按鈕被點擊，地址: " + locationAddressMap);
+                new Redirecting(context, locationAddressMap).getCurrentLocation();
+            });
+
             if (holder.cancelApBtn != null) {
                 holder.cancelApBtn.setOnClickListener(v -> {
                     try {
