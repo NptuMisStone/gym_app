@@ -88,7 +88,11 @@ public class Detail extends AppCompatActivity {
                             rs.getString("使用者郵件"),
                             rs.getString("備註"),
                             rs.getString("地點名稱"),
-                            rs.getInt("課程編號")
+                            rs.getInt("課程編號"),
+                            rs.getString("縣市"),
+                            rs.getString("行政區"),
+                            rs.getInt("地點類型"),
+                            rs.getString("客戶到府地址")
                     ));
                 rs.close();
                 searchStatement.close();
@@ -111,13 +115,15 @@ public class Detail extends AppCompatActivity {
     }
 
     static class Coach_Detail_Ap_Data {
-        int scheduleID, appointmentID, classID;
+        int scheduleID, appointmentID, classID,locationType;
         byte[] userImage;
-        String ap_status, user_name, user_gender, user_phone, user_mail, user_note, user_location;
+        String ap_status, user_name, user_gender, user_phone, user_mail, user_note, user_location,city, district,user_address;
 
         static ArrayList<Coach_Detail_Ap_Data> detail_ap_data = new ArrayList<>();
 
-        public Coach_Detail_Ap_Data(int scheduleID, int appointmentID, byte[] userImage, String ap_status, String user_name, String user_gender, String user_phone, String user_mail, String user_note, String user_location, int classID) {
+        public Coach_Detail_Ap_Data(int scheduleID, int appointmentID, byte[] userImage, String ap_status, String user_name,
+                                    String user_gender, String user_phone, String user_mail, String user_note, String user_location,
+                                    int classID, String city, String district, int locationType, String user_address) {
             this.scheduleID = scheduleID;
             this.appointmentID = appointmentID;
             this.userImage = userImage;
@@ -129,7 +135,12 @@ public class Detail extends AppCompatActivity {
             this.user_note = user_note;
             this.user_location = user_location;
             this.classID = classID;
+            this.city = city;
+            this.district = district;
+            this.locationType = locationType;
+            this.user_address = user_address;
         }
+
 
         public static ArrayList<Coach_Detail_Ap_Data> getClassData() {
             if (detail_ap_data == null) {
@@ -180,6 +191,21 @@ public class Detail extends AppCompatActivity {
         public int getClassID() {
             return classID;
         }
+        public String getCity() {
+            return city;
+        }
+
+        public String getDistrict() {
+            return district;
+        }
+
+        public int getLocationType() {
+            return locationType;
+        }
+
+        public String getUserAddress() {
+            return user_address;
+        }
     }
 
     class Coach_AP_Detail_Adapter extends RecyclerView.Adapter<Detail.Coach_AP_Detail_Adapter.ViewHolder> {
@@ -225,6 +251,18 @@ public class Detail extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull Detail.Coach_AP_Detail_Adapter.ViewHolder holder, int position) {
             Detail.Coach_Detail_Ap_Data item = detail_ap_data.get(position);
+            Log.d("Debug", "地點類型：" + item.getLocationType());
+            Log.d("Debug", "縣市：" + item.getCity());
+            Log.d("Debug", "行政區：" + item.getDistrict());
+            Log.d("Debug", "客戶到府地址：" + item.getUserAddress());
+
+            // 設定使用者地點
+            if (item.getLocationType() == 2) {
+                holder.user_location.setText(
+                        "客戶到府地址：" + item.getCity() + item.getDistrict() + item.getUserAddress());
+            } else {
+                holder.user_location.setText("地點名稱：" + item.getUser_location());
+            }
 
             if (item.getUserImage() != null) {
                 holder.user_image.setImageBitmap(ImageHandle.resizeBitmap(ImageHandle.getBitmap(item.getUserImage())));
@@ -248,7 +286,6 @@ public class Detail extends AppCompatActivity {
             holder.user_phone.setText("電話：" + item.getUser_phone());
             holder.user_mail.setText("郵件：" + item.getUser_mail());
             holder.user_note.setText("備註：" + item.getUser_note());
-            holder.user_location.setText("地點名稱：" + item.getUser_location());
             holder.directionButton.setOnClickListener(v -> new Redirecting(Detail.this, Redirecting.getLocationAddress(MyConnection,item.getClassID())).getCurrentLocation());
             if (holder.cancelApBtn != null) {
                 holder.cancelApBtn.setOnClickListener(v -> {

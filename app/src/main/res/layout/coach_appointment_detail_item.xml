@@ -121,7 +121,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:backgroundTint="#2196F3"
-                        android:text="完成預約"
+                        android:text="確認到課"
                         android:textColor="#FFFFFF"
                         android:textSize="16sp" />
                 </LinearLayout>

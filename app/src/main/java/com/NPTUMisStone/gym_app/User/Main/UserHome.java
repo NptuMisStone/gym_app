@@ -172,8 +172,10 @@ public class UserHome extends AppCompatActivity {
             try {
                 String sql = "SELECT TOP 1 * FROM [使用者預約-有預約的] " +
                         "WHERE 使用者編號 = ? AND " +
+                        "預約狀態 = 1 AND " +
                         "(日期 > ? OR (日期 = ? AND 結束時間 > ?)) " +
                         "ORDER BY 日期 ASC, 開始時間 ASC";
+
 
                 if (MyConnection == null || MyConnection.isClosed()) {
                     Log.e("Database", "資料庫連線失敗");
