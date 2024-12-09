@@ -46,7 +46,7 @@ public class UserLike_ClassFragment extends Fragment {
 
     private UserLikeClassFragmentBinding binding;
     private Connection MyConnection;
-    ArrayList<UserLike_ClassFragment.User_Like_Class_Data> like_class_data =new ArrayList<>();
+    ArrayList<UserLike_ClassFragment.User_Like_Class_Data> like_class_data = new ArrayList<>();
     private ProgressBar progressBar;
     TextView nodata;
 
@@ -57,37 +57,39 @@ public class UserLike_ClassFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        UserLike_ClassViewModel userLikeClassViewModel =new ViewModelProvider(this).get(UserLike_ClassViewModel.class);
-        binding=UserLikeClassFragmentBinding.inflate(inflater,container,false);
+        UserLike_ClassViewModel userLikeClassViewModel = new ViewModelProvider(this).get(UserLike_ClassViewModel.class);
+        binding = UserLikeClassFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        nodata=binding.userLikeNodata;
+        nodata = binding.userLikeNodata;
         nodata.setVisibility(View.GONE);
         progressBar = binding.progressBar;
         progressBar.setVisibility(View.VISIBLE);
         fetchLikeClass();
         return root;
     }
+
     private void fetchLikeClass() {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
                 like_class_data.clear();
-                String sql = "SELECT * FROM 收藏課程 WHERE 使用者編號= ?";
+                String sql = "SELECT 課程編號, 課程圖片, 健身教練圖片, 課程名稱, 課程費用, 健身教練姓名, 地點類型 FROM 收藏課程 WHERE 使用者編號= ?";
                 PreparedStatement searchStatement = MyConnection.prepareStatement(sql);
                 searchStatement.setInt(1, User.getInstance().getUserId());
                 ResultSet rs = searchStatement.executeQuery();
-                while (rs.next())
-
-                    like_class_data.add(new UserLike_ClassFragment.User_Like_Class_Data(
+                while (rs.next()) {
+                    like_class_data.add(new User_Like_Class_Data(
                             rs.getInt("課程編號"),
                             rs.getBytes("課程圖片"),
+                            rs.getBytes("健身教練圖片"),
                             rs.getString("課程名稱"),
                             rs.getString("課程費用"),
                             rs.getString("健身教練姓名"),
-                            rs.getString("課程內容介紹"),
-                            rs.getString("上課人數")
+                            rs.getInt("地點類型")
                     ));
+                }
+
                 rs.close();
                 searchStatement.close();
             } catch (SQLException e) {
@@ -95,12 +97,11 @@ public class UserLike_ClassFragment extends Fragment {
             }
             new Handler(Looper.getMainLooper()).post(this::updateUI);
         });
-
     }
 
     private void updateUI() {
         if (getActivity() != null && isAdded()) {
-            UserLike_ClassFragment.LikeClassAdapter likeClassAdapter = new UserLike_ClassFragment.LikeClassAdapter(getActivity(),like_class_data,binding.getRoot());
+            LikeClassAdapter likeClassAdapter = new LikeClassAdapter(getActivity(), like_class_data, binding.getRoot());
             RecyclerView likeclassRecyclerView = binding.userLikeClassRecycleview;
             likeclassRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             likeclassRecyclerView.setAdapter(likeClassAdapter);
@@ -110,146 +111,134 @@ public class UserLike_ClassFragment extends Fragment {
             } else {
                 nodata.setVisibility(View.GONE);
             }
-
         }
     }
+
     static class User_Like_Class_Data {
-        int classID;
-        byte[] classimage;
-        String className,classPrice,coachName,classIntro,classPeople;
+        int classID, locationType;
+        byte[] classImage, coachImage;
+        String className, classPrice, coachName;
 
-        static ArrayList<UserLike_ClassFragment.User_Like_Class_Data> likeClassData = new ArrayList<>();
-
-        public User_Like_Class_Data(int classID,byte[] classimage,String className,String classPrice,String coachName,String classIntro,String classPeople) {
-            this.classID=classID;
-            this.classimage=classimage;
-            this.className=className;
-            this.classPrice=classPrice;
+        public User_Like_Class_Data(int classID, byte[] classImage, byte[] coachImage, String className, String classPrice, String coachName, int locationType) {
+            this.classID = classID;
+            this.classImage = classImage;
+            this.coachImage = coachImage;
+            this.className = className;
+            this.classPrice = classPrice;
             this.coachName = coachName;
-            this.classIntro=classIntro;
-            this.classPeople=classPeople;
+            this.locationType = locationType;
         }
-        public static ArrayList<UserLike_ClassFragment.User_Like_Class_Data> getLikeClassData() {
-            if (likeClassData == null) {
-                return null;
-            }
-            return likeClassData;
-        }
-
-
-        private int getClassID() {
+        public int getClassID() {
             return classID;
         }
-
-        private byte[] getClassimage() {
-            return classimage;
+        public byte[] getClassImage() {
+            return classImage;
         }
-        private String getClassName(){return className;}
-        private String getClassPrice(){return  classPrice;}
 
-        private String getCoachName() {
+        public byte[] getCoachImage() {
+            return coachImage;
+        }
+
+        public String getClassName() {
+            return className;
+        }
+
+        public String getClassPrice() {
+            return classPrice;
+        }
+
+        public String getCoachName() {
             return coachName;
         }
 
-        private String getClassIntro() {
-            return classIntro;
-        }
-
-        private String getClassPeople() {
-            return classPeople;
+        public int getLocationType() {
+            return locationType;
         }
     }
 
-    class LikeClassAdapter extends RecyclerView.Adapter<UserLike_ClassFragment.LikeClassAdapter.ViewHolder>
-    {
 
-        List<UserLike_ClassFragment.User_Like_Class_Data> like_class_dataList;
+    class LikeClassAdapter extends RecyclerView.Adapter<LikeClassAdapter.ViewHolder> {
+
+        List<User_Like_Class_Data> likeClassDataList;
         Context context;
         View view;
-        public LikeClassAdapter(Context context, List<UserLike_ClassFragment.User_Like_Class_Data> like_class_dataList , View view) {
+
+        public LikeClassAdapter(Context context, List<User_Like_Class_Data> likeClassDataList, View view) {
             this.context = context;
-            this.like_class_dataList = like_class_dataList;
-            this.view=view;
+            this.likeClassDataList = likeClassDataList;
+            this.view = view;
         }
+
         public static class ViewHolder extends RecyclerView.ViewHolder {
-            ImageView class_image;
-            TextView class_people_sign,class_name,class_price,coach_name,class_intro,class_people;
-            ImageButton more_class_btn,like_class_btn;
+            ImageView classImage,coachImage;
+            TextView classPeopleSign, className, classPrice, coachName;
+            ImageButton moreClassBtn, likeClassBtn;
+
             public ViewHolder(View itemView) {
                 super(itemView);
-                class_image=itemView.findViewById(R.id.user_like_class_img);
-                class_people_sign=itemView.findViewById(R.id.user_like_class_people_sign);
-                class_name=itemView.findViewById(R.id.user_like_class_classname);
-                class_price=itemView.findViewById(R.id.user_like_class_price);
-                coach_name=itemView.findViewById(R.id.user_like_class_coachname);
-                class_intro=itemView.findViewById(R.id.user_like_class_intro);
-                class_people=itemView.findViewById(R.id.user_like_class_people);
-                more_class_btn=itemView.findViewById(R.id.user_like_class_info);
-                like_class_btn=itemView.findViewById(R.id.user_like_class_btn);
+                classImage = itemView.findViewById(R.id.user_like_class_img);
+                coachImage = itemView.findViewById(R.id. user_detail_coach_img);
+                classPeopleSign = itemView.findViewById(R.id.user_like_class_people_sign);
+                className = itemView.findViewById(R.id.user_like_class_classname);
+                classPrice = itemView.findViewById(R.id.user_like_class_price);
+                coachName = itemView.findViewById(R.id.user_like_class_coachname);
+                moreClassBtn = itemView.findViewById(R.id.user_like_class_info);
+                likeClassBtn = itemView.findViewById(R.id.user_like_class_btn);
             }
         }
 
         @NonNull
         @Override
-        public UserLike_ClassFragment.LikeClassAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public LikeClassAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_like_class_item, parent, false);
-            return new UserLike_ClassFragment.LikeClassAdapter.ViewHolder(view);
+            return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull UserLike_ClassFragment.LikeClassAdapter.ViewHolder holder, int position) {
-            UserLike_ClassFragment.User_Like_Class_Data item = like_class_dataList.get(position);
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            User_Like_Class_Data item = likeClassDataList.get(position);
 
-            if (item.getClassimage() != null) {
-                Bitmap bitmap = ImageHandle.getBitmap(item.getClassimage());
-                holder.class_image.setImageBitmap(ImageHandle.resizeBitmap(bitmap));
+            if (item.getClassImage() != null) {
+                Bitmap bitmap = ImageHandle.getBitmap(item.getClassImage());
+                holder.classImage.setImageBitmap(ImageHandle.resizeBitmap(bitmap));
+            } else {
+                holder.classImage.setImageResource(R.drawable.coach_class_main_ic_default);
             }
-            holder.class_name.setText(item.getClassName());
-            holder.class_price.setText("$"+item.getClassPrice().split("\\.")[0]+"/堂");
-            holder.coach_name.setText(item.getCoachName());
-            holder.class_intro.setText(item.getClassIntro());
-            holder.class_people.setText("人數："+item.getClassPeople()+"人");
-            holder.like_class_btn.setOnClickListener(v -> {
-                new AlertDialog.Builder(context)
-                        .setTitle("確認取消")
-                        .setMessage("確定要取消此收藏嗎？")
-                        .setPositiveButton("確認", (dialog, which) -> {
-                            // 調用刪除方法
-                            deleteLike(item.getClassID(), position);
-                        })
-                        .setNegativeButton("取消", null)
-                        .show();
-            });
-            holder.more_class_btn.setOnClickListener(v -> {
+            if (item.getCoachImage() != null) {
+                Bitmap coachBitmap = ImageHandle.getBitmap(item.getCoachImage());
+                holder.coachImage.setImageBitmap(ImageHandle.resizeBitmap(coachBitmap));
+            } else {
+                holder.coachImage.setImageResource(R.drawable.coach_main_ic_default);
+            }
+            holder.className.setText(item.getClassName());
+            holder.classPrice.setText("$" + item.getClassPrice().split("\\.")[0] + "/堂");
+            holder.coachName.setText(item.getCoachName());
+
+            if (item.getLocationType() == 2) { // 到府服務
+                holder.classPeopleSign.setText("到府課程");
+                holder.classPeopleSign.setBackgroundResource(R.drawable.class_type_label_bg); // 藍底
+            } else { // 團體課程
+                holder.classPeopleSign.setText("團體課程");
+                holder.classPeopleSign.setBackgroundResource(R.drawable.class_type_label_red_bg); // 紅底
+            }
+
+            holder.likeClassBtn.setOnClickListener(v -> new AlertDialog.Builder(context)
+                    .setTitle("確認取消")
+                    .setMessage("確定要取消此收藏嗎？")
+                    .setPositiveButton("確認", (dialog, which) -> deleteLike(item.getClassID(), position))
+                    .setNegativeButton("取消", null)
+                    .show());
+
+            holder.moreClassBtn.setOnClickListener(v -> {
                 SharedPreferences sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt("看更多課程ID", item.getClassID());
-                editor.apply(); // 保存
+                editor.apply();
                 Intent intent = new Intent(context, ClassDetail.class);
                 startActivity(intent);
             });
-
-            try {
-                MyConnection = new SQLConnection(binding.getRoot()).IWantToConnection();
-                String SQL = "SELECT 上課人數 FROM 收藏課程 WHERE 課程編號 = ? ";
-                PreparedStatement Statement = MyConnection.prepareStatement(SQL);
-                Statement.setInt(1,item.getClassID());
-                ResultSet rs = Statement.executeQuery();
-                while (rs.next()) {
-                    if(item.getClassPeople().equals("1")){
-                        holder.class_people_sign.setText("一對一");
-                    }
-                    else {
-                        holder.class_people_sign.setText("團體");
-                    }
-                }
-                rs.close();
-                Statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
         }
+
         private void deleteLike(int classID, int position) {
             Executors.newSingleThreadExecutor().execute(() -> {
                 try {
@@ -261,25 +250,24 @@ public class UserLike_ClassFragment extends Fragment {
                     int rowsAffected = deleteStatement.executeUpdate();
 
                     if (rowsAffected > 0) {
-                        // 刪除成功後更新列表
-                        like_class_dataList.remove(position);
-                        new Handler(Looper.getMainLooper()).post(this::notifyDataSetChanged);
-                        new Handler(Looper.getMainLooper()).post(() ->
-                                Toast.makeText(context, "已取消收藏", Toast.LENGTH_SHORT).show());
+                        likeClassDataList.remove(position);
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            notifyDataSetChanged();
+                            Toast.makeText(context, "已取消收藏", Toast.LENGTH_SHORT).show();
+                        });
                         fetchLikeClass();
                     }
                     deleteStatement.close();
                 } catch (SQLException e) {
                     Log.e("SQL", Objects.requireNonNull(e.getMessage()));
-                    new Handler(Looper.getMainLooper()).post(() ->
-                            Toast.makeText(context, "取消失敗", Toast.LENGTH_SHORT).show());
+                    new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, "取消失敗", Toast.LENGTH_SHORT).show());
                 }
             });
         }
 
         @Override
         public int getItemCount() {
-            return like_class_dataList.size();
+            return likeClassDataList.size();
         }
     }
 }

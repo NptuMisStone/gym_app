@@ -164,7 +164,10 @@ public class CoachList extends AppCompatActivity {
             if (item.getCoachimage() != null) {
                 Bitmap bitmap = ImageHandle.getBitmap(item.getCoachimage());
                 holder.coach_image.setImageBitmap(ImageHandle.resizeBitmap(bitmap));
+            } else {
+                holder.coach_image.setImageResource(R.drawable.coach_main_ic_default);
             }
+
             holder.coach_name.setText(item.getCoachName());
             holder.coach_type.setText(item.getCoachType());
             holder.moreinfo_btn.setOnClickListener(v -> {

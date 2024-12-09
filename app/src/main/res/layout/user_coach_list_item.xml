@@ -17,10 +17,10 @@
 
         <ImageView
             android:id="@+id/user_all_coach_img"
-            android:layout_width="125dp"
-            android:layout_height="115dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:scaleType="centerCrop"
-            tools:srcCompat="@drawable/all_ic_null_image_account" />
+            tools:srcCompat="@drawable/coach_main_ic_default" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

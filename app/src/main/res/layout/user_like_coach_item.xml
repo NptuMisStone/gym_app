@@ -17,10 +17,10 @@
 
         <ImageView
             android:id="@+id/user_like_coach_img"
-            android:layout_width="125dp"
-            android:layout_height="115dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:scaleType="centerCrop"
-            tools:srcCompat="@drawable/all_ic_null_image_account" />
+            tools:srcCompat="@drawable/coach_main_ic_default" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -30,9 +30,9 @@
             <LinearLayout
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="125dp"
+                android:layout_marginStart="130dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="20dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
