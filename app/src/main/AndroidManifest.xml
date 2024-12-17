@@ -41,7 +41,8 @@
             android:exported="false" />
         <activity
             android:name=".User_And_Coach.UI.AIInteractive"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" /> <!-- 畫面自動上移：https://cloud.tencent.com/developer/article/1741756 -->
 
         <!-- Coach Activities -->
         <activity
